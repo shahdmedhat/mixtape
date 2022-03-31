@@ -27,7 +27,7 @@ export default function TopSongs() {
   useEffect(() => {
     if (!accessToken) return; //don't query if no access token
     spotifyApi.getMyTopTracks().then((res) => {
-      //console.log(res.body);
+      // console.log(res.body);
       setTopTracks(
         res.body.items.map((track) => {
           const smallestAlbumImage = track.album.images.reduce(

@@ -6,6 +6,7 @@ import TopSongs from "./TopSongs";
 import Likes from "./Likes";
 import Playlists from "./Playlists";
 import TopArtists from "./TopArtists";
+import Recommendations from "./Recommendations";
 
 import {
   BrowserRouter as Router,
@@ -24,6 +25,8 @@ function App() {
         <Route path="/likes" element={<Likes/>} />
         <Route path="/playlists" element={<Playlists/>} />
         <Route path="/artists" element={<TopArtists/>} />
+        <Route path="/discover" element={<Recommendations/>} />
+
       </Routes>
     </Router>
   );

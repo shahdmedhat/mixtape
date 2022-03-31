@@ -84,11 +84,17 @@ function Sidebar({ accessToken }) {
           <span>Playlists</span>
         </NavLink>
 
-        {/* <NavLink exact to="/discover" className="item" activeClassName="active">
-          <span>Discover</span>
+        <NavLink
+          exact
+          to="/discover"
+          state={{ accessToken: accessToken }}
+          className="item"
+          activeClassName="active"
+        >         
+        <span>Discover</span>
         </NavLink>
 
-        <NavLink exact to="/search" className="item" activeClassName="active">
+        {/* <NavLink exact to="/search" className="item" activeClassName="active">
           <FontAwesomeIcon className="icon" icon={faSearch} />
           <span>Search</span>
         </NavLink> */}
