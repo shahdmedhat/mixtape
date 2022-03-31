@@ -1,6 +1,6 @@
+//import Login from "./Login";
+//import Dashboard from "./Dashboard";
 import "bootstrap/dist/css/bootstrap.min.css";
-import Login from "./Login";
-import Dashboard from "./Dashboard";
 import Khaled from "./Khaled";
 import TopSongs from "./TopSongs";
 
@@ -20,7 +20,7 @@ function App() {
     <Router>
       <Routes>
         <Route exact path="/" element={<Khaled code={code} />} />
-        <Route path="/top" component={TopSongs} />
+        <Route path="/top" element={<TopSongs />} />
         
       </Routes>
     </Router>

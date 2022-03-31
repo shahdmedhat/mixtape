@@ -1,52 +1,52 @@
-.container {
+.sidebar-container {
     grid-area: sidebar;
     padding: 50px 32px;
-    background: var(--background-accent-color);
+    background: rgb(60, 62, 77);
     min-width: 150px;
     max-width: 200px;
 }
 
-.container .item {
+.sidebar-container .item {
     display: block;
-    color: var(--text-color);
+    color: rgb(255, 255, 255);
     text-decoration: none;
     margin: 20px 0;
 }
 
-.container .item:hover {
+.sidebar-container .item:hover {
     cursor: pointer;
     color: rgba(255, 255, 255, 0.6);
 }
 
-.container .item span {
+.sidebar-container .item span {
     margin-left: 12px;
 }
 
-.container .sidebar-library {
+.sidebar-container .sidebar-library {
     margin-top: 100px;
 }
 
-.container .sidebar-library h4 {
+.sidebar-container .sidebar-library h4 {
     font-weight: 400;
     margin-left: 12px;
     color: var(--secondary-text-color);
 }
 
-.container .sidebar-mobile {
+.sidebar-container .sidebar-mobile {
     display: none;
 }
 
-.icon {
+.sidebar-icon {
     display: none;
 }
 
-.active span,
+.sidebar-active span,
 .active .icon {
     color: var(--yellow);
 }
 
 @media (min-width: 700px) {
-    .container {
+    .sidebar-container {
         min-height: 100vh;
         position: fixed;
         top: 0;
@@ -55,10 +55,10 @@
 }
 
 @media (max-width: 700px) {
-    .icon {
+    .sidebar-icon {
         display: block;
     }
-    .container {
+    .sidebar-container {
         display: flex;
         height: 100%;
         min-width: 100vw;
@@ -67,15 +67,15 @@
         bottom: 0;
         z-index: 9999;
     }
-    .container .sidebar-library,
+    .sidebar-container .sidebar-library,
     .sidebar-topics {
         display: none;
     }
-    .container .sidebar-mobile {
+    .sidebar-container .sidebar-mobile {
         display: flex;
         width: 100%;
     }
-    .container .sidebar-mobile .item {
+    .sidebar-container .sidebar-mobile .item {
         flex: 1;
         display: flex;
         flex-direction: column;
@@ -83,7 +83,7 @@
         align-items: center;
         margin: 0;
     }
-    .container .item span {
+    .sidebar-container .item span {
         margin: 0;
     }
 }
