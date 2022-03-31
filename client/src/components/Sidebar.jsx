@@ -10,15 +10,16 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-function Sidebar({accessToken}){
+function Sidebar({ accessToken }) {
   return (
     <div className="sidebar-container">
       <section className="sidebar-topics">
         <NavLink
-        // key={"myRoute"}
-        to="/"
-        state={{ accessToken: accessToken}}
-          className="item" activeClassName="active"
+          // key={"myRoute"}
+          to="/"
+          state={{ accessToken: accessToken }}
+          className="item"
+          activeClassName="active"
         >
           <span>Home</span>
         </NavLink>
@@ -26,48 +27,47 @@ function Sidebar({accessToken}){
         <NavLink exact to="/profile" className="item" activeClassName="active">
           <span>Profile</span>
         </NavLink>
-        {/* 
-        <NavLink exact to="/discover" className="item" activeClassName="active">
-          <span>Discover</span>
-        </NavLink>
-
-        <NavLink exact to="/radio" className="item" activeClassName="active">
-          <span>Radio</span>
-        </NavLink>
-
-        <NavLink exact to="/foryou" className="item" activeClassName="active">
-          <span>For you</span>
-        </NavLink> */}
       </section>
 
       {/* your library */}
       <section className="sidebar-library">
         <h4>Your Library</h4>
-        <NavLink exact to="/likes" className="item" activeClassName="active">
+        <NavLink
+          // key={"myRoute"}
+          to="/likes"
+          state={{ accessToken: accessToken }}
+          className="item"
+          activeClassName="active"
+        >
+          {" "}
           {/* <FontAwesomeIcon className="icon" icon={faRecordVinyl} /> */}
           <span>Liked Songs</span>
         </NavLink>
 
-        <NavLink
+        {/* <NavLink
           exact
           to="/recently-played"
           className="item"
           activeClassName="active"
         >
-          {/* <FontAwesomeIcon className="icon" icon={faRecordVinyl} /> */}
           <span>Recently Played</span>
-        </NavLink>
+        </NavLink> */}
 
-        <NavLink exact to="/artists" className="item" activeClassName="active">
-          {/* <FontAwesomeIcon className="icon" icon={faUser} /> */}
-          <span>Artists</span>
+        <NavLink
+          to="/artists"
+          state={{ accessToken: accessToken }}
+          className="item"
+          activeClassName="active"
+        >         
+        <span>Top Artists</span>
         </NavLink>
 
         <NavLink
-        // key={"myRoute"}
-        to="/top"
-        state={{ accessToken: accessToken}}
-          className="item" activeClassName="active"
+          // key={"myRoute"}
+          to="/top"
+          state={{ accessToken: accessToken }}
+          className="item"
+          activeClassName="active"
         >
           {/* <FontAwesomeIcon className="icon" icon={faRecordVinyl} /> */}
           <span>Top Songs</span>
@@ -76,6 +76,7 @@ function Sidebar({accessToken}){
         <NavLink
           exact
           to="/playlists"
+          state={{ accessToken: accessToken }}
           className="item"
           activeClassName="active"
         >
@@ -83,15 +84,15 @@ function Sidebar({accessToken}){
           <span>Playlists</span>
         </NavLink>
 
-        <NavLink exact to="/discover" className="item" activeClassName="active">
-          {/* <FontAwesomeIcon className="icon" icon={faMusic} /> */}
-          <span>discover</span>
+        {/* <NavLink exact to="/discover" className="item" activeClassName="active">
+          <span>Discover</span>
         </NavLink>
 
         <NavLink exact to="/search" className="item" activeClassName="active">
           <FontAwesomeIcon className="icon" icon={faSearch} />
           <span>Search</span>
-        </NavLink>
+        </NavLink> */}
+        
       </section>
 
       {/* Footer on mobile */}
@@ -123,6 +124,6 @@ function Sidebar({accessToken}){
       </section>
     </div>
   );
-};
+}
 
 export default Sidebar;

@@ -3,6 +3,9 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import Khaled from "./Khaled";
 import TopSongs from "./TopSongs";
+import Likes from "./Likes";
+import Playlists from "./Playlists";
+import TopArtists from "./TopArtists";
 
 import {
   BrowserRouter as Router,
@@ -17,8 +20,10 @@ function App() {
     <Router>
       <Routes>
         <Route exact path="/" element={<Khaled code={code} />} />
-        <Route path="/top" element={<TopSongs />} />
-        
+        <Route path="/top" element={<TopSongs/>} />
+        <Route path="/likes" element={<Likes/>} />
+        <Route path="/playlists" element={<Playlists/>} />
+        <Route path="/artists" element={<TopArtists/>} />
       </Routes>
     </Router>
   );
