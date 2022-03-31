@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import SongDetails from "./SongDetails";
-import { Container, Row, Col } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import Sidebar from "./Sidebar.jsx";
 import SpotifyWebApi from "spotify-web-api-node";
 import { useLocation } from "react-router-dom";
-import "./css/TopSongs.css";
-import Player from "./Player";
+import "../css/TopSongs.css";
+//import Player from "./Player";
 
 const spotifyApi = new SpotifyWebApi({
   clientId: "f6f8e70042bb47cd9c82ef26e1cb83a7",
@@ -14,6 +14,7 @@ const spotifyApi = new SpotifyWebApi({
 export default function TopSongs() {
   let location = useLocation();
   const accessToken = location.state.accessToken; //printed sah
+  let chooseTrack = location.state.chooseTrack; //printed sah
 
   const [list, setList] = useState([]);
   const [topTracks, setTopTracks] = useState([]);
@@ -50,7 +51,7 @@ export default function TopSongs() {
 
   useEffect(() => {
     setList(
-      topTracks.map((track, key) => <SongDetails track={track} key={key} />)
+      topTracks.map((track) => <SongDetails chooseTrack={chooseTrack} track={track} key={track.uri} />)
     );
   }, [topTracks]);
 

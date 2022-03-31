@@ -6,10 +6,7 @@ import TopSongs from "./TopSongs";
 
 import {
   BrowserRouter as Router,
-  Switch,
   Route,
-  Link,
-  Redirect,
   Routes,
 } from "react-router-dom";
 

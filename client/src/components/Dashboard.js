@@ -77,7 +77,7 @@ export default function Dashboard({ code }) {
 
   return (
     <div>
-      <Sidebar accessToken={accessToken}/>
+      <Sidebar accessToken={accessToken}  chooseTrack={chooseTrack}/>
 
       <Container
         className="d-flex flex-column py-2"

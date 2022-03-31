@@ -1,5 +1,5 @@
 import React from "react";
-import "./css/Sidebar.css";
+import "../css/Sidebar.css";
 import { NavLink } from "react-router-dom";
 
 import {
@@ -14,7 +14,12 @@ function Sidebar({accessToken}){
   return (
     <div className="sidebar-container">
       <section className="sidebar-topics">
-        <NavLink exact to="/" className="item" activeClassName="active">
+        <NavLink
+        // key={"myRoute"}
+        to="/"
+        state={{ accessToken: accessToken}}
+          className="item" activeClassName="active"
+        >
           <span>Home</span>
         </NavLink>
 
