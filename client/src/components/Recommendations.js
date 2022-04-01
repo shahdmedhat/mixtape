@@ -56,6 +56,11 @@ export default function Recommendations() {
     });
     
     if (!accessToken) return; //don't query if no access token
+    
+    spotifyApi.getRecommendations({seed_genres: "classical"}).then((res) => {
+      console.log(res.body);
+    });
+    
     spotifyApi.getRecommendations({seed_tracks: final.toString()}).then((res) => {
       //console.log(res.body);
         setRec(

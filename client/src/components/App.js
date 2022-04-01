@@ -1,5 +1,5 @@
 //import Login from "./Login";
-//import Dashboard from "./Dashboard";
+import Dashboard from "./Dashboard";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Khaled from "./Khaled";
 import TopSongs from "./TopSongs";
@@ -26,6 +26,7 @@ function App() {
         <Route path="/playlists" element={<Playlists/>} />
         <Route path="/artists" element={<TopArtists/>} />
         <Route path="/discover" element={<Recommendations/>} />
+        <Route exact path="/dashboard" element={<Dashboard />} />
 
       </Routes>
     </Router>

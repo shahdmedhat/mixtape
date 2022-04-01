@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import SongDetails from "./SongDetails";
+import TrackDetails from "./TrackDetails"; //---------------
 import { Container } from "react-bootstrap";
 import Sidebar from "./Sidebar.jsx";
 import SpotifyWebApi from "spotify-web-api-node";
@@ -48,7 +49,7 @@ export default function Likes() {
 
   useEffect(() => {
     setList(
-      likes.map((track) => <SongDetails track={track} key={track.uri} />)
+      likes.map((track) => <TrackDetails track={track} key={track.uri} />) //---------------
     );
   }, [likes]);
 

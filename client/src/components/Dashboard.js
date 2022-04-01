@@ -7,17 +7,27 @@ import SpotifyWebApi from "spotify-web-api-node";
 import axios from "axios";
 import Sidebar from "./Sidebar.jsx";
 
+import { useLocation } from "react-router-dom"; //---------------
+
 const spotifyApi = new SpotifyWebApi({
   clientId: "f6f8e70042bb47cd9c82ef26e1cb83a7",
 });
 
-export default function Dashboard({ code }) {
+export default function Dashboard({props, code }) {
+  let location = useLocation(); //---------------
+
   const accessToken = useAuth(code);
+  
+  if (accessToken==='undefined'){ //---------------
+    accessToken=props.accessToken;
+  }
+  
   const [search, setSearch] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [playingTrack, setPlayingTrack] = useState();
   const [lyrics, setLyrics] = useState("");
-
+  const [track,setTrack] = useState();
+  
   function chooseTrack(track) {
     setPlayingTrack(track);
     setSearch("");
