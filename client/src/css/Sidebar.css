@@ -29,7 +29,7 @@
 .sidebar-container .sidebar-library h4 {
     font-weight: 400;
     margin-left: 12px;
-    color: var(--secondary-text-color);
+    color: rgb(122, 124, 133);
 }
 
 .sidebar-container .sidebar-mobile {
@@ -42,7 +42,7 @@
 
 .sidebar-active span,
 .active .icon {
-    color: var(--yellow);
+    color: #E55D87;
 }
 
 @media (min-width: 700px) {

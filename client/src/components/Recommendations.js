@@ -18,7 +18,7 @@ export default function Recommendations() {
   const [list, setList] = useState([]);
   const [topTracks, setTopTracks] = useState([]);
   const [topFive, setTopFive] = useState([]);
-  const [count, setCount] = useState(0);
+  //const [count, setCount] = useState(0);
 
   const [rec, setRec] = useState([]);
 
@@ -52,7 +52,7 @@ export default function Recommendations() {
     var final=[]
     topFive.forEach(function (item) {
         final.push(item.id);
-        setCount(count+1);
+        //setCount(count+1);
     });
     
     if (!accessToken) return; //don't query if no access token
@@ -76,7 +76,7 @@ export default function Recommendations() {
           })
         );
     });
-   }, [topFive]);
+   }, [accessToken,topFive]);
 
     useEffect(() => {
       setList(
@@ -92,7 +92,7 @@ export default function Recommendations() {
         className="d-flex flex-column py-2"
         style={{ height: "100vh" }}
       >
-        <h1 style={{ textAlign: "center" }}> RECOMMENDATIONS </h1>
+        <h1 style={{ textAlign: "center" }}> BASED ON YOUR TASTE... </h1>
 
         <div className="centerTracks">{list}</div>
       </Container>
