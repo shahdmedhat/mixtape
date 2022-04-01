@@ -10,7 +10,47 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-function Sidebar({ accessToken }) {
+function Sidebar({ setTopSongs, setTopArtists, setRec, setLikes, accessToken }) {
+
+function handleLike(){
+  setLikes(true);
+  setRec(false);
+  setTopArtists(false);
+  setTopSongs(false);
+
+}
+
+function handleRec(){
+  setRec(true);
+  setLikes(false);
+  setTopArtists(false);
+  setTopSongs(false);
+
+}
+
+function handleArtists(){
+  setTopArtists(true);
+  setLikes(false);
+  setRec(false);
+  setTopSongs(false);
+
+}
+
+function handleTracks(){
+  setTopSongs(true);
+  setTopArtists(false);
+  setLikes(false);
+  setRec(false);
+}
+
+function resetAll(){
+  setLikes(false);
+  setRec(false);
+  setTopArtists(false);
+  setTopSongs(false);
+
+}
+
   return (
     <div className="sidebar-container">
       <section className="sidebar-topics">
@@ -20,13 +60,14 @@ function Sidebar({ accessToken }) {
           state={{ accessToken: accessToken }}
           className="item"
           activeClassName="active"
+          onClick={resetAll} 
         >
           <span>Home</span>
         </NavLink>
 
-        <NavLink exact to="/profile" className="item" activeClassName="active">
+        {/* <NavLink exact to="/profile" className="item" activeClassName="active">
           <span>Profile</span>
-        </NavLink>
+        </NavLink> */}
       </section>
 
       {/* your library */}
@@ -34,11 +75,12 @@ function Sidebar({ accessToken }) {
         <h4>Your Library</h4>
         <NavLink
           // key={"myRoute"}
-          to="/likes"
+          to="/" // "/likes"
           state={{ accessToken: accessToken }}
           className="item"
           activeClassName="active"
-        >
+          onClick={handleLike} 
+        >          
           {" "}
           {/* <FontAwesomeIcon className="icon" icon={faRecordVinyl} /> */}
           <span>Liked Songs</span>
@@ -54,20 +96,23 @@ function Sidebar({ accessToken }) {
         </NavLink> */}
 
         <NavLink
-          to="/artists"
+          to="/"
           state={{ accessToken: accessToken }}
           className="item"
           activeClassName="active"
+          onClick={handleArtists} 
         >         
         <span>Top Artists</span>
         </NavLink>
 
         <NavLink
           // key={"myRoute"}
-          to="/top"
+          to="/"
           state={{ accessToken: accessToken }}
           className="item"
           activeClassName="active"
+          onClick={handleTracks} 
+
         >
           {/* <FontAwesomeIcon className="icon" icon={faRecordVinyl} /> */}
           <span>Top Songs</span>
@@ -86,10 +131,11 @@ function Sidebar({ accessToken }) {
 
         <NavLink
           exact
-          to="/discover"
+          to="/"
           state={{ accessToken: accessToken }}
           className="item"
           activeClassName="active"
+          onClick={handleRec} 
         >         
         <span>Discover</span>
         </NavLink>

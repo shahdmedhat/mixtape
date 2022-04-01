@@ -8,7 +8,8 @@ export default function TrackDetails(props) {
   let navigate = useNavigate();
   const track = props.track;
   function handlePlay() {
-    navigate("/dashboard",{ state: {track: track , accessToken: location.state.accessToken} });
+    //navigate("/dashboard",{ state: {track: track , accessToken: location.state.accessToken} });
+    props.chooseTrack(track)
   }
 
   return (

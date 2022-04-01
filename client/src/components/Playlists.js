@@ -66,7 +66,7 @@ export default function Playlists() {
           playlists.map((playlist) => (
             <Container
               className="centerTracks"
-              style={{ cursor: "pointer" }}
+              // style={{ cursor: "pointer" }}
               //onClick={this.handlePlay}
             >
               <img

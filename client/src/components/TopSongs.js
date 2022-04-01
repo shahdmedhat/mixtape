@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import SongDetails from "./SongDetails";
+import TrackDetails from "./TrackDetails";
 import { Container } from "react-bootstrap";
 import Sidebar from "./Sidebar.jsx";
 import SpotifyWebApi from "spotify-web-api-node";
@@ -11,7 +11,7 @@ const spotifyApi = new SpotifyWebApi({
   clientId: "f6f8e70042bb47cd9c82ef26e1cb83a7",
 });
 
-export default function TopSongs() {
+export default function TopSongs(props) {
   let location = useLocation();
   const accessToken = location.state.accessToken; //printed sah
   //let chooseTrack = location.state.chooseTrack;
@@ -51,17 +51,17 @@ export default function TopSongs() {
 
   useEffect(() => {
     setList(
-      topTracks.map((track) => <SongDetails track={track} key={track.uri} />)
+      topTracks.map((track) => <TrackDetails track={track} key={track.uri} chooseTrack={props.chooseTrack} />)
     );
   }, [topTracks]);
 
   if (!accessToken) return null;
   return (
     <div>
-      <Sidebar accessToken={accessToken} />
+      {/* <Sidebar accessToken={accessToken} /> */}
       <Container
         className="d-flex flex-column py-2"
-        style={{ height: "100vh" }}
+        // style={{ height: "100vh" }}
       >
         <h1 style={{ textAlign: "center" }}> TOP SONGS</h1>
 
