@@ -12,6 +12,8 @@ import Recommendations from "./Recommendations";
 import TopSongs from "./TopSongs";
 import TopArtists from "./TopArtists";
 
+import "../css/Dashboard.css";
+
 import { useLocation } from "react-router-dom"; //---------------
 
 const spotifyApi = new SpotifyWebApi({
@@ -62,6 +64,7 @@ export default function Dashboard({ props, code }) {
   }, [playingTrack]); //everytime playing track changes
 
   useEffect(() => {
+    //console.log(accessToken);
     if (!accessToken) return;
     spotifyApi.setAccessToken(accessToken);
   }, [accessToken]);
@@ -98,7 +101,7 @@ export default function Dashboard({ props, code }) {
   }, [search, accessToken]);
 
   return (
-    <div>
+    <div className="dashboard">
       <Sidebar accessToken={accessToken} setLikes={setLikes} setRec={setRec} setTopSongs={setTopSongs} setTopArtists={setTopArtists}/>
 
       <Container
@@ -148,7 +151,7 @@ export default function Dashboard({ props, code }) {
         </div>
         
         <div>
-          <Player accessToken={accessToken} trackUri={playingTrack?.uri} />
+          <Player accessToken={accessToken} trackUri={playingTrack?.uri} style={{ width: "100%" }} />
         </div>
       </Container>
     </div>

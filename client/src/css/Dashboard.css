@@ -1,0 +1,4 @@
+.dashboard {
+    background: linear-gradient(to bottom right, #E55D87, #5FC3E4);
+    overflow-y: scroll;
+}

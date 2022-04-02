@@ -14,7 +14,8 @@ export default function TrackSearchResult({ track, chooseTrack }) {
       <img src={track.albumUrl} style={{ height: "64px", width: "64px" }} alt="albumUrl"/>
       <div className="ml-3">
         <div>{track.title}</div>
-        <div className="text-muted">{track.artist}</div> 
+        <div>{track.artist}</div> 
+        {/* className="text-muted" */}
       </div>
     </div>
   )

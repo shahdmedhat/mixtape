@@ -25,7 +25,8 @@ export default function TrackDetails(props) {
       />
       <div className="ml-3">
         <div>{track.title}</div>
-        <div className="text-muted">{track.artist}</div>
+        <div>{track.artist}</div>
+        {/* className="text-muted" */}
       </div>
     </Container>
   );
