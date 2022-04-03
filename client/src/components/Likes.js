@@ -18,6 +18,7 @@ export default function Likes(props) {
   //let chooseTrack = location.state.chooseTrack;
   const [list, setList] = useState([]);
   const [likes, setLikes] = useState([]);
+  //const[trackURIs,setTrackURIs] = useState([]);
 
   useEffect(() => {
     if (!accessToken) return;
@@ -51,6 +52,10 @@ export default function Likes(props) {
     setList(
       likes.map((track) => <TrackDetails track={track} key={track.uri} chooseTrack={props.chooseTrack} />) //---------------
     );
+    
+    props.setTrackURIs(
+      likes.map((track)=> track.uri)
+    )
   }, [likes]);
 
   if (!accessToken) return null;

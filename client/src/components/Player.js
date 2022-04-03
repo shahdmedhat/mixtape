@@ -7,6 +7,8 @@ export default function Player({ accessToken, trackUri }) {
   useEffect(() => setPlay(true), [trackUri]) //everytime we choose a different track
 
   if (!accessToken) return null
+  //console.log(trackUri);
+  
   return (
     <SpotifyPlayer
       token={accessToken}
@@ -24,7 +26,7 @@ export default function Player({ accessToken, trackUri }) {
         sliderColor: '#fff',
         trackArtistColor: '#ccc',
         trackNameColor: '#fff',
-        height: '20px'
+        width: '60px'
       }}
     />
   )

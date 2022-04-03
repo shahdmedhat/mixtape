@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import SongDetails from "./SongDetails";
 import TrackDetails from "./TrackDetails";
 import { Container } from "react-bootstrap";
-import Sidebar from "./Sidebar.jsx";
+// import Sidebar from "./Sidebar.jsx";
 import SpotifyWebApi from "spotify-web-api-node";
 import { useLocation } from "react-router-dom";
 import "../css/SongList.css";
@@ -22,7 +21,6 @@ export default function Recommendations(props) {
   //const [count, setCount] = useState(0);
 
   const [rec, setRec] = useState([]);
-  const [happy, setHappy] = useState([]);
 
   useEffect(() => {
     if (!accessToken) return;
@@ -59,26 +57,6 @@ export default function Recommendations(props) {
     
     if (!accessToken) return; //don't query if no access token
     
-    spotifyApi.getRecommendations({seed_genres: "happy"}).then((res) => {
-      setHappy(
-        res.body.tracks.map((track) => {
-          const smallestAlbumImage = track.album.images.reduce(
-            (smallest, image) => {
-              if (image.height < smallest.height) return image;
-              return smallest;
-            },
-            track.album.images[0] //loop through images, if current.size < smallest -> update smallest
-          );
-          return {
-            artist: track.artists[0].name,
-            title: track.name,
-            uri: track.uri,
-            albumUrl: smallestAlbumImage.url,
-          };
-        })
-      );
-    });
-    
     spotifyApi.getRecommendations({seed_tracks: final.toString()}).then((res) => {
       //console.log(res.body);
         setRec(
@@ -99,6 +77,11 @@ export default function Recommendations(props) {
           })
         );
     });
+    
+    spotifyApi.getAvailableGenreSeeds().then((res) => {
+      console.log(res.body);
+    });
+    
    }, [accessToken,topFive]);
 
     useEffect(() => {
