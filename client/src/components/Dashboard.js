@@ -18,6 +18,9 @@ import happyImage from "../images/happy.jpg";
 import calmImage from "../images/calm.jpg";
 import sadImage from "../images/sad.jpg";
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faShuffle } from '@fortawesome/free-solid-svg-icons'
+
 import { useLocation } from "react-router-dom"; //---------------
 
 const spotifyApi = new SpotifyWebApi({
@@ -59,6 +62,25 @@ export default function Dashboard({ props, code }) {
 
   const [trackURIs, setTrackURIs] = useState([]);
 
+  let current = "";
+  //const date = `${current.getDate()}/${current.getMonth()+1}/${current.getFullYear()}`;
+  const [displayMessage, setDisplayMessage] = useState("");
+
+  
+  function currentTime(){
+    current= new Date().getTime().toString().substring(0,2);
+    console.log(current);
+    if (current>=6 && current<12){
+      setDisplayMessage("Good Morning");
+    }
+    else if(current>=12 && current<18){
+      setDisplayMessage("Good Afternoon");
+    }
+    else{
+      setDisplayMessage("Good Evening");
+    }
+  }
+  
   function chooseTrack(track) {
     setPlayingTrack(track);
     setSearch("");
@@ -81,6 +103,9 @@ export default function Dashboard({ props, code }) {
   }, [playingTrack]); //everytime playing track changes
 
   useEffect(() => {
+  
+    currentTime();
+    
     //console.log(accessToken);
     if (!accessToken) return;
     spotifyApi.setAccessToken(accessToken);
@@ -239,8 +264,10 @@ export default function Dashboard({ props, code }) {
         />
 
         <br />
-        <br />
-
+        {/* <br /> */}
+        
+        {/* <h2>{displayMessage}</h2> */}
+        
         {!isSad &&
           !isAcoustic &&
           !isHappy &&
@@ -250,10 +277,8 @@ export default function Dashboard({ props, code }) {
           !topArtists &&
           searchResults.length === 0 && (
             <div>
-              <h1>
-                {" "}
-                Genres can only define so much. Go beyond with music for moods.
-              </h1>
+              <h2> Genres can only define so much.</h2>
+              <h2>Go beyond with music for moods.</h2>
               <Row>
                 <Card
                   className="text-center"
@@ -368,14 +393,15 @@ export default function Dashboard({ props, code }) {
             )}
         </div>
 
-          <div>
-            <Player
-              accessToken={accessToken}
-              trackUri={playingTrack?.uri}
-              style={{ width: "100%" }}
-            />
-          </div>
-        
+        <div>
+        {/* <FontAwesomeIcon icon={faShuffle} size="lg" inverse /> */}
+          <Player
+            accessToken={accessToken}
+            trackUri={playingTrack?.uri}
+            style={{ width: "100%" , position: "sticky" }}
+          />
+        </div>
+
         {/* {(likes || rec || topSongs || isHappy || isSad || isAcoustic)  && (
           <div>
             <PlayerNext
@@ -385,7 +411,6 @@ export default function Dashboard({ props, code }) {
             />
           </div>
         )} */}
-        
       </Container>
     </div>
   );
