@@ -60,4 +60,22 @@ app.get("/lyrics", async (req, res) => {
   res.json({ lyrics })
 })
 
+app.get("/playlist", (req, res) => {
+  const spotifyApi = new SpotifyWebApi({
+    redirectUri: process.env.REDIRECT_URI,
+    clientId: process.env.CLIENT_ID,
+    clientSecret: process.env.CLIENT_SECRET,
+  })
+  
+  spotifyApi.getPlaylist({ playlistId: req.query.playlistId })
+    .then(data => {
+      console.log(data);
+      
+    })
+    .catch(err => {
+      res.sendStatus(err)
+    })
+})
+
+
 app.listen(3001) //run backend on localhost/3001

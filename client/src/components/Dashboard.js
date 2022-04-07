@@ -11,6 +11,7 @@ import Likes from "./Likes";
 import Recommendations from "./Recommendations";
 import TopSongs from "./TopSongs";
 import TopArtists from "./TopArtists";
+import Playlists from "./Playlists";
 import TrackDetails from "./TrackDetails";
 
 import "../css/Dashboard.css";
@@ -18,10 +19,13 @@ import happyImage from "../images/happy.jpg";
 import calmImage from "../images/calm.jpg";
 import sadImage from "../images/sad.jpg";
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faShuffle } from '@fortawesome/free-solid-svg-icons'
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { fas } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { useLocation } from "react-router-dom"; //---------------
+
+library.add(fas);
 
 const spotifyApi = new SpotifyWebApi({
   clientId: "f6f8e70042bb47cd9c82ef26e1cb83a7",
@@ -47,6 +51,7 @@ export default function Dashboard({ props, code }) {
   const [rec, setRec] = useState(false);
   const [topSongs, setTopSongs] = useState(false);
   const [topArtists, setTopArtists] = useState(false);
+  const [playlists, setPlaylists] = useState(false);
 
   const [happy, setHappy] = useState([]);
   const [happyList, setHappyList] = useState([]);
@@ -66,21 +71,64 @@ export default function Dashboard({ props, code }) {
   //const date = `${current.getDate()}/${current.getMonth()+1}/${current.getFullYear()}`;
   const [displayMessage, setDisplayMessage] = useState("");
 
-  
-  function currentTime(){
-    current= new Date().getTime().toString().substring(0,2);
-    console.log(current);
-    if (current>=6 && current<12){
+  const [player, showPlayer] = useState(false);
+  const [view, setView] = useState("");
+
+  function handlePlayer() {
+    if (player) {
+      showPlayer(false);
+      switch (view) {
+        case "likes":
+          setLikes(true);
+          break;
+        case "rec":
+          setRec(true);
+          break;
+        case "artists":
+          setTopArtists(true);
+          break;
+        case "tracks":
+          setTopSongs(true);
+          break;
+        case "playlists":
+          setPlaylists(true);
+          break;
+        case "happy":
+          showHappy(true);
+          break;
+        case "sad":
+          showSad(true);
+          break;
+        case "acoustic":
+          showAcoustic(true);
+          break;
+      }
+    } else {
+      //expand
+      showPlayer(true);
+      setLikes(false);
+      setRec(false);
+      setTopSongs(false);
+      setTopArtists(false);
+      setPlaylists(false);
+      showHappy(false);
+      showAcoustic(false);
+      showSad(false);
+    }
+  }
+
+  function currentTime() {
+    current = new Date().getTime().toString().substring(0, 2); //does not get current time
+    //console.log(current);
+    if (current >= 6 && current < 12) {
       setDisplayMessage("Good Morning");
-    }
-    else if(current>=12 && current<18){
+    } else if (current >= 12 && current < 18) {
       setDisplayMessage("Good Afternoon");
-    }
-    else{
+    } else {
       setDisplayMessage("Good Evening");
     }
   }
-  
+
   function chooseTrack(track) {
     setPlayingTrack(track);
     setSearch("");
@@ -103,9 +151,8 @@ export default function Dashboard({ props, code }) {
   }, [playingTrack]); //everytime playing track changes
 
   useEffect(() => {
-  
     currentTime();
-    
+
     //console.log(accessToken);
     if (!accessToken) return;
     spotifyApi.setAccessToken(accessToken);
@@ -247,9 +294,12 @@ export default function Dashboard({ props, code }) {
         setRec={setRec}
         setTopSongs={setTopSongs}
         setTopArtists={setTopArtists}
+        setPlaylists={setPlaylists}
         showHappy={showHappy}
         showAcoustic={showAcoustic}
         showSad={showSad}
+        showPlayer={showPlayer}
+        setView={setView}
       />
 
       <Container
@@ -265,9 +315,9 @@ export default function Dashboard({ props, code }) {
 
         <br />
         {/* <br /> */}
-        
+
         {/* <h2>{displayMessage}</h2> */}
-        
+
         {!isSad &&
           !isAcoustic &&
           !isHappy &&
@@ -275,6 +325,8 @@ export default function Dashboard({ props, code }) {
           !rec &&
           !topSongs &&
           !topArtists &&
+          !playlists &&
+          !player &&
           searchResults.length === 0 && (
             <div>
               <h2> Genres can only define so much.</h2>
@@ -291,7 +343,13 @@ export default function Dashboard({ props, code }) {
                     <Card.Text>
                       Hits that are guaranteed to boost your mood!
                     </Card.Text>
-                    <Button variant="primary" onClick={() => showHappy(true)}>
+                    <Button
+                      variant="primary"
+                      onClick={() => {
+                        showHappy(true);
+                        setView("happy");
+                      }}
+                    >
                       CHECK IT OUT
                     </Button>
                   </Card.Body>
@@ -310,7 +368,10 @@ export default function Dashboard({ props, code }) {
                     </Card.Text>
                     <Button
                       variant="primary"
-                      onClick={() => showAcoustic(true)}
+                      onClick={() => {
+                        showAcoustic(true);
+                        setView("acoustic");
+                      }}
                     >
                       CHECK IT OUT
                     </Button>
@@ -328,7 +389,13 @@ export default function Dashboard({ props, code }) {
                     <Card.Title>Sad</Card.Title>
                     <Card.Text>Some tracks to let it all out...</Card.Text>
                     <br />
-                    <Button variant="primary" onClick={() => showSad(true)}>
+                    <Button
+                      variant="primary"
+                      onClick={() => {
+                        showSad(true);
+                        setView("sad");
+                      }}
+                    >
                       CHECK IT OUT
                     </Button>
                   </Card.Body>
@@ -339,22 +406,25 @@ export default function Dashboard({ props, code }) {
 
         {isHappy && searchResults.length === 0 && (
           <Container className="d-flex flex-column py-2">
+            <h1 style={{ textAlign: "center" }}>HAPPY MIX</h1>
             <div className="centerTracks">{happyList}</div>
           </Container>
         )}
 
         {isAcoustic && searchResults.length === 0 && (
           <Container className="d-flex flex-column py-2">
+            <h1 style={{ textAlign: "center" }}>ACOUSTIC</h1>
             <div className="centerTracks">{acousticList}</div>
           </Container>
         )}
 
         {isSad && searchResults.length === 0 && (
           <Container className="d-flex flex-column py-2">
+            <h1 style={{ textAlign: "center" }}>SAD</h1>
             <div className="centerTracks">{sadList}</div>
           </Container>
         )}
-
+        
         {likes && searchResults.length === 0 && (
           <Likes chooseTrack={chooseTrack} setTrackURIs={setTrackURIs} />
         )}
@@ -369,6 +439,10 @@ export default function Dashboard({ props, code }) {
 
         {topArtists && searchResults.length === 0 && (
           <TopArtists chooseTrack={chooseTrack} />
+        )}
+        
+        {playlists && searchResults.length === 0 && (
+          <Playlists />
         )}
 
         <div
@@ -386,7 +460,9 @@ export default function Dashboard({ props, code }) {
             !likes &&
             !rec &&
             !topSongs &&
-            !topArtists && (
+            !topArtists &&
+            !playlists &&
+            player && (
               <div className="text-center" style={{ whiteSpace: "pre" }}>
                 {lyrics}
               </div>
@@ -394,12 +470,15 @@ export default function Dashboard({ props, code }) {
         </div>
 
         <div>
-        {/* <FontAwesomeIcon icon={faShuffle} size="lg" inverse /> */}
-          <Player
-            accessToken={accessToken}
-            trackUri={playingTrack?.uri}
-            style={{ width: "100%" , position: "sticky" }}
+          {/* <FontAwesomeIcon icon="fa-shuffle" size="lg" inverse /> */}
+          {/* style={{ width: "max-width" , left: "0" , right: "0" , position: "sticky" }} */}
+          <FontAwesomeIcon
+            icon="fa-solid fa-up-right-and-down-left-from-center"
+            inverse
+            onClick={handlePlayer}
+            style={{ cursor: "pointer", float: "right" }}
           />
+          <Player accessToken={accessToken} trackUri={playingTrack?.uri} />
         </div>
 
         {/* {(likes || rec || topSongs || isHappy || isSad || isAcoustic)  && (

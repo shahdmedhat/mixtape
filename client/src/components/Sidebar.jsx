@@ -10,16 +10,19 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-function Sidebar({showSad, showAcoustic ,showHappy, setTopSongs, setTopArtists, setRec, setLikes, accessToken }) {
+function Sidebar({setPlaylists, setView,showPlayer,showSad, showAcoustic ,showHappy, setTopSongs, setTopArtists, setRec, setLikes, accessToken }) {
 
 function handleLike(){
   setLikes(true);
   setRec(false);
   setTopArtists(false);
   setTopSongs(false);
+  setPlaylists(false);
   showHappy(false);
   showAcoustic(false);
   showSad(false);
+  showPlayer(false);
+  setView("likes");
 }
 
 function handleRec(){
@@ -27,10 +30,12 @@ function handleRec(){
   setLikes(false);
   setTopArtists(false);
   setTopSongs(false);
+  setPlaylists(false);
   showHappy(false);
   showAcoustic(false);
   showSad(false);
-
+  showPlayer(false);
+  setView("rec");
 }
 
 function handleArtists(){
@@ -38,20 +43,40 @@ function handleArtists(){
   setLikes(false);
   setRec(false);
   setTopSongs(false);
+  setPlaylists(false);
   showHappy(false);
   showAcoustic(false);
   showSad(false);
+  showPlayer(false);
+  setView("artists");
 
 }
 
 function handleTracks(){
   setTopSongs(true);
   setTopArtists(false);
+  setPlaylists(false);
   setLikes(false);
   setRec(false);
   showHappy(false);
   showAcoustic(false);
   showSad(false);
+  showPlayer(false);
+  setView("tracks");
+
+}
+
+function handlePlaylists(){
+  setPlaylists(true);
+  setTopSongs(false);
+  setTopArtists(false);
+  setLikes(false);
+  setRec(false);
+  showHappy(false);
+  showAcoustic(false);
+  showSad(false);
+  showPlayer(false);
+  setView("playlists");
 
 }
 
@@ -60,10 +85,12 @@ function resetAll(){
   setRec(false);
   setTopArtists(false);
   setTopSongs(false);
+  setPlaylists(false);
   showHappy(false);
   showAcoustic(false);
   showSad(false);
-
+  showPlayer(false);
+  setView("");
 }
 
   return (
@@ -134,11 +161,11 @@ function resetAll(){
         </NavLink>
 
         <NavLink
-          exact
-          to="/playlists"
+          to="/"
           state={{ accessToken: accessToken }}
           className="item"
           activeClassName="active"
+          onClick={handlePlaylists} 
         >
           {/* <FontAwesomeIcon className="icon" icon={faMusic} /> */}
           <span>Playlists</span>
