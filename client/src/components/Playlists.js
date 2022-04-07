@@ -93,7 +93,7 @@ export default function Playlists(props) {
 
   if (!accessToken) return null;
   return (
-    <div>
+    <div style={{ overflowY: 'scroll' }}>
       {list.length === 0 && (
         <Container
           className="d-flex flex-column py-2"

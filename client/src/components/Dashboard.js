@@ -74,6 +74,9 @@ export default function Dashboard({ props, code }) {
   const [player, showPlayer] = useState(false);
   const [view, setView] = useState("");
 
+  const [firstColor, setFirstColor] = useState("");
+  const [secondColor, setSecondColor] = useState("");
+
   function handlePlayer() {
     if (player) {
       showPlayer(false);
@@ -103,6 +106,9 @@ export default function Dashboard({ props, code }) {
           showAcoustic(true);
           break;
       }
+
+      setFirstColor("#FFFFFF");
+      setSecondColor("#FFFFFF");
     } else {
       //expand
       showPlayer(true);
@@ -114,6 +120,9 @@ export default function Dashboard({ props, code }) {
       showHappy(false);
       showAcoustic(false);
       showSad(false);
+
+      setFirstColor("#dc2424");
+      setSecondColor("#4a569d");
     }
   }
 
@@ -233,6 +242,9 @@ export default function Dashboard({ props, code }) {
           })
         );
       });
+
+    setFirstColor("#FFFFFF");
+    setSecondColor("#FFFFFF");
   }, [accessToken]);
 
   useEffect(() => {
@@ -287,7 +299,13 @@ export default function Dashboard({ props, code }) {
   }, [search, accessToken]);
 
   return (
-    <div className="dashboard">
+    <div
+      style={{
+        overflowY: "scroll",
+        background: "linear-gradient(" + firstColor + "," + secondColor + ")",
+      }}
+    >
+      {/* <div className="dashboard"> */}
       <Sidebar
         accessToken={accessToken}
         setLikes={setLikes}
@@ -405,26 +423,32 @@ export default function Dashboard({ props, code }) {
           )}
 
         {isHappy && searchResults.length === 0 && (
-          <Container className="d-flex flex-column py-2">
-            {/* <h1 style={{ textAlign: "center" }}>HAPPY MIX</h1> */}
-            <div className="centerTracks">{happyList}</div>
-          </Container>
+          <div style={{ overflowY: "scroll" }}>
+            <Container className="d-flex flex-column py-2">
+              {/* <h1 style={{ textAlign: "center" }}>HAPPY MIX</h1> */}
+              <div className="centerTracks">{happyList}</div>
+            </Container>
+          </div>
         )}
 
         {isAcoustic && searchResults.length === 0 && (
-          <Container className="d-flex flex-column py-2">
-            {/* <h1 style={{ textAlign: "center" }}>ACOUSTIC</h1> */}
-            <div className="centerTracks">{acousticList}</div>
-          </Container>
+          <div style={{ overflowY: "scroll" }}>
+            <Container className="d-flex flex-column py-2">
+              {/* <h1 style={{ textAlign: "center" }}>ACOUSTIC</h1> */}
+              <div className="centerTracks">{acousticList}</div>
+            </Container>
+          </div>
         )}
 
         {isSad && searchResults.length === 0 && (
-          <Container className="d-flex flex-column py-2">
-            {/* <h1 style={{ textAlign: "center" }}>SAD</h1> */}
-            <div className="centerTracks">{sadList}</div>
-          </Container>
+          <div style={{ overflowY: "scroll" }}>
+            <Container className="d-flex flex-column py-2">
+              {/* <h1 style={{ textAlign: "center" }}>SAD</h1> */}
+              <div className="centerTracks">{sadList}</div>
+            </Container>
+          </div>
         )}
-        
+
         {likes && searchResults.length === 0 && (
           <Likes chooseTrack={chooseTrack} setTrackURIs={setTrackURIs} />
         )}
@@ -440,7 +464,7 @@ export default function Dashboard({ props, code }) {
         {topArtists && searchResults.length === 0 && (
           <TopArtists chooseTrack={chooseTrack} />
         )}
-        
+
         {playlists && searchResults.length === 0 && (
           <Playlists chooseTrack={chooseTrack} />
         )}
@@ -456,6 +480,7 @@ export default function Dashboard({ props, code }) {
               chooseTrack={chooseTrack}
             />
           ))}
+
           {searchResults.length === 0 &&
             !likes &&
             !rec &&
@@ -463,7 +488,14 @@ export default function Dashboard({ props, code }) {
             !topArtists &&
             !playlists &&
             player && (
-              <div className="text-center" style={{ whiteSpace: "pre" }}>
+              <div
+                style={{
+                  whiteSpace: "pre",
+                  color: "white",
+                  textAlign: "center",
+                }}
+              >
+                {/* className="text-center" style={{ whiteSpace: "pre" }}*/}
                 {lyrics}
               </div>
             )}

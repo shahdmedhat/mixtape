@@ -92,7 +92,7 @@ export default function Recommendations(props) {
 
   if (!accessToken) return null;
   return (
-    <div>
+    <div style={{ overflowY: 'scroll' }}>
       {/* style={{ maxHeight: "50vh" }} */}
       {/* <Sidebar accessToken={accessToken} /> */}
       <Container
@@ -101,7 +101,7 @@ export default function Recommendations(props) {
       >
         <h1 style={{ textAlign: "center" }}> BASED ON YOUR TASTE... </h1>
 
-        <div className="centerTracks">{list}</div>
+        <div className="centerTracks" >{list}</div>
       </Container>
     </div>
   );

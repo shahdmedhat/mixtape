@@ -1,4 +1,18 @@
+
+:root {
+    --first: #E55D87;
+    --second: #5FC3E4;
+  }
+  
 .dashboard {
-    background: linear-gradient(to bottom right, #E55D87, #5FC3E4);
+    background: linear-gradient(to bottom right, var(--first), var(--second));
     overflow-y: scroll;
+}
+
+.dashboard .expand-player{
+    text-align: center;
+    /* background: linear-gradient(to bottom right, #485563, #29323c); */
+    --first: #485563;
+    --second: #29323c;
+    color: white;
 }

@@ -56,7 +56,7 @@ export default function TopArtists(props) {
 
   if (!accessToken) return null;
   return (
-    <div>
+    <div style={{ overflowY: 'scroll' }}>
       {/* <Sidebar accessToken={accessToken} /> */}
       <Container
         className="d-flex flex-column py-2"
