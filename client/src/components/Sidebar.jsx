@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function Sidebar({setPlaylists, setView,showPlayer,showSad, showAcoustic ,showHappy, setTopSongs, setTopArtists, setRec, setLikes, accessToken }) {
 
+
 function handleLike(){
   setLikes(true);
   setRec(false);
@@ -77,7 +78,6 @@ function handlePlaylists(){
   showSad(false);
   showPlayer(false);
   setView("playlists");
-
 }
 
 function resetAll(){
@@ -162,7 +162,7 @@ function resetAll(){
 
         <NavLink
           to="/"
-          state={{ accessToken: accessToken }}
+          state={{ accessToken: accessToken}}
           className="item"
           activeClassName="active"
           onClick={handlePlaylists} 

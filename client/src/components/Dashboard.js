@@ -406,21 +406,21 @@ export default function Dashboard({ props, code }) {
 
         {isHappy && searchResults.length === 0 && (
           <Container className="d-flex flex-column py-2">
-            <h1 style={{ textAlign: "center" }}>HAPPY MIX</h1>
+            {/* <h1 style={{ textAlign: "center" }}>HAPPY MIX</h1> */}
             <div className="centerTracks">{happyList}</div>
           </Container>
         )}
 
         {isAcoustic && searchResults.length === 0 && (
           <Container className="d-flex flex-column py-2">
-            <h1 style={{ textAlign: "center" }}>ACOUSTIC</h1>
+            {/* <h1 style={{ textAlign: "center" }}>ACOUSTIC</h1> */}
             <div className="centerTracks">{acousticList}</div>
           </Container>
         )}
 
         {isSad && searchResults.length === 0 && (
           <Container className="d-flex flex-column py-2">
-            <h1 style={{ textAlign: "center" }}>SAD</h1>
+            {/* <h1 style={{ textAlign: "center" }}>SAD</h1> */}
             <div className="centerTracks">{sadList}</div>
           </Container>
         )}
@@ -442,7 +442,7 @@ export default function Dashboard({ props, code }) {
         )}
         
         {playlists && searchResults.length === 0 && (
-          <Playlists />
+          <Playlists chooseTrack={chooseTrack} />
         )}
 
         <div

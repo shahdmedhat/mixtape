@@ -6,9 +6,22 @@ const lyricsFinder = require("lyrics-finder")
 const SpotifyWebApi = require("spotify-web-api-node")
 
 const app = express()
+
 app.use(cors())
+//app.use(cors({origin: "*",}));
+
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
+
+// app.get('/products/:id', cors(), function (req, res, next) {
+//   res.json({msg: 'This is CORS-enabled for a Single Route'});
+// });
+
+// app.use(function(req, res, next) {
+//   res.header("Access-Control-Allow-Origin", "*");
+//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//   next();
+// });
 
 app.post("/refresh", (req, res) => { //rather than logging in every hour
   const refreshToken = req.body.refreshToken
@@ -60,22 +73,26 @@ app.get("/lyrics", async (req, res) => {
   res.json({ lyrics })
 })
 
-app.get("/playlist", (req, res) => {
-  const spotifyApi = new SpotifyWebApi({
-    redirectUri: process.env.REDIRECT_URI,
-    clientId: process.env.CLIENT_ID,
-    clientSecret: process.env.CLIENT_SECRET,
-  })
+// app.get("/playlist", (req, res) => {
+//   //res.header("Access-Control-Allow-Origin", "*");
+//   const spotifyApi = new SpotifyWebApi({
+//     redirectUri: process.env.REDIRECT_URI,
+//     clientId: process.env.CLIENT_ID,
+//     clientSecret: process.env.CLIENT_SECRET,
+//   })
   
-  spotifyApi.getPlaylist({ playlistId: req.query.playlistId })
-    .then(data => {
-      console.log(data);
+//   spotifyApi.getPlaylist({ playlistId: req.query.playlistId })
+//     .then(data => {
+//       res.json({data})
       
-    })
-    .catch(err => {
-      res.sendStatus(err)
-    })
+//     })
+//     .catch(err => {
+//       res.sendStatus(err)
+//     })
+// })
+
+
+//app.listen(3001) //run backend on localhost/3001
+app.listen(3001, () => {
+  console.log('Listening on port 3001');
 })
-
-
-app.listen(3001) //run backend on localhost/3001
