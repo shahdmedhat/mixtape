@@ -1,12 +1,18 @@
 
 :root {
-    --first: #E55D87;
-    --second: #5FC3E4;
+    --first: #1D2b64;
+    --second: #F8CDDA;
+    /* --first: #E55D87;
+    --second: #5FC3E4; */
   }
   
 .dashboard {
     background: linear-gradient(to bottom right, var(--first), var(--second));
     overflow-y: scroll;
+}
+
+.dashboard h2{
+    color: white;
 }
 
 .dashboard .expand-player{

@@ -48,7 +48,7 @@ export default function Recommendations(props) {
   
   
    useEffect(() => {
-    //console.log(topFive);
+    // console.log(topFive);
     var final=[]
     topFive.forEach(function (item) {
         final.push(item.id);
@@ -58,7 +58,7 @@ export default function Recommendations(props) {
     if (!accessToken) return; //don't query if no access token
     
     spotifyApi.getRecommendations({seed_tracks: final.toString()}).then((res) => {
-      //console.log(res.body);
+      console.log(res.body);
         setRec(
           res.body.tracks.map((track) => {
             const smallestAlbumImage = track.album.images.reduce(
@@ -86,7 +86,7 @@ export default function Recommendations(props) {
 
     useEffect(() => {
       setList(
-        rec.map((track) => <TrackDetails track={track} key={track.uri} chooseTrack={props.chooseTrack} />)
+        rec.map((track) => <TrackDetails track={track} key={track.uri} chooseTrack={props.chooseTrack} handleQueue={props.handleQueue} />)
       );
     }, [rec]);
 

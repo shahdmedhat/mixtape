@@ -50,17 +50,17 @@ export default function Likes(props) {
 
   useEffect(() => {
     setList(
-      likes.map((track) => <TrackDetails track={track} key={track.uri} chooseTrack={props.chooseTrack} />) //---------------
+      likes.map((track) => <TrackDetails track={track} key={track.uri} chooseTrack={props.chooseTrack} handleQueue={props.handleQueue} />) //---------------
     );
     
-    props.setTrackURIs(
-      likes.map((track)=> track.uri)
-    )
+    // props.setTrackURIs(
+    //   likes.map((track)=> track.uri)
+    // )
   }, [likes]);
 
   if (!accessToken) return null;
   return (
-    <div style={{ overflowY: 'scroll' , justifyContent: 'center' }}>
+    <div style={{ overflowY: 'scroll' , justifyContent: 'center'}}>
     {/* style={{ maxHeight: "50vh" }} */}
       {/* <Sidebar accessToken={accessToken} /> */}
       <Container

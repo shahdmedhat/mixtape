@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import TrackDetails from "./TrackDetails";
-import { Container } from "react-bootstrap";
+import { Container, Row, Card,Button } from "react-bootstrap";
 import SpotifyWebApi from "spotify-web-api-node";
 import { useLocation } from "react-router-dom";
 import "../css/SongList.css";
@@ -12,8 +12,17 @@ const spotifyApi = new SpotifyWebApi({
 
 export default function Playlists(props) {
   let location = useLocation();
-  const accessToken = location.state.accessToken; //printed sah
+  var accessToken=null;
+  if (location.state){
+    accessToken = location.state.accessToken; //printed sah
+
+  }
   //let chooseTrack = location.state.chooseTrack;
+  
+  if(accessToken ===null){
+    accessToken=props.accessToken;
+  }
+  
   const [list, setList] = useState([]);
   const [playlists, setPlaylists] = useState([]);
 
@@ -102,7 +111,27 @@ export default function Playlists(props) {
           <h1 style={{ textAlign: "center" }}> PLAYLISTS </h1>
           <br />
           {playlists.length !== 0 &&
+            
             playlists.map((playlist) => (
+            
+              // <Card
+              //   className="text-center"
+              //   border="primary"
+              //   style={{ width: "18rem" }}
+              // >
+              //   <Card.Img variant="top" src={playlist.albumUrl} />
+              //   <Card.Body>
+              //     <Card.Title> {playlist.title} </Card.Title>
+
+              //     <Button
+              //       variant="primary"
+              //       onClick={() => getPlaylistTracks(playlist.id, playlist.title)}
+              //     >
+              //       CHECK IT OUT
+              //     </Button>
+              //   </Card.Body>
+              // </Card>
+              
               <Container
               //className="centerTracks"
               // style={{ cursor: "pointer" }}

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import useAuth from "./useAuth";
 import Player from "./Player";
+import PlayerTest from "./PlayerTest";
 import TrackSearchResult from "./TrackSearchResult";
 import { Container, Form, Card, Button, Row } from "react-bootstrap";
 import SpotifyWebApi from "spotify-web-api-node";
@@ -66,7 +67,8 @@ export default function Dashboard({ props, code }) {
   const [isSad, showSad] = useState(false);
 
   const [trackURIs, setTrackURIs] = useState([]);
-
+  const [queue, setQueue] = useState([]);
+  
   let current = "";
   //const date = `${current.getDate()}/${current.getMonth()+1}/${current.getFullYear()}`;
   const [displayMessage, setDisplayMessage] = useState("");
@@ -76,7 +78,7 @@ export default function Dashboard({ props, code }) {
 
   const [firstColor, setFirstColor] = useState("");
   const [secondColor, setSecondColor] = useState("");
-
+  
   function handlePlayer() {
     if (player) {
       showPlayer(false);
@@ -144,6 +146,40 @@ export default function Dashboard({ props, code }) {
     setLyrics("");
   }
 
+  function handleQueue(track) {
+  
+    //console.log("track uris", trackURIs);
+    // if(trackURIs.length ===0){
+    //   console.log("track uris empty")
+    //   var list = [];
+    //   list.push(playingTrack?.uri, track.uri);
+    // }
+    // else{
+    //   var list = [...trackURIs];
+    //   list.push(track.uri);
+    // }
+    
+    var list = [...trackURIs];
+    list.push(playingTrack?.uri, track.uri);
+    
+    //list.push(track.uri);
+    //console.log(list);
+    //console.log(playingTrack);
+
+    // var list=[...queue];
+    // console.log(list);
+    //["spotify:track:5pSSEkT0963muzzIjsVkrs","spotify:track:2iA9swOmMhBUFdbflno6GE",]
+
+    setTrackURIs(list);
+    
+    var listx=[...queue]
+    listx.push(track.uri);
+    // setQueue(queue.push(track.uri));
+    setQueue(listx);
+    console.log("SONG ADDED TO QUEUE")
+    //console.log(queue); //[]???????
+  }
+
   useEffect(() => {
     if (!playingTrack) return;
 
@@ -157,6 +193,35 @@ export default function Dashboard({ props, code }) {
       .then((res) => {
         setLyrics(res.data.lyrics);
       });
+
+    spotifyApi.getMyCurrentPlaybackState().then(
+      function (data) {
+        //PLAYING IN PRIVATE USING PLAYER OBJECTTTTTT
+        if (data.body && data.body.is_playing) {
+          console.log("User is currently playing something!");
+          spotifyApi.getMyCurrentPlayingTrack().then(
+            function (data) {
+              console.log("Now playing: " + data.body.item.name);
+            },
+            function (err) {
+              console.log("Something went wrong!", err);
+            }
+          );
+        } else {
+          console.log("User is not playing anything, or doing so in private.");
+        }
+      },
+      function (err) {
+        console.log("Something went wrong!", err);
+      }
+    );
+
+    console.log(playingTrack.uri);
+    
+    // var list = [];
+    // list.push(playingTrack.uri);
+    // setTrackURIs(list);
+    
   }, [playingTrack]); //everytime playing track changes
 
   useEffect(() => {
@@ -245,6 +310,8 @@ export default function Dashboard({ props, code }) {
 
     setFirstColor("#FFFFFF");
     setSecondColor("#FFFFFF");
+    // setPlaylists(true);
+
   }, [accessToken]);
 
   useEffect(() => {
@@ -299,13 +366,13 @@ export default function Dashboard({ props, code }) {
   }, [search, accessToken]);
 
   return (
-    <div
-      style={{
-        overflowY: "scroll",
-        background: "linear-gradient(" + firstColor + "," + secondColor + ")",
-      }}
-    >
-      {/* <div className="dashboard"> */}
+    // <div
+    //   style={{
+    //     overflowY: "scroll",
+    //     background: "linear-gradient(" + firstColor + "," + secondColor + ")",
+    //   }}
+    // >
+    <div className="dashboard">
       <Sidebar
         accessToken={accessToken}
         setLikes={setLikes}
@@ -334,8 +401,9 @@ export default function Dashboard({ props, code }) {
         <br />
         {/* <br /> */}
 
-        {/* <h2>{displayMessage}</h2> */}
+        {/* <Playlists chooseTrack={chooseTrack} accessToken={accessToken}/> */}
 
+        {/* <h2>{displayMessage}</h2> */}
         {!isSad &&
           !isAcoustic &&
           !isHappy &&
@@ -450,11 +518,15 @@ export default function Dashboard({ props, code }) {
         )}
 
         {likes && searchResults.length === 0 && (
-          <Likes chooseTrack={chooseTrack} setTrackURIs={setTrackURIs} />
+          <Likes
+            chooseTrack={chooseTrack}
+            setTrackURIs={setTrackURIs}
+            handleQueue={handleQueue}
+          />
         )}
 
         {rec && searchResults.length === 0 && (
-          <Recommendations chooseTrack={chooseTrack} />
+          <Recommendations chooseTrack={chooseTrack} handleQueue={handleQueue}/>
         )}
 
         {topSongs && searchResults.length === 0 && (
@@ -510,7 +582,20 @@ export default function Dashboard({ props, code }) {
             onClick={handlePlayer}
             style={{ cursor: "pointer", float: "right" }}
           />
-          <Player accessToken={accessToken} trackUri={playingTrack?.uri} />
+
+          <Player
+            accessToken={accessToken}
+            trackUri={playingTrack?.uri}
+            trackURIs={trackURIs}
+            playingTrack={playingTrack}
+            setTrackURIs={setTrackURIs}
+            queue={queue}
+            setQueue={setQueue}
+            setPlayingTrack={setPlayingTrack}
+          />
+          
+          {/* <PlayerTest accessToken={accessToken} /> */}
+          
         </div>
 
         {/* {(likes || rec || topSongs || isHappy || isSad || isAcoustic)  && (
