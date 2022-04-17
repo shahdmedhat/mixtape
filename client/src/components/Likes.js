@@ -50,7 +50,7 @@ export default function Likes(props) {
 
   useEffect(() => {
     setList(
-      likes.map((track) => <TrackDetails track={track} key={track.uri} chooseTrack={props.chooseTrack} handleQueue={props.handleQueue} />) //---------------
+      likes.map((track) => <TrackDetails track={track} key={track.uri} chooseTrack={props.chooseTrack} handleQueue={props.handleQueue} setShowToast={props.setShowToast} />) //---------------
     );
     
     // props.setTrackURIs(

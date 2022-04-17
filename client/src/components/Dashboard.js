@@ -1,12 +1,21 @@
 import { useState, useEffect } from "react";
 import useAuth from "./useAuth";
 import Player from "./Player";
-import PlayerTest from "./PlayerTest";
 import TrackSearchResult from "./TrackSearchResult";
-import { Container, Form, Card, Button, Row } from "react-bootstrap";
+import {
+  Container,
+  Form,
+  Card,
+  Button,
+  Row,
+  Toast,
+  ToastContainer,
+} from "react-bootstrap";
 import SpotifyWebApi from "spotify-web-api-node";
 import axios from "axios";
 import Sidebar from "./Sidebar.jsx";
+//import Scrollbar from "./Scrollbar.jsx";
+import "../css/Scrollbar.css";
 
 import Likes from "./Likes";
 import Recommendations from "./Recommendations";
@@ -68,7 +77,7 @@ export default function Dashboard({ props, code }) {
 
   const [trackURIs, setTrackURIs] = useState([]);
   const [queue, setQueue] = useState([]);
-  
+
   let current = "";
   //const date = `${current.getDate()}/${current.getMonth()+1}/${current.getFullYear()}`;
   const [displayMessage, setDisplayMessage] = useState("");
@@ -78,7 +87,9 @@ export default function Dashboard({ props, code }) {
 
   const [firstColor, setFirstColor] = useState("");
   const [secondColor, setSecondColor] = useState("");
-  
+
+  const [showToast, setShowToast] = useState(false);
+
   function handlePlayer() {
     if (player) {
       showPlayer(false);
@@ -147,7 +158,6 @@ export default function Dashboard({ props, code }) {
   }
 
   function handleQueue(track) {
-  
     //console.log("track uris", trackURIs);
     // if(trackURIs.length ===0){
     //   console.log("track uris empty")
@@ -158,10 +168,10 @@ export default function Dashboard({ props, code }) {
     //   var list = [...trackURIs];
     //   list.push(track.uri);
     // }
-    
+
     var list = [...trackURIs];
     list.push(playingTrack?.uri, track.uri);
-    
+
     //list.push(track.uri);
     //console.log(list);
     //console.log(playingTrack);
@@ -171,12 +181,30 @@ export default function Dashboard({ props, code }) {
     //["spotify:track:5pSSEkT0963muzzIjsVkrs","spotify:track:2iA9swOmMhBUFdbflno6GE",]
 
     setTrackURIs(list);
+
+    var listx = [];
+    for (var k in queue) {
+      listx.concat(queue[k]);
+    }
     
-    var listx=[...queue]
-    listx.push(track.uri);
-    // setQueue(queue.push(track.uri));
+    console.log("before: ",listx);
+    listx.push(track);
+    console.log("after", listx);
+    //setQueue(queue.push(track.uri)); or concat?
+
     setQueue(listx);
-    console.log("SONG ADDED TO QUEUE")
+    
+    // if(!localStorage.getItem('queue')) {
+    //   setQueue(queue.concat(track));
+    //   localStorage.setItem('queue', listx);
+
+    // }
+    // else{
+    //   setQueue(localStorage.getItem('queue').concat(track));
+    // }
+    
+    console.log("SONG ADDED TO QUEUE");
+
     //console.log(queue); //[]???????
   }
 
@@ -217,11 +245,11 @@ export default function Dashboard({ props, code }) {
     );
 
     console.log(playingTrack.uri);
-    
+
     // var list = [];
     // list.push(playingTrack.uri);
     // setTrackURIs(list);
-    
+
   }, [playingTrack]); //everytime playing track changes
 
   useEffect(() => {
@@ -311,7 +339,6 @@ export default function Dashboard({ props, code }) {
     setFirstColor("#FFFFFF");
     setSecondColor("#FFFFFF");
     // setPlaylists(true);
-
   }, [accessToken]);
 
   useEffect(() => {
@@ -372,7 +399,10 @@ export default function Dashboard({ props, code }) {
     //     background: "linear-gradient(" + firstColor + "," + secondColor + ")",
     //   }}
     // >
+
     <div className="dashboard">
+      {/* <Scrollbar/> */}
+
       <Sidebar
         accessToken={accessToken}
         setLikes={setLikes}
@@ -399,6 +429,30 @@ export default function Dashboard({ props, code }) {
         />
 
         <br />
+
+        {showToast && (
+          <ToastContainer className="p-3" position={"middle-center"}>
+            <Toast
+              onClose={() => setShowToast(false)}
+              show={showToast}
+              delay={2000}
+              autohide
+              bg={'dark'}
+            >
+              <Toast.Header>
+                <img
+                  src="holder.js/20x20?text=%20"
+                  className="rounded me-2"
+                  alt=""
+                />
+                <strong className="me-auto">Notification</strong>
+                <small>just now</small>
+              </Toast.Header>
+              <Toast.Body style={{color: "white"}}>ADDED TO QUEUE</Toast.Body>
+            </Toast>
+          </ToastContainer>
+        )}
+
         {/* <br /> */}
 
         {/* <Playlists chooseTrack={chooseTrack} accessToken={accessToken}/> */}
@@ -518,27 +572,41 @@ export default function Dashboard({ props, code }) {
         )}
 
         {likes && searchResults.length === 0 && (
-          <Likes
-            chooseTrack={chooseTrack}
-            setTrackURIs={setTrackURIs}
-            handleQueue={handleQueue}
-          />
+          <div className="scrollbar scrollbar-lady-lips">
+            <Likes
+              chooseTrack={chooseTrack}
+              setTrackURIs={setTrackURIs}
+              handleQueue={handleQueue}
+              setShowToast={setShowToast}
+            />
+          </div>
         )}
 
         {rec && searchResults.length === 0 && (
-          <Recommendations chooseTrack={chooseTrack} handleQueue={handleQueue}/>
+          <div className="scrollbar scrollbar-primary">
+            <Recommendations
+              chooseTrack={chooseTrack}
+              handleQueue={handleQueue}
+            />
+          </div>
         )}
 
         {topSongs && searchResults.length === 0 && (
-          <TopSongs chooseTrack={chooseTrack} />
+          <div className="scrollbar scrollbar-primary">
+            <TopSongs chooseTrack={chooseTrack} />
+          </div>
         )}
 
         {topArtists && searchResults.length === 0 && (
-          <TopArtists chooseTrack={chooseTrack} />
+          <div className="scrollbar scrollbar-primary">
+            <TopArtists chooseTrack={chooseTrack} />
+          </div>
         )}
 
         {playlists && searchResults.length === 0 && (
-          <Playlists chooseTrack={chooseTrack} />
+          <div className="scrollbar scrollbar-primary">
+            <Playlists chooseTrack={chooseTrack} />
+          </div>
         )}
 
         <div
@@ -593,9 +661,8 @@ export default function Dashboard({ props, code }) {
             setQueue={setQueue}
             setPlayingTrack={setPlayingTrack}
           />
-          
+
           {/* <PlayerTest accessToken={accessToken} /> */}
-          
         </div>
 
         {/* {(likes || rec || topSongs || isHappy || isSad || isAcoustic)  && (
