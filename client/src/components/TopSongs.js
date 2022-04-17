@@ -51,7 +51,7 @@ export default function TopSongs(props) {
 
   useEffect(() => {
     setList(
-      topTracks.map((track) => <TrackDetails track={track} key={track.uri} chooseTrack={props.chooseTrack} />)
+      topTracks.map((track) => <TrackDetails track={track} key={track.uri} chooseTrack={props.chooseTrack} handleQueue={props.handleQueue} setShowToast={props.setShowToast} />)
     );
   }, [topTracks]);
 
@@ -63,9 +63,9 @@ export default function TopSongs(props) {
         className="d-flex flex-column py-2"
         // style={{ height: "100vh" }}
       >
-        <h1 style={{ textAlign: "center" }}> TOP SONGS</h1>
+        <h1 style={{ textAlign: "center" , color: "white" }}> TOP SONGS</h1>
 
-        <div className="centerTracks">{list}</div>
+        <div>{list}</div>
 
         {/* <div>
         <Player accessToken={accessToken} />

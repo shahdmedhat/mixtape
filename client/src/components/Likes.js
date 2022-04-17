@@ -67,10 +67,11 @@ export default function Likes(props) {
         className="d-flex flex-column py-2"
         //style={{ height: "100vh" }}
       >
-        <h1 style={{ textAlign: "center" }}> LIKES </h1>
+        <h1 style={{ textAlign: "center" , color: "white" }}> LIKED SONGS </h1>
 
-        <div className="centerTracks">{list}</div>
-
+        <div>{list}</div>
+        {/* className="centerTracks" */}
+        
       </Container>
     </div>
   );

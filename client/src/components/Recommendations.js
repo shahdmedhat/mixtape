@@ -86,7 +86,7 @@ export default function Recommendations(props) {
 
     useEffect(() => {
       setList(
-        rec.map((track) => <TrackDetails track={track} key={track.uri} chooseTrack={props.chooseTrack} handleQueue={props.handleQueue} />)
+        rec.map((track) => <TrackDetails track={track} key={track.uri} chooseTrack={props.chooseTrack} handleQueue={props.handleQueue} setShowToast={props.setShowToast} />)
       );
     }, [rec]);
 
@@ -99,9 +99,9 @@ export default function Recommendations(props) {
         className="d-flex flex-column py-2"
         // style={{ height: "100vh" }}
       >
-        <h1 style={{ textAlign: "center" }}> BASED ON YOUR TASTE... </h1>
+        <h1 style={{ textAlign: "center" , color: "white" }}> BASED ON YOUR TASTE... </h1>
 
-        <div className="centerTracks" >{list}</div>
+        <div>{list}</div>
       </Container>
     </div>
   );

@@ -62,9 +62,9 @@ export default function TopArtists(props) {
         className="d-flex flex-column py-2"
         // style={{ height: "100vh" }}
       >
-        <h1 style={{ textAlign: "center" }}> TOP ARTISTS</h1>
+        <h1 style={{ textAlign: "center" , color: "white" }}> TOP ARTISTS</h1>
 
-        <div className="centerTracks">{list}</div>
+        <div style={{color: "white"}}>{list}</div>
 
       </Container>
     </div>

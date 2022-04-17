@@ -1,7 +1,9 @@
 import React, { Component } from "react";
-import { Container, Button,Row } from "react-bootstrap";
+import { Container, Button, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+
+import "../css/TrackDetails.css";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
@@ -24,7 +26,7 @@ export default function TrackDetails(props) {
   }
 
   return (
-    <Container className="d-flex m-2 align-items-center">
+    <Container className="d-flex m-2 align-items-center" style={{backgroundColor: 'white', borderRadius: '20px'}}>
       <img
         src={track.albumUrl}
         style={{ height: "64px", width: "64px" }}
@@ -32,7 +34,6 @@ export default function TrackDetails(props) {
       />
 
       <div className="ml-3" style={{ cursor: "pointer" }} onClick={handlePlay}>
-        
         <div>{track.title}</div>
 
         <div>{track.artist}</div>
@@ -43,10 +44,26 @@ export default function TrackDetails(props) {
           Add To Queue
       </Button> */}
 
-    <Row>
-    <FontAwesomeIcon icon="fa-solid fa-circle-plus fa-2xl" onClick={addToQueue} style={{ cursor: "pointer", float: "right" }} />
+      <Row>
+        <FontAwesomeIcon
+          icon="fa-solid fa-circle-plus fa-2xl"
+          onClick={addToQueue}
+          style={{ cursor: "pointer", float: "right" }}
+        />
+      </Row>
 
-    </Row>
     </Container>
+    
+  //   <div class="songItem">
+  //   <span class="songName">{track.title}</span>
+  //   <span class="songName">{track.artist}</span>
+  //   <span class="songlistplay">
+  //     <span class="timestamp">
+  //       05:13 <i id="6" class="far songItemPlay fa-play-circle"></i>{" "}
+  //     </span>
+  //   </span>
+  // </div>
+    
+    
   );
 }

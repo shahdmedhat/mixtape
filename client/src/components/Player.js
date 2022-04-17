@@ -15,7 +15,7 @@ export default function Player({
   const [uri, setUri] = useState([]);
   //const [flag, setFlag] = useState(false);
 
-  useEffect(() => setPlay(true), [trackUri]); //everytime we choose a different track --[trackUri]
+  // useEffect(() => setPlay(true), [trackUri]); //everytime we choose a different track --[trackUri]
 
   useEffect(() => {
     // console.log("CURRENTLY PLAYING: ",trackUri);
@@ -45,8 +45,14 @@ export default function Player({
   }, [trackURIs]);
 
   useEffect(() => {
-    //console.log(trackUri);
+    console.log(trackUri);
+    
     setUri([trackUri]);
+
+    setTimeout(() => {
+      setPlay(true);
+    }, 2000);
+    
     setQueue([]);
   }, [trackUri]);
 
@@ -60,8 +66,7 @@ export default function Player({
     // console.log(queue);
     // setPlay(false);
     // setPlay(true);
-
-    setPlay(!play);
+      setPlay(!play);
   }, [uri]);
 
   if (!accessToken) return null;

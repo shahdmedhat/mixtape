@@ -179,7 +179,6 @@ export default function Dashboard({ props, code }) {
     // var list=[...queue];
     // console.log(list);
     //["spotify:track:5pSSEkT0963muzzIjsVkrs","spotify:track:2iA9swOmMhBUFdbflno6GE",]
-
     setTrackURIs(list);
 
     var listx = [];
@@ -187,12 +186,12 @@ export default function Dashboard({ props, code }) {
       listx.concat(queue[k]);
     }
     
-    console.log("before: ",listx);
+    // console.log("before: ",listx);
     listx.push(track);
-    console.log("after", listx);
+    console.log("listx: ", listx);
     //setQueue(queue.push(track.uri)); or concat?
 
-    setQueue(listx);
+    setQueue(listx); //only last track???????
     
     // if(!localStorage.getItem('queue')) {
     //   setQueue(queue.concat(track));
@@ -583,28 +582,32 @@ export default function Dashboard({ props, code }) {
         )}
 
         {rec && searchResults.length === 0 && (
-          <div className="scrollbar scrollbar-primary">
+          <div className="scrollbar scrollbar-lady-lips">
             <Recommendations
               chooseTrack={chooseTrack}
               handleQueue={handleQueue}
+              setShowToast={setShowToast}
             />
           </div>
         )}
 
         {topSongs && searchResults.length === 0 && (
-          <div className="scrollbar scrollbar-primary">
-            <TopSongs chooseTrack={chooseTrack} />
+          <div className="scrollbar scrollbar-lady-lips">
+            <TopSongs 
+              chooseTrack={chooseTrack}               
+              handleQueue={handleQueue}
+              setShowToast={setShowToast} />
           </div>
         )}
 
         {topArtists && searchResults.length === 0 && (
-          <div className="scrollbar scrollbar-primary">
+          <div className="scrollbar scrollbar-lady-lips">
             <TopArtists chooseTrack={chooseTrack} />
           </div>
         )}
 
         {playlists && searchResults.length === 0 && (
-          <div className="scrollbar scrollbar-primary">
+          <div className="scrollbar scrollbar-lady-lips">
             <Playlists chooseTrack={chooseTrack} />
           </div>
         )}
@@ -628,7 +631,8 @@ export default function Dashboard({ props, code }) {
             !topArtists &&
             !playlists &&
             player && (
-              <div
+
+              <div className="scrollbar scrollbar-lady-lips"
                 style={{
                   whiteSpace: "pre",
                   color: "white",
@@ -638,6 +642,7 @@ export default function Dashboard({ props, code }) {
                 {/* className="text-center" style={{ whiteSpace: "pre" }}*/}
                 {lyrics}
               </div>
+              
             )}
         </div>
 

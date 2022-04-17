@@ -108,7 +108,7 @@ export default function Playlists(props) {
           className="d-flex flex-column py-2"
           // style={{ height: "100vh" }}
         >
-          <h1 style={{ textAlign: "center" }}> PLAYLISTS </h1>
+          <h1 style={{ textAlign: "center" , color: "white" }}> PLAYLISTS </h1>
           <br />
           {playlists.length !== 0 &&
             
@@ -156,7 +156,7 @@ export default function Playlists(props) {
       {list.length !== 0 && (
         <Container className="d-flex flex-column py-2">
           <h1 style={{ textAlign: "center" }}> {playlistName} </h1>
-          <div className="centerTracks">{list}</div>
+          <div>{list}</div>
         </Container>
       )}
     </div>

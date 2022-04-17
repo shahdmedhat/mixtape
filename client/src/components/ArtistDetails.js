@@ -13,7 +13,7 @@ export default class ArtistDetails extends Component {
     return (      
       <Container
       className="d-flex m-2 align-items-center"
-      // style={{ cursor: "pointer" }}
+      style={{ justifyContent: "flex-start"}}
     >
       <img src={this.props.artist.artistUrl} style={{ height: "64px", width: "64px" }} alt="artistUrl" />
       <div className="ml-3">
