@@ -88,26 +88,32 @@ export default function Dashboard({ props, code }) {
   const [player, showPlayer] = useState(false);
   const [view, setView] = useState("");
 
-  const [firstColor, setFirstColor] = useState("");
-  const [secondColor, setSecondColor] = useState("");
+  const [firstColor, setFirstColor] = useState("#41295a");
+  const [secondColor, setSecondColor] = useState("#2F0743");
 
   const [showToast, setShowToast] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [playlistsInfo, setPlaylistsInfo] = useState([]); //get all playlists to show in modal
 
   const [trackToAddToPlaylist, setTrackToAddToPlaylist] = useState({});
-  const [addedToast, setAddedToast] = useState(false);
 
   const [play, setPlay] = useState(false);
   const [uri, setUri] = useState([]);
+
+  const [playerModal, showPlayerModal] = useState(false);
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     //if(queue.length===0){ //showNext
     setUri([playingTrack?.uri]);
     //}
-    setTimeout(() => {
-      setPlay(true);
-    }, 2000);
+
+    setPlay(true);
+
+    // setTimeout(() => {
+    //   setPlay(true);
+    // }, 2000);
+
     //setQueue([]); //not necessary?
   }, [playingTrack]);
 
@@ -116,52 +122,53 @@ export default function Dashboard({ props, code }) {
   }, [uri]);
 
   function handlePlayer() {
-    if (player) {
-      showPlayer(false);
-      switch (view) {
-        case "likes":
-          setLikes(true);
-          break;
-        case "rec":
-          setRec(true);
-          break;
-        case "artists":
-          setTopArtists(true);
-          break;
-        case "tracks":
-          setTopSongs(true);
-          break;
-        case "playlists":
-          setPlaylists(true);
-          break;
-        case "happy":
-          showHappy(true);
-          break;
-        case "sad":
-          showSad(true);
-          break;
-        case "acoustic":
-          showAcoustic(true);
-          break;
-      }
+    showPlayerModal(true);
+    // if (player) {
+    //   showPlayer(false);
+    //   switch (view) {
+    //     case "likes":
+    //       setLikes(true);
+    //       break;
+    //     case "rec":
+    //       setRec(true);
+    //       break;
+    //     case "artists":
+    //       setTopArtists(true);
+    //       break;
+    //     case "tracks":
+    //       setTopSongs(true);
+    //       break;
+    //     case "playlists":
+    //       setPlaylists(true);
+    //       break;
+    //     case "happy":
+    //       showHappy(true);
+    //       break;
+    //     case "sad":
+    //       showSad(true);
+    //       break;
+    //     case "acoustic":
+    //       showAcoustic(true);
+    //       break;
+    //   }
 
-      setFirstColor("#FFFFFF");
-      setSecondColor("#FFFFFF");
-    } else {
-      //expand
-      showPlayer(true);
-      setLikes(false);
-      setRec(false);
-      setTopSongs(false);
-      setTopArtists(false);
-      setPlaylists(false);
-      showHappy(false);
-      showAcoustic(false);
-      showSad(false);
+    //   setFirstColor("#FFFFFF");
+    //   setSecondColor("#FFFFFF");
+    // } else {
+    //   //expand
+    //   showPlayer(true);
+    //   setLikes(false);
+    //   setRec(false);
+    //   setTopSongs(false);
+    //   setTopArtists(false);
+    //   setPlaylists(false);
+    //   showHappy(false);
+    //   showAcoustic(false);
+    //   showSad(false);
 
-      setFirstColor("#dc2424");
-      setSecondColor("#4a569d");
-    }
+    //   setFirstColor("#dc2424");
+    //   setSecondColor("#4a569d");
+    // }
   }
 
   function currentTime() {
@@ -204,6 +211,7 @@ export default function Dashboard({ props, code }) {
     console.log("SONG ADDED TO QUEUE");
 
     //console.log(queue);
+    setMessage("ADDED TO QUEUE");
   }
 
   useEffect(() => {
@@ -222,12 +230,25 @@ export default function Dashboard({ props, code }) {
     );
 
     setShowModal(false);
-    setAddedToast(true);
+    setShowToast(true);
+    setMessage("ADDED TO PLAYLIST");
   }
 
   function addTrackToPlaylist(track) {
     console.log(track);
     setTrackToAddToPlaylist(track);
+  }
+
+  function addToLikes(id) {
+    spotifyApi.addToMySavedTracks([id])
+  .then(function(data) {
+    console.log('Added track!');
+  }, function(err) {
+    console.log('Something went wrong!', err);
+  });
+
+    setShowToast(true);
+    setMessage("ADDED TO LIKES");
   }
 
   useEffect(() => {
@@ -357,8 +378,8 @@ export default function Dashboard({ props, code }) {
         );
       });
 
-    setFirstColor("#FFFFFF");
-    setSecondColor("#FFFFFF");
+    // setFirstColor("#FFFFFF");
+    // setSecondColor("#FFFFFF");
     // setPlaylists(true);
 
     spotifyApi.getUserPlaylists().then((res) => {
@@ -394,6 +415,7 @@ export default function Dashboard({ props, code }) {
           setShowToast={setShowToast}
           setShowModal={setShowModal}
           addTrackToPlaylist={addTrackToPlaylist}
+          queue={queue}
         />
       ))
     );
@@ -408,6 +430,7 @@ export default function Dashboard({ props, code }) {
           setShowToast={setShowToast}
           setShowModal={setShowModal}
           addTrackToPlaylist={addTrackToPlaylist}
+          queue={queue}
         />
       ))
     );
@@ -422,6 +445,7 @@ export default function Dashboard({ props, code }) {
           setShowToast={setShowToast}
           setShowModal={setShowModal}
           addTrackToPlaylist={addTrackToPlaylist}
+          queue={queue}
         />
       ))
     );
@@ -552,31 +576,6 @@ export default function Dashboard({ props, code }) {
           </Modal>
         )}
 
-        {addedToast && (
-          <ToastContainer className="p-3" position={"middle-center"}>
-            <Toast
-              onClose={() => setAddedToast(false)}
-              show={addedToast}
-              delay={2000}
-              autohide
-              bg={"dark"}
-            >
-              <Toast.Header>
-                <img
-                  src="holder.js/20x20?text=%20"
-                  className="rounded me-2"
-                  alt=""
-                />
-                <strong className="me-auto">Notification</strong>
-                <small>just now</small>
-              </Toast.Header>
-              <Toast.Body style={{ color: "white" }}>
-                ADDED TO PLAYLIST
-              </Toast.Body>
-            </Toast>
-          </ToastContainer>
-        )}
-
         {showToast && (
           <ToastContainer className="p-3" position={"middle-center"}>
             <Toast
@@ -595,7 +594,7 @@ export default function Dashboard({ props, code }) {
                 <strong className="me-auto">Notification</strong>
                 <small>just now</small>
               </Toast.Header>
-              <Toast.Body style={{ color: "white" }}>ADDED TO QUEUE</Toast.Body>
+              <Toast.Body style={{ color: "white" }}>{message}</Toast.Body>
             </Toast>
           </ToastContainer>
         )}
@@ -728,6 +727,7 @@ export default function Dashboard({ props, code }) {
               setShowModal={setShowModal}
               addTrackToPlaylist={addTrackToPlaylist}
               queue={queue}
+              addToLikes={addToLikes}
             />
           </div>
         )}
@@ -738,6 +738,10 @@ export default function Dashboard({ props, code }) {
               chooseTrack={chooseTrack}
               handleQueue={handleQueue}
               setShowToast={setShowToast}
+              setShowModal={setShowModal}
+              addTrackToPlaylist={addTrackToPlaylist}
+              queue={queue}
+              addToLikes={addToLikes}
             />
           </div>
         )}
@@ -748,6 +752,9 @@ export default function Dashboard({ props, code }) {
               chooseTrack={chooseTrack}
               handleQueue={handleQueue}
               setShowToast={setShowToast}
+              setShowModal={setShowModal}
+              addTrackToPlaylist={addTrackToPlaylist}
+              queue={queue}
             />
           </div>
         )}
@@ -801,12 +808,12 @@ export default function Dashboard({ props, code }) {
         <div>
           {/* <FontAwesomeIcon icon="fa-shuffle" size="lg" inverse /> */}
           {/* style={{ width: "max-width" , left: "0" , right: "0" , position: "sticky" }} */}
-          <FontAwesomeIcon
+          {/* <FontAwesomeIcon
             icon="fa-solid fa-up-right-and-down-left-from-center"
             inverse
             onClick={handlePlayer}
             style={{ cursor: "pointer", float: "right" }}
-          />
+          /> */}
 
           {/* <Player
             accessToken={accessToken}
@@ -818,49 +825,60 @@ export default function Dashboard({ props, code }) {
             setQueue={setQueue}
             setPlayingTrack={setPlayingTrack}
           /> */}
-
-          {accessToken && (
-            <SpotifyPlayer
-              token={accessToken}
-              showSaveIcon
-              callback={(state) => {
-                //console.log(state.isPlaying);
-                if (!state.isPlaying && queue.length === 0) {
-                  setPlay(false);
-                  //console.log("DONE");
-                }
-
-                if (
-                  !state.isPlaying &&
-                  queue.length > 0 &&
-                  state.progressMs === 0
-                ) {
-                  console.log("AAAAAAAA");
-                  var uris = [];
-                  for (var k in queue) {
-                    uris.push(queue[k].uri);
+          <Row>
+            <Col xs={10}>        
+            {accessToken && (
+              <SpotifyPlayer
+                token={accessToken}
+                showSaveIcon
+                callback={(state) => {
+                  //console.log(state.isPlaying);
+                  if (!state.isPlaying && queue.length === 0) {
+                    setPlay(false);
+                    //console.log("DONE");
                   }
 
-                  setUri(uris);
-                  console.log(uris);
-                  let first = queue.shift();
-                  setPlayingTrack(first);
-                }
-              }}
-              play={play}
-              uris={uri}
-              styles={{
-                activeColor: "#0f0",
-                bgColor: "#333",
-                color: "#fff",
-                loaderColor: "#fff",
-                sliderColor: "#fff",
-                trackArtistColor: "#ccc",
-                trackNameColor: "#fff",
-                height: "60px",
-              }}
-            />
-          )}
+                  if (
+                    !state.isPlaying &&
+                    queue.length > 0 &&
+                    state.progressMs === 0
+                  ) {
+                    console.log("AAAAAAAA");
+                    var uris = [];
+                    for (var k in queue) {
+                      uris.push(queue[k].uri);
+                    }
+
+                    setUri(uris);
+                    console.log(uris);
+                    let first = queue.shift();
+                    setPlayingTrack(first);
+
+                    console.log(state.nextTracks);
+                  }
+                }}
+                play={play}
+                uris={uri}
+                styles={{
+                  activeColor: "#0f0",
+                  bgColor: "#333",
+                  color: "#fff",
+                  loaderColor: "#fff",
+                  sliderColor: "#fff",
+                  trackArtistColor: "#ccc",
+                  trackNameColor: "#fff",
+                  height: "60px",
+                }}
+              />
+            )}
+            </Col> 
+            
+            <Col>
+            <Button variant="success" size="lg" onClick={() => {handlePlayer()}}>
+              Show Lyrics
+            </Button>
+            </Col>
+          </Row>
           {/* <PlayerTest accessToken={accessToken} /> */}
         </div>
 
@@ -873,6 +891,33 @@ export default function Dashboard({ props, code }) {
             />
           </div>
         )} */}
+
+        {playerModal && (
+          <Modal
+            show={playerModal}
+            size='lg'
+            onHide={() => showPlayerModal(false)}
+            className="special_modal"
+          >
+            <Modal.Header closeButton closeVariant="white">
+              <Modal.Title>LYRICS</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <div
+                className="scrollbar scrollbar-lady-lips"
+                style={{
+                  whiteSpace: "pre",
+                  color: "white",
+                  textAlign: "center",
+                  fontSize: "21px",
+                  overflowY: "scroll",
+                }}
+              >
+                {lyrics}
+              </div>
+            </Modal.Body>
+          </Modal>
+        )}
       </Container>
     </div>
   );

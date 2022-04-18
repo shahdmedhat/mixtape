@@ -2,7 +2,8 @@
 :root {
     --first: #1D2b64;
     --second: #F8CDDA;
-
+    --x: #5f2c82;
+    --y: #49a09d;
 }
   
 .dashboard {
@@ -23,3 +24,9 @@
   .custom-scrollbars__content::-webkit-scrollbar {
     display: none;
   } */
+  
+  .special_modal .modal-content{
+    /* background: linear-gradient(to bottom right,  var(--x), var(--y)); */
+    background: rgb(60, 62, 77);
+    color: white
+ }  

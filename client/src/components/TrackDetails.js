@@ -41,9 +41,13 @@ export default function TrackDetails(props) {
 
       <div style={{fontSize: "24px"}}>
       <Container>
+      <FontAwesomeIcon icon="fa-solid fa-heart fa-10x" style={{ cursor: "pointer"}} 
+          onClick={() => {
+          props.addToLikes(track.uri.split(":")[2]);
+          }}/>
       <FontAwesomeIcon
           icon="fa-solid fa-circle-plus fa-10x"
-          style={{ cursor: "pointer"}}
+          style={{ cursor: "pointer" , marginLeft:"9px"}}
           // ,margin:"0px 0px auto auto"
           onClick={() => {
           props.setShowModal(true);
