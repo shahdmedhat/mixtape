@@ -10,11 +10,10 @@ export default function Player({
   trackUri,
   trackURIs,
 }) {
-  const [play, setPlay] = useState(false);
 
+  const [play, setPlay] = useState(false);
   const [uri, setUri] = useState([]);
   //const [flag, setFlag] = useState(false);
-
   // useEffect(() => setPlay(true), [trackUri]); //everytime we choose a different track --[trackUri]
 
   useEffect(() => {
@@ -46,13 +45,10 @@ export default function Player({
 
   useEffect(() => {
     console.log(trackUri);
-    
     setUri([trackUri]);
-
     setTimeout(() => {
       setPlay(true);
     }, 2000);
-    
     setQueue([]);
   }, [trackUri]);
 

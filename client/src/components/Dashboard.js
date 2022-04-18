@@ -10,6 +10,8 @@ import {
   Row,
   Toast,
   ToastContainer,
+  Modal,
+  Col,
 } from "react-bootstrap";
 import SpotifyWebApi from "spotify-web-api-node";
 import axios from "axios";
@@ -89,6 +91,11 @@ export default function Dashboard({ props, code }) {
   const [secondColor, setSecondColor] = useState("");
 
   const [showToast, setShowToast] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [playlistsInfo, setPlaylistsInfo] = useState([]); //get all playlists to show in modal
+
+  const [trackToAddToPlaylist, setTrackToAddToPlaylist] = useState({});
+  const [addedToast, setAddedToast] = useState(false);
 
   function handlePlayer() {
     if (player) {
@@ -158,53 +165,43 @@ export default function Dashboard({ props, code }) {
   }
 
   function handleQueue(track) {
-    //console.log("track uris", trackURIs);
-    // if(trackURIs.length ===0){
-    //   console.log("track uris empty")
-    //   var list = [];
-    //   list.push(playingTrack?.uri, track.uri);
-    // }
-    // else{
-    //   var list = [...trackURIs];
-    //   list.push(track.uri);
-    // }
-
     var list = [...trackURIs];
     list.push(playingTrack?.uri, track.uri);
-
-    //list.push(track.uri);
-    //console.log(list);
-    //console.log(playingTrack);
-
-    // var list=[...queue];
-    // console.log(list);
-    //["spotify:track:5pSSEkT0963muzzIjsVkrs","spotify:track:2iA9swOmMhBUFdbflno6GE",]
     setTrackURIs(list);
 
-    var listx = [];
-    for (var k in queue) {
-      listx.concat(queue[k]);
-    }
-    
-    // console.log("before: ",listx);
+    var listx = queue.slice();
+    // for (var k in queue) {
+    //   listx.concat(queue[k]);
+    // }
+
+    console.log("before: ", listx);
     listx.push(track);
-    console.log("listx: ", listx);
+    console.log("after: ", listx);
     //setQueue(queue.push(track.uri)); or concat?
 
     setQueue(listx); //only last track???????
-    
-    // if(!localStorage.getItem('queue')) {
-    //   setQueue(queue.concat(track));
-    //   localStorage.setItem('queue', listx);
-
-    // }
-    // else{
-    //   setQueue(localStorage.getItem('queue').concat(track));
-    // }
-    
     console.log("SONG ADDED TO QUEUE");
 
-    //console.log(queue); //[]???????
+    //console.log(queue);
+  }
+
+  function addToPlaylist(id) {
+    spotifyApi.addTracksToPlaylist(id, [trackToAddToPlaylist.uri]).then(
+      function (data) {
+        console.log("Added tracks to playlist!");
+      },
+      function (err) {
+        console.log("Something went wrong!", err);
+      }
+    );
+
+    setShowModal(false);
+    setAddedToast(true);
+  }
+
+  function addTrackToPlaylist(track) {
+    console.log(track);
+    setTrackToAddToPlaylist(track);
   }
 
   useEffect(() => {
@@ -248,7 +245,6 @@ export default function Dashboard({ props, code }) {
     // var list = [];
     // list.push(playingTrack.uri);
     // setTrackURIs(list);
-
   }, [playingTrack]); //everytime playing track changes
 
   useEffect(() => {
@@ -338,24 +334,45 @@ export default function Dashboard({ props, code }) {
     setFirstColor("#FFFFFF");
     setSecondColor("#FFFFFF");
     // setPlaylists(true);
+
+    spotifyApi.getUserPlaylists().then((res) => {
+      setPlaylistsInfo(
+        res.body.items.map((playlist) => {
+          const smallestAlbumImage = playlist.images.reduce(
+            (smallest, image) => {
+              if (image.height < smallest.height) return image;
+              return smallest;
+            },
+            playlist.images[0] //loop through images, if current.size < smallest -> update smallest
+          );
+          return {
+            title: playlist.name,
+            uri: playlist.uri,
+            albumUrl: smallestAlbumImage.url,
+            id: playlist.id.toString(),
+            href: playlist.tracks.href,
+          };
+        })
+      );
+    });
   }, [accessToken]);
 
   useEffect(() => {
     setHappyList(
       happy.map((track) => (
-        <TrackDetails track={track} key={track.uri} chooseTrack={chooseTrack} />
+        <TrackDetails track={track} key={track.uri} chooseTrack={chooseTrack} handleQueue={handleQueue} setShowToast={setShowToast} setShowModal={setShowModal} addTrackToPlaylist={addTrackToPlaylist} />
       ))
     );
 
     setAcousticList(
       acoustic.map((track) => (
-        <TrackDetails track={track} key={track.uri} chooseTrack={chooseTrack} />
+        <TrackDetails track={track} key={track.uri} chooseTrack={chooseTrack} handleQueue={handleQueue} setShowToast={setShowToast} setShowModal={setShowModal} addTrackToPlaylist={addTrackToPlaylist} />
       ))
     );
 
     setSadList(
       sad.map((track) => (
-        <TrackDetails track={track} key={track.uri} chooseTrack={chooseTrack} />
+        <TrackDetails track={track} key={track.uri} chooseTrack={chooseTrack} handleQueue={handleQueue} setShowToast={setShowToast} setShowModal={setShowModal} addTrackToPlaylist={addTrackToPlaylist} />
       ))
     );
   }, [happy, acoustic, sad]);
@@ -428,15 +445,71 @@ export default function Dashboard({ props, code }) {
         />
 
         <br />
+        {showModal && (
+          <Modal
+            {...props}
+            show={showModal}
+            onHide={() => setShowModal(false)}
+            size="lg"
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
+          >
+            <Modal.Header closeButton>
+              <Modal.Title id="contained-modal-title-vcenter">
+                Add To Playlist
+              </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              {/* <h4>Centered Modal</h4> */}
+              <Row>
+                {playlistsInfo.map((playlist) => (
+                  <div style={{borderRadius: '30px'}}>
+                    <img
+                      src={playlist.albumUrl}
+                      style={{
+                        height: "64px",
+                        width: "64px",
+                        //cursor: "pointer",
+                      }}
+                      alt="albumUrl"
+                      //onClick={() => getPlaylistTracks(playlist.id, playlist.title)}
+                    />
 
-        {showToast && (
+                    <div className="ml-3">
+                      <div>{playlist.title}</div>
+                    </div>
+
+                    <div
+                    // style={{ textAlign: "right", margin: "0px 0px 0px 10px" }}
+                    >
+                      <Button
+                        variant="success"
+                        onClick={() => {
+                          addToPlaylist(playlist.id);
+                        }}
+                      >
+                        Add To Playlist
+                      </Button>
+                    </div>
+                    <br />
+                  </div>
+                ))}
+              </Row>
+            </Modal.Body>
+            {/* <Modal.Footer>
+              <Button onClick={() => setShowModal(false)}>Close</Button>
+            </Modal.Footer> */}
+          </Modal>
+        )}
+
+        {addedToast && (
           <ToastContainer className="p-3" position={"middle-center"}>
             <Toast
-              onClose={() => setShowToast(false)}
-              show={showToast}
+              onClose={() => setAddedToast(false)}
+              show={addedToast}
               delay={2000}
               autohide
-              bg={'dark'}
+              bg={"dark"}
             >
               <Toast.Header>
                 <img
@@ -447,7 +520,32 @@ export default function Dashboard({ props, code }) {
                 <strong className="me-auto">Notification</strong>
                 <small>just now</small>
               </Toast.Header>
-              <Toast.Body style={{color: "white"}}>ADDED TO QUEUE</Toast.Body>
+              <Toast.Body style={{ color: "white" }}>
+                ADDED TO PLAYLIST
+              </Toast.Body>
+            </Toast>
+          </ToastContainer>
+        )}
+
+        {showToast && (
+          <ToastContainer className="p-3" position={"middle-center"}>
+            <Toast
+              onClose={() => setShowToast(false)}
+              show={showToast}
+              delay={2000}
+              autohide
+              bg={"dark"}
+            >
+              <Toast.Header>
+                <img
+                  src="holder.js/20x20?text=%20"
+                  className="rounded me-2"
+                  alt=""
+                />
+                <strong className="me-auto">Notification</strong>
+                <small>just now</small>
+              </Toast.Header>
+              <Toast.Body style={{ color: "white" }}>ADDED TO QUEUE</Toast.Body>
             </Toast>
           </ToastContainer>
         )}
@@ -544,28 +642,28 @@ export default function Dashboard({ props, code }) {
           )}
 
         {isHappy && searchResults.length === 0 && (
-          <div style={{ overflowY: "scroll" }}>
+          <div style={{ overflowY: "scroll", justifyContent: "center" }}>
             <Container className="d-flex flex-column py-2">
               {/* <h1 style={{ textAlign: "center" }}>HAPPY MIX</h1> */}
-              <div className="centerTracks">{happyList}</div>
+              <div>{happyList}</div>
             </Container>
           </div>
         )}
 
         {isAcoustic && searchResults.length === 0 && (
-          <div style={{ overflowY: "scroll" }}>
+          <div style={{ overflowY: "scroll", justifyContent: "center" }}>
             <Container className="d-flex flex-column py-2">
               {/* <h1 style={{ textAlign: "center" }}>ACOUSTIC</h1> */}
-              <div className="centerTracks">{acousticList}</div>
+              <div>{acousticList}</div>
             </Container>
           </div>
         )}
 
         {isSad && searchResults.length === 0 && (
-          <div style={{ overflowY: "scroll" }}>
+          <div style={{ overflowY: "scroll", justifyContent: "center" }}>
             <Container className="d-flex flex-column py-2">
               {/* <h1 style={{ textAlign: "center" }}>SAD</h1> */}
-              <div className="centerTracks">{sadList}</div>
+              <div>{sadList}</div>
             </Container>
           </div>
         )}
@@ -577,6 +675,8 @@ export default function Dashboard({ props, code }) {
               setTrackURIs={setTrackURIs}
               handleQueue={handleQueue}
               setShowToast={setShowToast}
+              setShowModal={setShowModal}
+              addTrackToPlaylist={addTrackToPlaylist}
             />
           </div>
         )}
@@ -593,10 +693,11 @@ export default function Dashboard({ props, code }) {
 
         {topSongs && searchResults.length === 0 && (
           <div className="scrollbar scrollbar-lady-lips">
-            <TopSongs 
-              chooseTrack={chooseTrack}               
+            <TopSongs
+              chooseTrack={chooseTrack}
               handleQueue={handleQueue}
-              setShowToast={setShowToast} />
+              setShowToast={setShowToast}
+            />
           </div>
         )}
 
@@ -631,18 +732,18 @@ export default function Dashboard({ props, code }) {
             !topArtists &&
             !playlists &&
             player && (
-
-              <div className="scrollbar scrollbar-lady-lips"
+              <div
+                className="scrollbar scrollbar-lady-lips"
                 style={{
                   whiteSpace: "pre",
                   color: "white",
                   textAlign: "center",
+                  fontSize: "22px",
                 }}
               >
                 {/* className="text-center" style={{ whiteSpace: "pre" }}*/}
                 {lyrics}
               </div>
-              
             )}
         </div>
 

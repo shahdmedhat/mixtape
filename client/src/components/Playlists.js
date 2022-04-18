@@ -144,7 +144,7 @@ export default function Playlists(props) {
                   onClick={() => getPlaylistTracks(playlist.id, playlist.title)}
                 />
                 <div className="ml-3">
-                  <div>{playlist.title}</div>
+                  <div style={{ color: "white" }}>{playlist.title}</div>
                   {/* <div className="text-muted">{this.props.track.artist}</div> */}
                 </div>
                 <br />
@@ -155,7 +155,7 @@ export default function Playlists(props) {
 
       {list.length !== 0 && (
         <Container className="d-flex flex-column py-2">
-          <h1 style={{ textAlign: "center" }}> {playlistName} </h1>
+          <h1 style={{ textAlign: "center" , color: "white"}}> {playlistName} </h1>
           <div>{list}</div>
         </Container>
       )}

@@ -34,23 +34,32 @@ export default function TrackDetails(props) {
       />
 
       <div className="ml-3" style={{ cursor: "pointer" }} onClick={handlePlay}>
-        <div>{track.title}</div>
-
+        <div style={{alignItems: "center"}}>{track.title}</div>
         <div>{track.artist}</div>
         {/* className="text-muted" */}
       </div>
 
-      {/* <Button variant="success" onClick={() => {addToQueue();}}>
-          Add To Queue
-      </Button> */}
-
-      <Row>
-        <FontAwesomeIcon
-          icon="fa-solid fa-circle-plus fa-2xl"
-          onClick={addToQueue}
-          style={{ cursor: "pointer", float: "right" }}
+      <div style={{fontSize: "24px"}}>
+      <Container>
+      <FontAwesomeIcon
+          icon="fa-solid fa-circle-plus fa-10x"
+          style={{ cursor: "pointer"}}
+          // ,margin:"0px 0px auto auto"
+          onClick={() => {
+          props.setShowModal(true);
+          props.addTrackToPlaylist(track);
+          }}
         />
-      </Row>
+      </Container>        
+      </div>
+      
+      {/* , justifyContent:"center", display:"flex", margin: "0px 0px 0px 0px" */}
+      <div style={{textAlign:"right", margin:"0px 0px 0px auto"}}>
+      
+      <Button variant="success" onClick={() => {addToQueue();}}>
+          Add To Queue
+      </Button>
+      </div>
 
     </Container>
     
