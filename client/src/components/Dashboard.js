@@ -36,6 +36,7 @@ import { fas } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { useLocation } from "react-router-dom"; //---------------
+import SpotifyPlayer from "react-spotify-web-playback";
 
 library.add(fas);
 
@@ -96,6 +97,23 @@ export default function Dashboard({ props, code }) {
 
   const [trackToAddToPlaylist, setTrackToAddToPlaylist] = useState({});
   const [addedToast, setAddedToast] = useState(false);
+
+  const [play, setPlay] = useState(false);
+  const [uri, setUri] = useState([]);
+
+  useEffect(() => {
+    //if(queue.length===0){ //showNext
+    setUri([playingTrack?.uri]);
+    //}
+    setTimeout(() => {
+      setPlay(true);
+    }, 2000);
+    //setQueue([]); //not necessary?
+  }, [playingTrack]);
+
+  useEffect(() => {
+    setPlay(!play);
+  }, [uri]);
 
   function handlePlayer() {
     if (player) {
@@ -164,26 +182,34 @@ export default function Dashboard({ props, code }) {
     setLyrics("");
   }
 
-  function handleQueue(track) {
-    var list = [...trackURIs];
-    list.push(playingTrack?.uri, track.uri);
-    setTrackURIs(list);
+  function handleQueue(track, q) {
+    // var list = [...trackURIs];
+    // list.push(track.uri);
+    // setTrackURIs(list);
 
-    var listx = queue.slice();
+    // console.log(list);
+    console.log(q);
+    let listx = q;
     // for (var k in queue) {
-    //   listx.concat(queue[k]);
+    //   listx.push(queue[k]);
     // }
 
     console.log("before: ", listx);
     listx.push(track);
     console.log("after: ", listx);
-    //setQueue(queue.push(track.uri)); or concat?
 
-    setQueue(listx); //only last track???????
+    // setQueue([...q].push(track));
+
+    setQueue(listx);
     console.log("SONG ADDED TO QUEUE");
 
     //console.log(queue);
   }
+
+  useEffect(() => {
+    console.log("QQQQQQQQQ");
+    console.log(queue); //STILL EMPTY??????
+  }, [queue]);
 
   function addToPlaylist(id) {
     spotifyApi.addTracksToPlaylist(id, [trackToAddToPlaylist.uri]).then(
@@ -360,19 +386,43 @@ export default function Dashboard({ props, code }) {
   useEffect(() => {
     setHappyList(
       happy.map((track) => (
-        <TrackDetails track={track} key={track.uri} chooseTrack={chooseTrack} handleQueue={handleQueue} setShowToast={setShowToast} setShowModal={setShowModal} addTrackToPlaylist={addTrackToPlaylist} />
+        <TrackDetails
+          track={track}
+          key={track.uri}
+          chooseTrack={chooseTrack}
+          handleQueue={handleQueue}
+          setShowToast={setShowToast}
+          setShowModal={setShowModal}
+          addTrackToPlaylist={addTrackToPlaylist}
+        />
       ))
     );
 
     setAcousticList(
       acoustic.map((track) => (
-        <TrackDetails track={track} key={track.uri} chooseTrack={chooseTrack} handleQueue={handleQueue} setShowToast={setShowToast} setShowModal={setShowModal} addTrackToPlaylist={addTrackToPlaylist} />
+        <TrackDetails
+          track={track}
+          key={track.uri}
+          chooseTrack={chooseTrack}
+          handleQueue={handleQueue}
+          setShowToast={setShowToast}
+          setShowModal={setShowModal}
+          addTrackToPlaylist={addTrackToPlaylist}
+        />
       ))
     );
 
     setSadList(
       sad.map((track) => (
-        <TrackDetails track={track} key={track.uri} chooseTrack={chooseTrack} handleQueue={handleQueue} setShowToast={setShowToast} setShowModal={setShowModal} addTrackToPlaylist={addTrackToPlaylist} />
+        <TrackDetails
+          track={track}
+          key={track.uri}
+          chooseTrack={chooseTrack}
+          handleQueue={handleQueue}
+          setShowToast={setShowToast}
+          setShowModal={setShowModal}
+          addTrackToPlaylist={addTrackToPlaylist}
+        />
       ))
     );
   }, [happy, acoustic, sad]);
@@ -463,7 +513,7 @@ export default function Dashboard({ props, code }) {
               {/* <h4>Centered Modal</h4> */}
               <Row>
                 {playlistsInfo.map((playlist) => (
-                  <div style={{borderRadius: '30px'}}>
+                  <div style={{ borderRadius: "30px" }}>
                     <img
                       src={playlist.albumUrl}
                       style={{
@@ -677,6 +727,7 @@ export default function Dashboard({ props, code }) {
               setShowToast={setShowToast}
               setShowModal={setShowModal}
               addTrackToPlaylist={addTrackToPlaylist}
+              queue={queue}
             />
           </div>
         )}
@@ -757,7 +808,7 @@ export default function Dashboard({ props, code }) {
             style={{ cursor: "pointer", float: "right" }}
           />
 
-          <Player
+          {/* <Player
             accessToken={accessToken}
             trackUri={playingTrack?.uri}
             trackURIs={trackURIs}
@@ -766,8 +817,50 @@ export default function Dashboard({ props, code }) {
             queue={queue}
             setQueue={setQueue}
             setPlayingTrack={setPlayingTrack}
-          />
+          /> */}
 
+          {accessToken && (
+            <SpotifyPlayer
+              token={accessToken}
+              showSaveIcon
+              callback={(state) => {
+                //console.log(state.isPlaying);
+                if (!state.isPlaying && queue.length === 0) {
+                  setPlay(false);
+                  //console.log("DONE");
+                }
+
+                if (
+                  !state.isPlaying &&
+                  queue.length > 0 &&
+                  state.progressMs === 0
+                ) {
+                  console.log("AAAAAAAA");
+                  var uris = [];
+                  for (var k in queue) {
+                    uris.push(queue[k].uri);
+                  }
+
+                  setUri(uris);
+                  console.log(uris);
+                  let first = queue.shift();
+                  setPlayingTrack(first);
+                }
+              }}
+              play={play}
+              uris={uri}
+              styles={{
+                activeColor: "#0f0",
+                bgColor: "#333",
+                color: "#fff",
+                loaderColor: "#fff",
+                sliderColor: "#fff",
+                trackArtistColor: "#ccc",
+                trackNameColor: "#fff",
+                height: "60px",
+              }}
+            />
+          )}
           {/* <PlayerTest accessToken={accessToken} /> */}
         </div>
 

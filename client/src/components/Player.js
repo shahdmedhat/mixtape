@@ -39,7 +39,6 @@ export default function Player({
     //     console.log("NOTHING BEING PLAYED")
     //   }
     // }
-
     console.log(trackUri);
   }, [trackURIs]);
 
@@ -49,7 +48,7 @@ export default function Player({
     setTimeout(() => {
       setPlay(true);
     }, 2000);
-    setQueue([]);
+    //setQueue([]); //not necessary?
   }, [trackUri]);
 
   // useEffect(() => {
@@ -81,15 +80,17 @@ export default function Player({
 
         if (!state.isPlaying && queue.length > 0 && state.progressMs === 0) {
           //setPlay(false);
-          var uris = [];
-          for (var k in queue) {
-            uris.push(queue[k].uri);
-          }
+          // var uris = [];
+          // for (var k in queue) {
+          //   uris.push(queue[k].uri);
+          // }
           // setUri(Array.from(queue));
-          setUri(uris);
+
+          setUri(queue);
 
           let first = queue.shift();
           setPlayingTrack(first);
+          
         }
 
         //console.log(state.progressMs);

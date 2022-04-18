@@ -21,7 +21,7 @@ export default function TrackDetails(props) {
 
   function addToQueue() {
     //navigate("/dashboard",{ state: {track: track , accessToken: location.state.accessToken} });
-    props.handleQueue(track);
+    props.handleQueue(track,props.queue);
     props.setShowToast(true);
   }
 
