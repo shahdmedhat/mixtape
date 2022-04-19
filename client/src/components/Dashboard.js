@@ -12,6 +12,7 @@ import {
   ToastContainer,
   Modal,
   Col,
+  Accordion,
 } from "react-bootstrap";
 import SpotifyWebApi from "spotify-web-api-node";
 import axios from "axios";
@@ -240,12 +241,14 @@ export default function Dashboard({ props, code }) {
   }
 
   function addToLikes(id) {
-    spotifyApi.addToMySavedTracks([id])
-  .then(function(data) {
-    console.log('Added track!');
-  }, function(err) {
-    console.log('Something went wrong!', err);
-  });
+    spotifyApi.addToMySavedTracks([id]).then(
+      function (data) {
+        console.log("Added track!");
+      },
+      function (err) {
+        console.log("Something went wrong!", err);
+      }
+    );
 
     setShowToast(true);
     setMessage("ADDED TO LIKES");
@@ -615,8 +618,8 @@ export default function Dashboard({ props, code }) {
           !player &&
           searchResults.length === 0 && (
             <div>
-              <h2> Genres can only define so much.</h2>
-              <h2>Go beyond with music for moods.</h2>
+              <h2>Based on your recent listening</h2>
+              {/* <h2>Go beyond with music for moods.</h2> */}
               <Row>
                 <Card
                   className="text-center"
@@ -625,10 +628,10 @@ export default function Dashboard({ props, code }) {
                 >
                   <Card.Img variant="top" src={happyImage} />
                   <Card.Body>
-                    <Card.Title>Happy Mix</Card.Title>
-                    <Card.Text>
+                    <Card.Title>Daily Mix</Card.Title>
+                    {/* <Card.Text>
                       Hits that are guaranteed to boost your mood!
-                    </Card.Text>
+                    </Card.Text> */}
                     <Button
                       variant="primary"
                       onClick={() => {
@@ -648,10 +651,10 @@ export default function Dashboard({ props, code }) {
                 >
                   <Card.Img variant="top" src={calmImage} />
                   <Card.Body>
-                    <Card.Title>Acoustic</Card.Title>
-                    <Card.Text>
+                    <Card.Title>Discover Weekly</Card.Title>
+                    {/* <Card.Text>
                       Keep calm with this mix of laidback tracks.
-                    </Card.Text>
+                    </Card.Text> */}
                     <Button
                       variant="primary"
                       onClick={() => {
@@ -664,7 +667,7 @@ export default function Dashboard({ props, code }) {
                   </Card.Body>
                 </Card>
 
-                <Card
+                {/* <Card
                   className="text-center"
                   border="primary"
                   style={{ width: "18rem" }}
@@ -685,7 +688,7 @@ export default function Dashboard({ props, code }) {
                       CHECK IT OUT
                     </Button>
                   </Card.Body>
-                </Card>
+                </Card> */}
               </Row>
             </div>
           )}
@@ -755,6 +758,7 @@ export default function Dashboard({ props, code }) {
               setShowModal={setShowModal}
               addTrackToPlaylist={addTrackToPlaylist}
               queue={queue}
+              addToLikes={addToLikes}
             />
           </div>
         )}
@@ -805,7 +809,7 @@ export default function Dashboard({ props, code }) {
             )}
         </div>
 
-        <div>
+        {/* <div style={{backgroundColor:"red"}}> */}
           {/* <FontAwesomeIcon icon="fa-shuffle" size="lg" inverse /> */}
           {/* style={{ width: "max-width" , left: "0" , right: "0" , position: "sticky" }} */}
           {/* <FontAwesomeIcon
@@ -825,62 +829,91 @@ export default function Dashboard({ props, code }) {
             setQueue={setQueue}
             setPlayingTrack={setPlayingTrack}
           /> */}
-          <Row>
-            <Col xs={10}>        
-            {accessToken && (
-              <SpotifyPlayer
-                token={accessToken}
-                showSaveIcon
-                callback={(state) => {
-                  //console.log(state.isPlaying);
-                  if (!state.isPlaying && queue.length === 0) {
-                    setPlay(false);
-                    //console.log("DONE");
-                  }
-
-                  if (
-                    !state.isPlaying &&
-                    queue.length > 0 &&
-                    state.progressMs === 0
-                  ) {
-                    console.log("AAAAAAAA");
-                    var uris = [];
-                    for (var k in queue) {
-                      uris.push(queue[k].uri);
+          <div>
+          
+          {accessToken && (
+                <SpotifyPlayer
+                  token={accessToken}
+                  showSaveIcon
+                  callback={(state) => {
+                    //console.log(state.isPlaying);
+                    if (!state.isPlaying && queue.length === 0) {
+                      setPlay(false);
+                      //console.log("DONE");
                     }
 
-                    setUri(uris);
-                    console.log(uris);
-                    let first = queue.shift();
-                    setPlayingTrack(first);
+                    if (
+                      !state.isPlaying &&
+                      queue.length > 0 &&
+                      state.progressMs === 0
+                    ) {
+                      console.log("AAAAAAAA");
+                      var uris = [];
+                      for (var k in queue) {
+                        uris.push(queue[k].uri);
+                      }
 
-                    console.log(state.nextTracks);
-                  }
+                      setUri(uris);
+                      console.log(uris);
+                      let first = queue.shift();
+                      setPlayingTrack(first);
+
+                      console.log(state.nextTracks);
+                    }
+                  }}
+                  play={play}
+                  uris={uri}
+                  styles={{
+                    activeColor: "#0f0",
+                    bgColor: "#3C3E4D",
+                    color: "#fff",
+                    loaderColor: "#fff",
+                    sliderColor: "#fff",
+                    trackArtistColor: "#ccc",
+                    trackNameColor: "#fff",
+                    height: "60px",
+                  }}
+                />
+              )}
+          
+          </div>
+          
+          <Accordion flush style={{backgroundColor: "red"}}>
+            <Accordion.Item eventKey="0">
+              <Accordion.Header>
+
+            {/* <Col>
+              <Button
+                variant="success"
+                size="lg"
+                onClick={() => {
+                  handlePlayer();
                 }}
-                play={play}
-                uris={uri}
-                styles={{
-                  activeColor: "#0f0",
-                  bgColor: "#333",
-                  color: "#fff",
-                  loaderColor: "#fff",
-                  sliderColor: "#fff",
-                  trackArtistColor: "#ccc",
-                  trackNameColor: "#fff",
-                  height: "60px",
+              >
+                Show Lyrics
+              </Button>
+            </Col> */}
+              <h6 style={{color:'rgb(60, 62, 77)'}}>PLAYER DETAILS</h6>
+              </Accordion.Header>
+              <Accordion.Body>
+              <div
+                className="scrollbar scrollbar-lady-lips"
+                style={{
+                  whiteSpace: "pre",
+                  color: "white",
+                  textAlign: "center",
+                  fontSize: "20px",
+                  overflowY: "scroll",
+                  backgroundColor:"rgb(60, 62, 77)"
                 }}
-              />
-            )}
-            </Col> 
-            
-            <Col>
-            <Button variant="success" size="lg" onClick={() => {handlePlayer()}}>
-              Show Lyrics
-            </Button>
-            </Col>
-          </Row>
+              >
+                {lyrics?lyrics:"Nothing is being played yet."}
+              </div>
+              </Accordion.Body>
+            </Accordion.Item>
+          </Accordion>
+
           {/* <PlayerTest accessToken={accessToken} /> */}
-        </div>
 
         {/* {(likes || rec || topSongs || isHappy || isSad || isAcoustic)  && (
           <div>
@@ -895,7 +928,7 @@ export default function Dashboard({ props, code }) {
         {playerModal && (
           <Modal
             show={playerModal}
-            size='lg'
+            size="lg"
             onHide={() => showPlayerModal(false)}
             className="special_modal"
           >

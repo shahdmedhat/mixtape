@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component,useState,useEffect } from "react";
 import { Container, Button, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
@@ -7,18 +7,34 @@ import "../css/TrackDetails.css";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
+import { far } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 library.add(fas);
+library.add(far);
 
 export default function TrackDetails(props) {
   let location = useLocation();
   let navigate = useNavigate();
+  
+  const [likeIcon, changeLikeIcon] = useState("fa-regular fa-heart fa-10x");
+  
   const track = props.track;
   function handlePlay() {
     //navigate("/dashboard",{ state: {track: track , accessToken: location.state.accessToken} });
     props.chooseTrack(track);
   }
 
+  useEffect(() => {
+    if (props.track.isLiked==="true"){
+      console.log("LIKED");
+      changeLikeIcon("fa-solid fa-heart fa-10x")
+    }
+    else{
+      changeLikeIcon("fa-regular fa-heart fa-10x")
+    }
+
+  }, []);
+  
   function addToQueue() {
     //navigate("/dashboard",{ state: {track: track , accessToken: location.state.accessToken} });
     props.handleQueue(track,props.queue);
@@ -41,9 +57,10 @@ export default function TrackDetails(props) {
 
       <div style={{fontSize: "24px"}}>
       <Container>
-      <FontAwesomeIcon icon="fa-solid fa-heart fa-10x" style={{ cursor: "pointer"}} 
+      <FontAwesomeIcon icon={likeIcon} style={{ cursor: "pointer"}} 
           onClick={() => {
           props.addToLikes(track.uri.split(":")[2]);
+          likeIcon==="fa-regular fa-heart fa-10x"? changeLikeIcon("fa-solid fa-heart fa-10x"): changeLikeIcon("fa-regular fa-heart fa-10x")
           }}/>
       <FontAwesomeIcon
           icon="fa-solid fa-circle-plus fa-10x"

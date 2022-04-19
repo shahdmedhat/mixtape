@@ -30,6 +30,22 @@ export default function TopSongs(props) {
       // console.log(res.body);
       setTopTracks(
         res.body.items.map((track) => {
+        
+          let isLiked=spotifyApi.containsMySavedTracks([track.uri.split(":")[2]])
+          .then(function(data) {
+            // An array is returned, where the first element corresponds to the first track ID in the query
+            var trackIsInYourMusic = data.body[0];
+            if (trackIsInYourMusic) {
+              console.log('Track was found in the user\'s Your Music library');
+              return "true";
+            } else {
+              console.log('Track was not found.');
+              return "false";
+            }
+          }, function(err) {
+            console.log('Something went wrong!', err);
+          });
+          
           const smallestAlbumImage = track.album.images.reduce(
             //reduce to one value
             (smallest, image) => {
@@ -43,6 +59,7 @@ export default function TopSongs(props) {
             title: track.name,
             uri: track.uri,
             albumUrl: smallestAlbumImage.url,
+            isLiked: isLiked
           };
         })
       );
@@ -51,7 +68,7 @@ export default function TopSongs(props) {
 
   useEffect(() => {
     setList(
-      topTracks.map((track) => <TrackDetails track={track} key={track.uri} chooseTrack={props.chooseTrack} handleQueue={props.handleQueue} setShowToast={props.setShowToast} setShowModal={props.setShowModal} addTrackToPlaylist={props.addTrackToPlaylist} queue={props.queue} />)
+      topTracks.map((track) => <TrackDetails track={track} key={track.uri} chooseTrack={props.chooseTrack} handleQueue={props.handleQueue} setShowToast={props.setShowToast} setShowModal={props.setShowModal} addTrackToPlaylist={props.addTrackToPlaylist} queue={props.queue} addToLikes={props.addToLikes} />)
     );
   }, [topTracks]);
 

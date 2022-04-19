@@ -20,6 +20,23 @@ export default function Likes(props) {
   const [likes, setLikes] = useState([]);
   //const[trackURIs,setTrackURIs] = useState([]);
 
+  function isInLikes(id){
+    spotifyApi.containsMySavedTracks([id])
+    .then(function(data) {
+  
+      // An array is returned, where the first element corresponds to the first track ID in the query
+      var trackIsInYourMusic = data.body[0];
+  
+      if (trackIsInYourMusic) {
+        console.log('Track was found in the user\'s Your Music library');
+      } else {
+        console.log('Track was not found.');
+      }
+    }, function(err) {
+      console.log('Something went wrong!', err);
+    });
+  }
+  
   useEffect(() => {
     if (!accessToken) return;
     spotifyApi.setAccessToken(accessToken);
@@ -30,6 +47,22 @@ export default function Likes(props) {
     spotifyApi.getMySavedTracks().then((res) => {
       setLikes(
         res.body.items.map((item) => {
+        
+          let isLiked=spotifyApi.containsMySavedTracks([item.track.uri.split(":")[2]])
+          .then(function(data) {
+            // An array is returned, where the first element corresponds to the first track ID in the query
+            var trackIsInYourMusic = data.body[0];
+            if (trackIsInYourMusic) {
+              console.log('Track was found in the user\'s Your Music library');
+              return true;
+            } else {
+              console.log('Track was not found.');
+              return false;
+            }
+          }, function(err) {
+            console.log('Something went wrong!', err);
+          });
+        
           const smallestAlbumImage = item.track.album.images.reduce(
             (smallest, image) => {
               if (image.height < smallest.height) return image;
@@ -42,6 +75,7 @@ export default function Likes(props) {
             title: item.track.name,
             uri: item.track.uri,
             albumUrl: smallestAlbumImage.url,
+            isLiked: isLiked
           };
         })
       );
