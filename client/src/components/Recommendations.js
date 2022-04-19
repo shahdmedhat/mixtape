@@ -61,6 +61,22 @@ export default function Recommendations(props) {
       console.log(res.body);
         setRec(
           res.body.tracks.map((track) => {
+          
+            const isLiked=spotifyApi.containsMySavedTracks([track.uri.split(":")[2]])
+            .then(function(data) {
+              // An array is returned, where the first element corresponds to the first track ID in the query
+              var trackIsInYourMusic = data.body[0];
+              if (trackIsInYourMusic) {
+                //console.log('Track was found in the user\'s Your Music library');
+                return true;
+              } else {
+                //console.log('Track was not found.');
+                return false;
+              }
+            }, function(err) {
+              console.log('Something went wrong!', err);
+            });
+          
             const smallestAlbumImage = track.album.images.reduce(
               (smallest, image) => {
                 if (image.height < smallest.height) return image;
@@ -73,6 +89,7 @@ export default function Recommendations(props) {
               title: track.name,
               uri: track.uri,
               albumUrl: smallestAlbumImage.url,
+              isLiked: isLiked
             };
           })
         );
@@ -86,7 +103,7 @@ export default function Recommendations(props) {
 
     useEffect(() => {
       setList(
-        rec.map((track) => <TrackDetails track={track} key={track.uri} chooseTrack={props.chooseTrack} handleQueue={props.handleQueue} setShowToast={props.setShowToast} setShowModal={props.setShowModal} addTrackToPlaylist={props.addTrackToPlaylist} queue={props.queue} addToLikes={props.addToLikes} />)
+        rec.map((track) => <TrackDetails track={track} key={track.uri} chooseTrack={props.chooseTrack} handleQueue={props.handleQueue} setShowToast={props.setShowToast} setShowModal={props.setShowModal} addTrackToPlaylist={props.addTrackToPlaylist} queue={props.queue} addToLikes={props.addToLikes} removeFromLikes={props.removeFromLikes} />)
       );
     }, [rec]);
 

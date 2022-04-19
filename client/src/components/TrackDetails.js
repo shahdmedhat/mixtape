@@ -25,13 +25,17 @@ export default function TrackDetails(props) {
   }
 
   useEffect(() => {
-    if (props.track.isLiked==="true"){
-      console.log("LIKED");
-      changeLikeIcon("fa-solid fa-heart fa-10x")
-    }
-    else{
-      changeLikeIcon("fa-regular fa-heart fa-10x")
-    }
+    //console.log(props.track);
+    track.isLiked.then( result => {
+      if(result){
+        changeLikeIcon("fa-solid fa-heart fa-10x")
+      }
+      else{
+        changeLikeIcon("fa-regular fa-heart fa-10x")
+      }
+     }, function(error) {
+      console.log("error")
+     });
 
   }, []);
   
@@ -59,8 +63,15 @@ export default function TrackDetails(props) {
       <Container>
       <FontAwesomeIcon icon={likeIcon} style={{ cursor: "pointer"}} 
           onClick={() => {
-          props.addToLikes(track.uri.split(":")[2]);
-          likeIcon==="fa-regular fa-heart fa-10x"? changeLikeIcon("fa-solid fa-heart fa-10x"): changeLikeIcon("fa-regular fa-heart fa-10x")
+          if(likeIcon==="fa-regular fa-heart fa-10x"){
+            props.addToLikes(track.uri.split(":")[2]);
+            changeLikeIcon("fa-solid fa-heart fa-10x");
+          }
+          else{
+            props.removeFromLikes(track.uri.split(":")[2]);
+            changeLikeIcon("fa-regular fa-heart fa-10x")
+          }
+          //likeIcon==="fa-regular fa-heart fa-10x"? changeLikeIcon("fa-solid fa-heart fa-10x"): changeLikeIcon("fa-regular fa-heart fa-10x")
           }}/>
       <FontAwesomeIcon
           icon="fa-solid fa-circle-plus fa-10x"

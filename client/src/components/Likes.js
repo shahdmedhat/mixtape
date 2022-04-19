@@ -18,25 +18,10 @@ export default function Likes(props) {
   //let chooseTrack = location.state.chooseTrack;
   const [list, setList] = useState([]);
   const [likes, setLikes] = useState([]);
+
+  //const [temp, setTemp] = useState("");
   //const[trackURIs,setTrackURIs] = useState([]);
 
-  function isInLikes(id){
-    spotifyApi.containsMySavedTracks([id])
-    .then(function(data) {
-  
-      // An array is returned, where the first element corresponds to the first track ID in the query
-      var trackIsInYourMusic = data.body[0];
-  
-      if (trackIsInYourMusic) {
-        console.log('Track was found in the user\'s Your Music library');
-      } else {
-        console.log('Track was not found.');
-      }
-    }, function(err) {
-      console.log('Something went wrong!', err);
-    });
-  }
-  
   useEffect(() => {
     if (!accessToken) return;
     spotifyApi.setAccessToken(accessToken);
@@ -47,22 +32,26 @@ export default function Likes(props) {
     spotifyApi.getMySavedTracks().then((res) => {
       setLikes(
         res.body.items.map((item) => {
-        
-          let isLiked=spotifyApi.containsMySavedTracks([item.track.uri.split(":")[2]])
-          .then(function(data) {
-            // An array is returned, where the first element corresponds to the first track ID in the query
-            var trackIsInYourMusic = data.body[0];
-            if (trackIsInYourMusic) {
-              console.log('Track was found in the user\'s Your Music library');
-              return true;
-            } else {
-              console.log('Track was not found.');
-              return false;
-            }
-          }, function(err) {
-            console.log('Something went wrong!', err);
-          });
-        
+          const isLiked = spotifyApi.containsMySavedTracks([item.track.uri.split(":")[2]])
+            .then(
+              function (data) {
+                // An array is returned, where the first element corresponds to the first track ID in the query
+                var trackIsInYourMusic = data.body[0];
+                if (trackIsInYourMusic) {
+                  //console.log("Track was found in the user's Your Music library");
+                  //setTemp("true");
+                  return true;
+                } else {
+                  //console.log("Track was not found.");
+                  //setTemp("false");
+                  return false;
+                }
+              },
+              function (err) {
+                console.log("Something went wrong!", err);
+              }
+            );
+
           const smallestAlbumImage = item.track.album.images.reduce(
             (smallest, image) => {
               if (image.height < smallest.height) return image;
@@ -75,18 +64,24 @@ export default function Likes(props) {
             title: item.track.name,
             uri: item.track.uri,
             albumUrl: smallestAlbumImage.url,
-            isLiked: isLiked
+            isLiked: isLiked,
           };
         })
       );
     });
-  }, [accessToken]);
+  }, [accessToken,props.addToLikes,props.removeFromLikes]);
 
   useEffect(() => {
     setList(
-      likes.map((track) => <TrackDetails track={track} key={track.uri} chooseTrack={props.chooseTrack} handleQueue={props.handleQueue} setShowToast={props.setShowToast} setShowModal={props.setShowModal} addTrackToPlaylist={props.addTrackToPlaylist} queue={props.queue} addToLikes={props.addToLikes} />) //---------------
+      likes.map((track) => (
+        <TrackDetails track={track} key={track.uri} chooseTrack={props.chooseTrack}
+          handleQueue={props.handleQueue} setShowToast={props.setShowToast} setShowModal={props.setShowModal}
+          addTrackToPlaylist={props.addTrackToPlaylist} queue={props.queue} addToLikes={props.addToLikes}
+          removeFromLikes={props.removeFromLikes}
+        />
+      )) //---------------
     );
-    
+
     // props.setTrackURIs(
     //   likes.map((track)=> track.uri)
     // )
@@ -94,18 +89,17 @@ export default function Likes(props) {
 
   if (!accessToken) return null;
   return (
-    <div style={{ overflowY: 'scroll' , justifyContent: 'center'}}>
-    {/* style={{ maxHeight: "50vh" }} */}
+    <div style={{ overflowY: "scroll", justifyContent: "center" }}>
+      {/* style={{ maxHeight: "50vh" }} */}
       {/* <Sidebar accessToken={accessToken} /> */}
       <Container
         className="d-flex flex-column py-2"
         //style={{ height: "100vh" }}
       >
-        <h1 style={{ textAlign: "center" , color: "white" }}> LIKED SONGS </h1>
+        <h1 style={{ textAlign: "center", color: "white" }}> LIKED SONGS </h1>
 
         <div>{list}</div>
         {/* className="centerTracks" */}
-        
       </Container>
     </div>
   );

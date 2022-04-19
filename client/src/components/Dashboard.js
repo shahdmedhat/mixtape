@@ -216,8 +216,7 @@ export default function Dashboard({ props, code }) {
   }
 
   useEffect(() => {
-    console.log("QQQQQQQQQ");
-    console.log(queue); //STILL EMPTY??????
+    console.log("QUEUE:" , queue);
   }, [queue]);
 
   function addToPlaylist(id) {
@@ -254,6 +253,20 @@ export default function Dashboard({ props, code }) {
     setMessage("ADDED TO LIKES");
   }
 
+  function removeFromLikes(id) {
+    spotifyApi.removeFromMySavedTracks([id]).then(
+      function (data) {
+        console.log("Removed!");
+      },
+      function (err) {
+        console.log("Something went wrong!", err);
+      }
+    );
+
+    setShowToast(true);
+    setMessage("REMOVED FROM LIKES");
+  }
+  
   useEffect(() => {
     if (!playingTrack) return;
 
@@ -731,6 +744,7 @@ export default function Dashboard({ props, code }) {
               addTrackToPlaylist={addTrackToPlaylist}
               queue={queue}
               addToLikes={addToLikes}
+              removeFromLikes={removeFromLikes}
             />
           </div>
         )}
@@ -745,6 +759,7 @@ export default function Dashboard({ props, code }) {
               addTrackToPlaylist={addTrackToPlaylist}
               queue={queue}
               addToLikes={addToLikes}
+              removeFromLikes={removeFromLikes}
             />
           </div>
         )}
@@ -759,6 +774,7 @@ export default function Dashboard({ props, code }) {
               addTrackToPlaylist={addTrackToPlaylist}
               queue={queue}
               addToLikes={addToLikes}
+              removeFromLikes={removeFromLikes}
             />
           </div>
         )}
@@ -810,16 +826,16 @@ export default function Dashboard({ props, code }) {
         </div>
 
         {/* <div style={{backgroundColor:"red"}}> */}
-          {/* <FontAwesomeIcon icon="fa-shuffle" size="lg" inverse /> */}
-          {/* style={{ width: "max-width" , left: "0" , right: "0" , position: "sticky" }} */}
-          {/* <FontAwesomeIcon
+        {/* <FontAwesomeIcon icon="fa-shuffle" size="lg" inverse /> */}
+        {/* style={{ width: "max-width" , left: "0" , right: "0" , position: "sticky" }} */}
+        {/* <FontAwesomeIcon
             icon="fa-solid fa-up-right-and-down-left-from-center"
             inverse
             onClick={handlePlayer}
             style={{ cursor: "pointer", float: "right" }}
           /> */}
 
-          {/* <Player
+        {/* <Player
             accessToken={accessToken}
             trackUri={playingTrack?.uri}
             trackURIs={trackURIs}
@@ -829,60 +845,57 @@ export default function Dashboard({ props, code }) {
             setQueue={setQueue}
             setPlayingTrack={setPlayingTrack}
           /> */}
-          <div>
-          
+        <div>
           {accessToken && (
-                <SpotifyPlayer
-                  token={accessToken}
-                  showSaveIcon
-                  callback={(state) => {
-                    //console.log(state.isPlaying);
-                    if (!state.isPlaying && queue.length === 0) {
-                      setPlay(false);
-                      //console.log("DONE");
-                    }
+            <SpotifyPlayer
+              token={accessToken}
+              showSaveIcon
+              callback={(state) => {
+                //console.log(state.isPlaying);
+                if (!state.isPlaying && queue.length === 0) {
+                  setPlay(false);
+                  //console.log("DONE");
+                }
 
-                    if (
-                      !state.isPlaying &&
-                      queue.length > 0 &&
-                      state.progressMs === 0
-                    ) {
-                      console.log("AAAAAAAA");
-                      var uris = [];
-                      for (var k in queue) {
-                        uris.push(queue[k].uri);
-                      }
+                if (
+                  !state.isPlaying &&
+                  queue.length > 0 &&
+                  state.progressMs === 0
+                ) {
+                  console.log("AAAAAAAA");
+                  var uris = [];
+                  for (var k in queue) {
+                    uris.push(queue[k].uri);
+                  }
 
-                      setUri(uris);
-                      console.log(uris);
-                      let first = queue.shift();
-                      setPlayingTrack(first);
+                  setUri(uris);
+                  console.log(uris);
+                  let first = queue.shift();
+                  setPlayingTrack(first);
 
-                      console.log(state.nextTracks);
-                    }
-                  }}
-                  play={play}
-                  uris={uri}
-                  styles={{
-                    activeColor: "#0f0",
-                    bgColor: "#3C3E4D",
-                    color: "#fff",
-                    loaderColor: "#fff",
-                    sliderColor: "#fff",
-                    trackArtistColor: "#ccc",
-                    trackNameColor: "#fff",
-                    height: "60px",
-                  }}
-                />
-              )}
-          
-          </div>
-          
-          <Accordion flush style={{backgroundColor: "red"}}>
-            <Accordion.Item eventKey="0">
-              <Accordion.Header>
+                  console.log(state.nextTracks);
+                }
+              }}
+              play={play}
+              uris={uri}
+              styles={{
+                activeColor: "#0f0",
+                bgColor: "#3C3E4D",
+                color: "#fff",
+                loaderColor: "#fff",
+                sliderColor: "#fff",
+                trackArtistColor: "#ccc",
+                trackNameColor: "#fff",
+                height: "60px",
+              }}
+            />
+          )}
+        </div>
 
-            {/* <Col>
+        <Accordion flush style={{ backgroundColor: "red" }}>
+          <Accordion.Item eventKey="0">
+            <Accordion.Header>
+              {/* <Col>
               <Button
                 variant="success"
                 size="lg"
@@ -893,9 +906,9 @@ export default function Dashboard({ props, code }) {
                 Show Lyrics
               </Button>
             </Col> */}
-              <h6 style={{color:'rgb(60, 62, 77)'}}>PLAYER DETAILS</h6>
-              </Accordion.Header>
-              <Accordion.Body>
+              <h6 style={{ color: "rgb(60, 62, 77)" }}>PLAYER DETAILS</h6>
+            </Accordion.Header>
+            <Accordion.Body>
               <div
                 className="scrollbar scrollbar-lady-lips"
                 style={{
@@ -904,16 +917,16 @@ export default function Dashboard({ props, code }) {
                   textAlign: "center",
                   fontSize: "20px",
                   overflowY: "scroll",
-                  backgroundColor:"rgb(60, 62, 77)"
+                  backgroundColor: "rgb(60, 62, 77)",
                 }}
               >
-                {lyrics?lyrics:"Nothing is being played yet."}
+                {lyrics ? lyrics : "Nothing is being played yet."}
               </div>
-              </Accordion.Body>
-            </Accordion.Item>
-          </Accordion>
+            </Accordion.Body>
+          </Accordion.Item>
+        </Accordion>
 
-          {/* <PlayerTest accessToken={accessToken} /> */}
+        {/* <PlayerTest accessToken={accessToken} /> */}
 
         {/* {(likes || rec || topSongs || isHappy || isSad || isAcoustic)  && (
           <div>
