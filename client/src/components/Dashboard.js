@@ -221,6 +221,7 @@ export default function Dashboard({ props, code }) {
   }, [queue]);
 
   function addToPlaylist(id) {
+    //console.log(trackToAddToPlaylist);
     spotifyApi.addTracksToPlaylist(id, [trackToAddToPlaylist.uri]).then(
       function (data) {
         console.log("Added tracks to playlist!");
@@ -234,9 +235,38 @@ export default function Dashboard({ props, code }) {
     setShowToast(true);
     setMessage("ADDED TO PLAYLIST");
   }
+  
+  function createPlaylist() {
+    spotifyApi.createPlaylist('My playlist', {'public': true })
+    .then(function(data) {
+      spotifyApi.uploadCustomPlaylistCoverImage(data.body.id, trackToAddToPlaylist.albumUrl)
+      .then(function(data) {
+         console.log('Playlsit cover image uploaded!');
+      }, function(err) {
+        console.log('Something went wrong!', err);
+      });
+      
+      spotifyApi.addTracksToPlaylist(data.body.id, [trackToAddToPlaylist.uri]).then(
+        function (data) {
+          console.log("Added tracks to playlist!");
+        },
+        function (err) {
+          console.log("Something went wrong!", err);
+        }
+      );
+      
+      console.log('Created playlist!');
+    }, function(err) {
+      console.log('Something went wrong!', err);
+    });
+    
+    setShowModal(false);
+    setShowToast(true);
+    setMessage("PLAYLIST CREATED");
+  }
 
   function addTrackToPlaylist(track) {
-    console.log(track);
+    //console.log(track);
     setTrackToAddToPlaylist(track);
   }
 
@@ -324,21 +354,26 @@ export default function Dashboard({ props, code }) {
         //console.log(res.body);
         setHappy(
           res.body.tracks.map((track) => {
-            const isLiked = spotifyApi
-              .containsMySavedTracks([track.uri.split(":")[2]])
-              .then(
-                function (data) {
-                  var trackIsInYourMusic = data.body[0];
-                  if (trackIsInYourMusic) {
-                    return true;
-                  } else {
-                    return false;
-                  }
-                },
-                function (err) {
-                  console.log("Something went wrong!", err);
-                }
-              );
+            // const isLiked = spotifyApi
+            //   .containsMySavedTracks([track.uri.split(":")[2]])
+            //   .then(
+            //     function (data) {
+            //       var trackIsInYourMusic = data.body[0];
+            //       if (trackIsInYourMusic) {
+            //         return true;
+            //       } else {
+            //         return false;
+            //       }
+            //     },
+            //     function (err) {
+            //       console.log("Something went wrong!", err);
+            //     }
+            //   );
+            
+            const isLiked = new Promise((resolve, reject) => {
+              return('foo');
+            });
+            
             const smallestAlbumImage = track.album.images.reduce(
               (smallest, image) => {
                 if (image.height < smallest.height) return image;
@@ -377,21 +412,26 @@ export default function Dashboard({ props, code }) {
         //console.log(res.body);
         setAcoustic(
           res.body.tracks.map((track) => {
-            const isLiked = spotifyApi
-              .containsMySavedTracks([track.uri.split(":")[2]])
-              .then(
-                function (data) {
-                  var trackIsInYourMusic = data.body[0];
-                  if (trackIsInYourMusic) {
-                    return true;
-                  } else {
-                    return false;
-                  }
-                },
-                function (err) {
-                  console.log("Something went wrong!", err);
-                }
-              );
+            // const isLiked = spotifyApi
+            //   .containsMySavedTracks([track.uri.split(":")[2]])
+            //   .then(
+            //     function (data) {
+            //       var trackIsInYourMusic = data.body[0];
+            //       if (trackIsInYourMusic) {
+            //         return true;
+            //       } else {
+            //         return false;
+            //       }
+            //     },
+            //     function (err) {
+            //       console.log("Something went wrong!", err);
+            //     }
+            //   );
+            
+            const isLiked = new Promise((resolve, reject) => {
+              return('foo');
+            });
+            
             const smallestAlbumImage = track.album.images.reduce(
               (smallest, image) => {
                 if (image.height < smallest.height) return image;
@@ -633,6 +673,12 @@ export default function Dashboard({ props, code }) {
             </Modal.Header>
             <Modal.Body>
               {/* <h4>Centered Modal</h4> */}
+              <Button  onClick={() => {createPlaylist()}}>
+                  Create Playlist
+              </Button>
+              
+              <br/> <br/> 
+              
               <Row>
                 {playlistsInfo.map((playlist) => (
                   <div style={{ borderRadius: "30px" }}>

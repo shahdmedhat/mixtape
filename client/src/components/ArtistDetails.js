@@ -16,8 +16,8 @@ export default class ArtistDetails extends Component {
       style={{ justifyContent: "flex-start"}}
     >
       <img src={this.props.artist.artistUrl} style={{ height: "64px", width: "64px" }} alt="artistUrl" />
-      <div className="ml-3">
-        <div>{this.props.artist.name}</div>
+      <div className="ml-3" style={{marginLeft: "5px"}}>
+        <h6>{this.props.artist.name}</h6>
       </div>
     </Container>
     );
