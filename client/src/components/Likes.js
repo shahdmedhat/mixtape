@@ -59,12 +59,22 @@ export default function Likes(props) {
             },
             item.track.album.images[0] //loop through images, if current.size < smallest -> update smallest
           );
+          
+          const largestAlbumImage = item.track.album.images.reduce(
+            (largest, image) => {
+              if (image.height > largest.height) return image;
+              return largest;
+            },
+            item.track.album.images[0] //loop through images, if current.size < smallest -> update smallest
+          );
+          
           return {
             artist: item.track.artists[0].name,
             title: item.track.name,
             uri: item.track.uri,
             albumUrl: smallestAlbumImage.url,
             isLiked: isLiked,
+            image: largestAlbumImage.url
           };
         })
       );

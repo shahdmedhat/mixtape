@@ -38,6 +38,22 @@ export default function Playlists(props) {
       console.log(res.body);
       setPlaylistTracks(
         res.body.items.map((item) => {
+        
+          const isLiked = spotifyApi.containsMySavedTracks([item.track.uri.split(":")[2]])
+          .then(
+            function (data) {
+              var trackIsInYourMusic = data.body[0];
+              if (trackIsInYourMusic) {
+                return true;
+              } else {
+                return false;
+              }
+            },
+            function (err) {
+              console.log("Something went wrong!", err);
+            }
+          );
+          
           const smallestAlbumImage = item.track.album.images.reduce(
             (smallest, image) => {
               if (image.height < smallest.height) return image;
@@ -45,11 +61,22 @@ export default function Playlists(props) {
             },
             item.track.album.images[0]
           );
+          
+          const largestAlbumImage = item.track.album.images.reduce(
+            (largest, image) => {
+              if (image.height > largest.height) return image;
+              return largest;
+            },
+            item.track.album.images[0] 
+          );
+          
           return {
             title: item.track.name,
             artist: item.track.artists[0].name,
             uri: item.track.uri,
             albumUrl: smallestAlbumImage.url,
+            isLiked: isLiked,
+            image: largestAlbumImage.url
           };
         })
       );
@@ -59,10 +86,10 @@ export default function Playlists(props) {
   useEffect(() => {
     setList(
       playlistTracks.map((track) => (
-        <TrackDetails
-          track={track}
-          key={track.uri}
-          chooseTrack={props.chooseTrack}
+        <TrackDetails track={track} key={track.uri} chooseTrack={props.chooseTrack}
+          handleQueue={props.handleQueue} setShowToast={props.setShowToast} setShowModal={props.setShowModal}
+          addTrackToPlaylist={props.addTrackToPlaylist} queue={props.queue} addToLikes={props.addToLikes}
+          removeFromLikes={props.removeFromLikes}
         />
       ))
     );

@@ -56,9 +56,9 @@ export default function Recommendations(props) {
     });
     
     if (!accessToken) return; //don't query if no access token
-    
+    if(final.length!==0){
     spotifyApi.getRecommendations({seed_tracks: final.toString()}).then((res) => {
-      console.log(res.body);
+      //console.log(res.body);
         setRec(
           res.body.tracks.map((track) => {
           
@@ -84,20 +84,30 @@ export default function Recommendations(props) {
               },
               track.album.images[0] //loop through images, if current.size < smallest -> update smallest
             );
+            
+            const largestAlbumImage = track.album.images.reduce(
+              (largest, image) => {
+                if (image.height > largest.height) return image;
+                return largest;
+              },
+              track.album.images[0] //loop through images, if current.size < smallest -> update smallest
+            );
+            
             return {
               artist: track.artists[0].name,
               title: track.name,
               uri: track.uri,
               albumUrl: smallestAlbumImage.url,
-              isLiked: isLiked
+              isLiked: isLiked,
+              image: largestAlbumImage.url
             };
           })
         );
     });
-    
-    spotifyApi.getAvailableGenreSeeds().then((res) => {
-      console.log(res.body);
-    });
+  }
+    // spotifyApi.getAvailableGenreSeeds().then((res) => {
+    //   console.log(res.body);
+    // });
     
    }, [accessToken,topFive]);
 

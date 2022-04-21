@@ -53,12 +53,22 @@ export default function TopSongs(props) {
             },
             track.album.images[0] //loop through images, if current.size < smallest -> update smallest
           );
+          
+          const largestAlbumImage = track.album.images.reduce(
+            (largest, image) => {
+              if (image.height > largest.height) return image;
+              return largest;
+            },
+            track.album.images[0] //loop through images, if current.size < smallest -> update smallest
+          );
+          
           return {
             artist: track.artists[0].name,
             title: track.name,
             uri: track.uri,
             albumUrl: smallestAlbumImage.url,
-            isLiked: isLiked
+            isLiked: isLiked,
+            image: largestAlbumImage.url
           };
         })
       );

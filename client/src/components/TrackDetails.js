@@ -53,7 +53,7 @@ export default function TrackDetails(props) {
         alt="albumUrl"
       />
 
-      <div className="ml-3" style={{ cursor: "pointer" }} onClick={handlePlay}>
+      <div className="ml-3" style={{ cursor: "pointer", marginLeft: "5px" }} onClick={handlePlay}>
         <div style={{alignItems: "center"}}>{track.title}</div>
         <div>{track.artist}</div>
         {/* className="text-muted" */}

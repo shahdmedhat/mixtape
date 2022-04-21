@@ -109,17 +109,18 @@ export default function Dashboard({ props, code }) {
     setUri([playingTrack?.uri]);
     //}
 
-    setPlay(true);
+    //setPlay(true);
 
-    // setTimeout(() => {
-    //   setPlay(true);
-    // }, 2000);
-
+    setTimeout(() => {
+      setPlay(true);
+    }, 1000);
+    console.log(playingTrack);
     //setQueue([]); //not necessary?
   }, [playingTrack]);
 
   useEffect(() => {
-    setPlay(!play);
+    if(queue.length>0)
+      setPlay(!play);
   }, [uri]);
 
   function handlePlayer() {
@@ -216,7 +217,7 @@ export default function Dashboard({ props, code }) {
   }
 
   useEffect(() => {
-    console.log("QUEUE:" , queue);
+    console.log("QUEUE:", queue);
   }, [queue]);
 
   function addToPlaylist(id) {
@@ -266,7 +267,7 @@ export default function Dashboard({ props, code }) {
     setShowToast(true);
     setMessage("REMOVED FROM LIKES");
   }
-  
+
   useEffect(() => {
     if (!playingTrack) return;
 
@@ -323,6 +324,21 @@ export default function Dashboard({ props, code }) {
         //console.log(res.body);
         setHappy(
           res.body.tracks.map((track) => {
+            const isLiked = spotifyApi
+              .containsMySavedTracks([track.uri.split(":")[2]])
+              .then(
+                function (data) {
+                  var trackIsInYourMusic = data.body[0];
+                  if (trackIsInYourMusic) {
+                    return true;
+                  } else {
+                    return false;
+                  }
+                },
+                function (err) {
+                  console.log("Something went wrong!", err);
+                }
+              );
             const smallestAlbumImage = track.album.images.reduce(
               (smallest, image) => {
                 if (image.height < smallest.height) return image;
@@ -330,11 +346,22 @@ export default function Dashboard({ props, code }) {
               },
               track.album.images[0] //loop through images, if current.size < smallest -> update smallest
             );
+            
+            const largestAlbumImage = track.album.images.reduce(
+              (largest, image) => {
+                if (image.height > largest.height) return image;
+                return largest;
+              },
+              track.album.images[0] 
+            );
+            
             return {
               artist: track.artists[0].name,
               title: track.name,
               uri: track.uri,
               albumUrl: smallestAlbumImage.url,
+              isLiked: isLiked,
+              image: largestAlbumImage.url
             };
           })
         );
@@ -350,6 +377,21 @@ export default function Dashboard({ props, code }) {
         //console.log(res.body);
         setAcoustic(
           res.body.tracks.map((track) => {
+            const isLiked = spotifyApi
+              .containsMySavedTracks([track.uri.split(":")[2]])
+              .then(
+                function (data) {
+                  var trackIsInYourMusic = data.body[0];
+                  if (trackIsInYourMusic) {
+                    return true;
+                  } else {
+                    return false;
+                  }
+                },
+                function (err) {
+                  console.log("Something went wrong!", err);
+                }
+              );
             const smallestAlbumImage = track.album.images.reduce(
               (smallest, image) => {
                 if (image.height < smallest.height) return image;
@@ -357,42 +399,76 @@ export default function Dashboard({ props, code }) {
               },
               track.album.images[0] //loop through images, if current.size < smallest -> update smallest
             );
+            
+            const largestAlbumImage = track.album.images.reduce(
+              (largest, image) => {
+                if (image.height > largest.height) return image;
+                return largest;
+              },
+              track.album.images[0] 
+            );
             return {
               artist: track.artists[0].name,
               title: track.name,
               uri: track.uri,
               albumUrl: smallestAlbumImage.url,
+              isLiked: isLiked,
+              image: largestAlbumImage.url
             };
           })
         );
       });
 
-    spotifyApi
-      .getRecommendations({
-        seed_tracks:
-          "7LVHVU3tWfcxj5aiPFEW4Q,35KiiILklye1JRRctaLUb4,6PypGyiu0Y2lCDBN1XZEnP",
-        seed_genres: "sad,soul",
-      })
-      .then((res) => {
-        //console.log(res.body);
-        setSad(
-          res.body.tracks.map((track) => {
-            const smallestAlbumImage = track.album.images.reduce(
-              (smallest, image) => {
-                if (image.height < smallest.height) return image;
-                return smallest;
-              },
-              track.album.images[0] //loop through images, if current.size < smallest -> update smallest
-            );
-            return {
-              artist: track.artists[0].name,
-              title: track.name,
-              uri: track.uri,
-              albumUrl: smallestAlbumImage.url,
-            };
-          })
-        );
-      });
+    // spotifyApi
+    //   .getRecommendations({
+    //     seed_tracks:
+    //       "7LVHVU3tWfcxj5aiPFEW4Q,35KiiILklye1JRRctaLUb4,6PypGyiu0Y2lCDBN1XZEnP",
+    //     seed_genres: "sad,soul",
+    //   })
+    //   .then((res) => {
+    //     //console.log(res.body);
+    //     setSad(
+    //       res.body.tracks.map((track) => {
+    //         const isLiked = spotifyApi
+    //           .containsMySavedTracks([track.uri.split(":")[2]])
+    //           .then(
+    //             function (data) {
+    //               var trackIsInYourMusic = data.body[0];
+    //               if (trackIsInYourMusic) {
+    //                 return true;
+    //               } else {
+    //                 return false;
+    //               }
+    //             },
+    //             function (err) {
+    //               console.log("Something went wrong!", err);
+    //             }
+    //           );
+    //         const smallestAlbumImage = track.album.images.reduce(
+    //           (smallest, image) => {
+    //             if (image.height < smallest.height) return image;
+    //             return smallest;
+    //           },
+    //           track.album.images[0] //loop through images, if current.size < smallest -> update smallest
+    //         );
+    //         const largestAlbumImage = track.album.images.reduce(
+    //           (largest, image) => {
+    //             if (image.height > largest.height) return image;
+    //             return largest;
+    //           },
+    //           track.album.images[0] 
+    //         );
+    //         return {
+    //           artist: track.artists[0].name,
+    //           title: track.name,
+    //           uri: track.uri,
+    //           albumUrl: smallestAlbumImage.url,
+    //           isLiked: isLiked,
+    //           image: largestAlbumImage.url
+    //         };
+    //       })
+    //     );
+    //   });
 
     // setFirstColor("#FFFFFF");
     // setSecondColor("#FFFFFF");
@@ -432,6 +508,8 @@ export default function Dashboard({ props, code }) {
           setShowModal={setShowModal}
           addTrackToPlaylist={addTrackToPlaylist}
           queue={queue}
+          addToLikes={addToLikes}
+          removeFromLikes={removeFromLikes}
         />
       ))
     );
@@ -447,6 +525,8 @@ export default function Dashboard({ props, code }) {
           setShowModal={setShowModal}
           addTrackToPlaylist={addTrackToPlaylist}
           queue={queue}
+          addToLikes={addToLikes}
+          removeFromLikes={removeFromLikes}
         />
       ))
     );
@@ -462,6 +542,8 @@ export default function Dashboard({ props, code }) {
           setShowModal={setShowModal}
           addTrackToPlaylist={addTrackToPlaylist}
           queue={queue}
+          addToLikes={addToLikes}
+          removeFromLikes={removeFromLikes}
         />
       ))
     );
@@ -787,7 +869,16 @@ export default function Dashboard({ props, code }) {
 
         {playlists && searchResults.length === 0 && (
           <div className="scrollbar scrollbar-lady-lips">
-            <Playlists chooseTrack={chooseTrack} />
+            <Playlists
+              chooseTrack={chooseTrack}
+              handleQueue={handleQueue}
+              setShowToast={setShowToast}
+              setShowModal={setShowModal}
+              addTrackToPlaylist={addTrackToPlaylist}
+              queue={queue}
+              addToLikes={addToLikes}
+              removeFromLikes={removeFromLikes}
+            />
           </div>
         )}
 
@@ -906,9 +997,31 @@ export default function Dashboard({ props, code }) {
                 Show Lyrics
               </Button>
             </Col> */}
-              <h6 style={{ color: "rgb(60, 62, 77)" }}>PLAYER DETAILS</h6>
+              <h5 style={{ color: "rgb(60, 62, 77)" }}>Lyrics</h5>
             </Accordion.Header>
             <Accordion.Body>
+              <div style={{textAlign: "center"}}>
+              {playingTrack? <img
+                      src={playingTrack.image}
+                      style={{ height: "300px", width: "300px" }}
+                      alt="albumUrl"/>:""}
+                      
+                <FontAwesomeIcon
+                  icon="fa-solid fa-forward"
+                  size="lg"
+                  style={{ cursor: "pointer" , marginLeft: "30px"}}
+                  onClick={() => {
+                    if (queue.length===0){
+                      console.log("Nothing to play...")
+                    }
+                    else{
+                      let next = queue.shift();
+                      setPlayingTrack(next);
+                    }
+                  }}
+                />
+              </div>
+              <br />
               <div
                 className="scrollbar scrollbar-lady-lips"
                 style={{
