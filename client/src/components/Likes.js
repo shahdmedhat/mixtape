@@ -99,8 +99,12 @@ export default function Likes(props) {
   }, [accessToken, props.addToLikes, props.removeFromLikes]);
 
   useEffect(() => {
-    
-    setURIs(likes)
+    let shuffled = likes
+    .map(value => ({ value, sort: Math.random() }))
+    .sort((a, b) => a.sort - b.sort)
+    .map(({ value }) => value)
+  
+    setURIs(shuffled)
     
     setList(
       likes.map((track) => (
