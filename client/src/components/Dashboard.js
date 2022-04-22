@@ -20,6 +20,8 @@ import Sidebar from "./Sidebar.jsx";
 //import Scrollbar from "./Scrollbar.jsx";
 import "../css/Scrollbar.css";
 
+import MusicBot from "./MusicBot";
+
 import Likes from "./Likes";
 import Recommendations from "./Recommendations";
 import TopSongs from "./TopSongs";
@@ -648,10 +650,11 @@ export default function Dashboard({ props, code }) {
     //     background: "linear-gradient(" + firstColor + "," + secondColor + ")",
     //   }}
     // >
-
+    <div>
+      
     <div className="dashboard">
       {/* <Scrollbar/> */}
-
+      
       <Sidebar
         accessToken={accessToken}
         setLikes={setLikes}
@@ -665,7 +668,9 @@ export default function Dashboard({ props, code }) {
         showPlayer={showPlayer}
         setView={setView}
       />
-
+      
+      <MusicBot />
+      
       <Container
         className="d-flex flex-column py-2"
         style={{ height: "100vh" }}
@@ -1158,7 +1163,11 @@ export default function Dashboard({ props, code }) {
             </Modal.Body>
           </Modal>
         )}
-      </Container>
+        
+      </Container>      
     </div>
+    
+    </div>
+    
   );
 }
