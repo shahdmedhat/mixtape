@@ -103,6 +103,8 @@ export default function Dashboard({ props, code }) {
 
   const [playerModal, showPlayerModal] = useState(false);
   const [message, setMessage] = useState("");
+  
+  const [newPlaylistName, setNewPlaylistName] = useState("");
 
   useEffect(() => {
     //if(queue.length===0){ //showNext
@@ -115,12 +117,11 @@ export default function Dashboard({ props, code }) {
       setPlay(true);
     }, 1000);
     console.log(playingTrack);
-    //setQueue([]); //not necessary?
+    //setQueue([]); //????????
   }, [playingTrack]);
 
   useEffect(() => {
-    if(queue.length>0)
-      setPlay(!play);
+    if (queue.length > 0) setPlay(!play);
   }, [uri]);
 
   function handlePlayer() {
@@ -235,31 +236,42 @@ export default function Dashboard({ props, code }) {
     setShowToast(true);
     setMessage("ADDED TO PLAYLIST");
   }
-  
-  function createPlaylist() {
-    spotifyApi.createPlaylist('My playlist', {'public': true })
-    .then(function(data) {
-      spotifyApi.uploadCustomPlaylistCoverImage(data.body.id, trackToAddToPlaylist.albumUrl)
-      .then(function(data) {
-         console.log('Playlsit cover image uploaded!');
-      }, function(err) {
-        console.log('Something went wrong!', err);
-      });
-      
-      spotifyApi.addTracksToPlaylist(data.body.id, [trackToAddToPlaylist.uri]).then(
-        function (data) {
-          console.log("Added tracks to playlist!");
-        },
-        function (err) {
-          console.log("Something went wrong!", err);
-        }
-      );
-      
-      console.log('Created playlist!');
-    }, function(err) {
-      console.log('Something went wrong!', err);
-    });
-    
+
+  function createPlaylist(name) {
+    spotifyApi.createPlaylist(name, {public: true}).then(
+      function (data) {
+        spotifyApi
+          .uploadCustomPlaylistCoverImage(
+            data.body.id,
+            trackToAddToPlaylist.albumUrl
+          )
+          .then(
+            function (data) {
+              console.log("Playlsit cover image uploaded!");
+            },
+            function (err) {
+              console.log("Something went wrong!", err);
+            }
+          );
+
+        spotifyApi
+          .addTracksToPlaylist(data.body.id, [trackToAddToPlaylist.uri])
+          .then(
+            function (data) {
+              console.log("Added tracks to playlist!");
+            },
+            function (err) {
+              console.log("Something went wrong!", err);
+            }
+          );
+
+        console.log("Created playlist!");
+      },
+      function (err) {
+        console.log("Something went wrong!", err);
+      }
+    );
+
     setShowModal(false);
     setShowToast(true);
     setMessage("PLAYLIST CREATED");
@@ -369,11 +381,11 @@ export default function Dashboard({ props, code }) {
             //       console.log("Something went wrong!", err);
             //     }
             //   );
-            
+
             const isLiked = new Promise((resolve, reject) => {
-              return('foo');
+              return "foo";
             });
-            
+
             const smallestAlbumImage = track.album.images.reduce(
               (smallest, image) => {
                 if (image.height < smallest.height) return image;
@@ -381,22 +393,22 @@ export default function Dashboard({ props, code }) {
               },
               track.album.images[0] //loop through images, if current.size < smallest -> update smallest
             );
-            
+
             const largestAlbumImage = track.album.images.reduce(
               (largest, image) => {
                 if (image.height > largest.height) return image;
                 return largest;
               },
-              track.album.images[0] 
+              track.album.images[0]
             );
-            
+
             return {
               artist: track.artists[0].name,
               title: track.name,
               uri: track.uri,
               albumUrl: smallestAlbumImage.url,
               isLiked: isLiked,
-              image: largestAlbumImage.url
+              image: largestAlbumImage.url,
             };
           })
         );
@@ -427,11 +439,11 @@ export default function Dashboard({ props, code }) {
             //       console.log("Something went wrong!", err);
             //     }
             //   );
-            
+
             const isLiked = new Promise((resolve, reject) => {
-              return('foo');
+              return "foo";
             });
-            
+
             const smallestAlbumImage = track.album.images.reduce(
               (smallest, image) => {
                 if (image.height < smallest.height) return image;
@@ -439,13 +451,13 @@ export default function Dashboard({ props, code }) {
               },
               track.album.images[0] //loop through images, if current.size < smallest -> update smallest
             );
-            
+
             const largestAlbumImage = track.album.images.reduce(
               (largest, image) => {
                 if (image.height > largest.height) return image;
                 return largest;
               },
-              track.album.images[0] 
+              track.album.images[0]
             );
             return {
               artist: track.artists[0].name,
@@ -453,7 +465,7 @@ export default function Dashboard({ props, code }) {
               uri: track.uri,
               albumUrl: smallestAlbumImage.url,
               isLiked: isLiked,
-              image: largestAlbumImage.url
+              image: largestAlbumImage.url,
             };
           })
         );
@@ -496,7 +508,7 @@ export default function Dashboard({ props, code }) {
     //             if (image.height > largest.height) return image;
     //             return largest;
     //           },
-    //           track.album.images[0] 
+    //           track.album.images[0]
     //         );
     //         return {
     //           artist: track.artists[0].name,
@@ -606,12 +618,21 @@ export default function Dashboard({ props, code }) {
             },
             track.album.images[0] //loop through images, if current.size < smallest -> update smallest
           );
-
+          
+          const largestAlbumImage = track.album.images.reduce(
+            (largest, image) => {
+              if (image.height > largest.height) return image;
+              return largest;
+            },
+            track.album.images[0] //loop through images, if current.size < smallest -> update smallest
+          );
+          
           return {
             artist: track.artists[0].name,
             title: track.name,
             uri: track.uri,
             albumUrl: smallestAlbumImage.url,
+            image: largestAlbumImage.url
           };
         })
       );
@@ -673,11 +694,18 @@ export default function Dashboard({ props, code }) {
             </Modal.Header>
             <Modal.Body>
               {/* <h4>Centered Modal</h4> */}
-              <Button  onClick={() => {createPlaylist()}}>
-                  Create Playlist
-              </Button>
+              <Form>
+                <Form.Group className="mb-3" controlId="formBasicEmail">
+                  <Form.Label>Create New Playlist</Form.Label>
+                  <Form.Control type="email" placeholder="Enter playlist name" value={newPlaylistName} onChange={(e) => setNewPlaylistName(e.target.value)} />
+                </Form.Group>
+                
+                <Button onClick={() => {createPlaylist(newPlaylistName);}}>
+                  Create
+                </Button>
+              </Form>
               
-              <br/> <br/> 
+              <br /> <br />
               
               <Row>
                 {playlistsInfo.map((playlist) => (
@@ -873,6 +901,9 @@ export default function Dashboard({ props, code }) {
               queue={queue}
               addToLikes={addToLikes}
               removeFromLikes={removeFromLikes}
+              setUri={setUri}
+              setPlayingTrack={setPlayingTrack}
+              setQueue={setQueue}
             />
           </div>
         )}
@@ -1046,21 +1077,25 @@ export default function Dashboard({ props, code }) {
               <h5 style={{ color: "rgb(60, 62, 77)" }}>Lyrics</h5>
             </Accordion.Header>
             <Accordion.Body>
-              <div style={{textAlign: "center"}}>
-              {playingTrack? <img
-                      src={playingTrack.image}
-                      style={{ height: "300px", width: "300px" }}
-                      alt="albumUrl"/>:""}
-                      
+              <div style={{ textAlign: "center" }}>
+                {playingTrack ? (
+                  <img
+                    src={playingTrack.image}
+                    style={{ height: "250px", width: "250px" }}
+                    alt="albumUrl"
+                  />
+                ) : (
+                  ""
+                )}
+
                 <FontAwesomeIcon
                   icon="fa-solid fa-forward"
                   size="lg"
-                  style={{ cursor: "pointer" , marginLeft: "30px"}}
+                  style={{ cursor: "pointer", marginLeft: "30px" }}
                   onClick={() => {
-                    if (queue.length===0){
-                      console.log("Nothing to play...")
-                    }
-                    else{
+                    if (queue.length === 0) {
+                      console.log("Nothing to play...");
+                    } else {
                       let next = queue.shift();
                       setPlayingTrack(next);
                     }

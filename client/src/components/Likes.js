@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import SongDetails from "./SongDetails";
 import TrackDetails from "./TrackDetails"; //---------------
-import { Container } from "react-bootstrap";
+import { Container, Button } from "react-bootstrap";
 import Sidebar from "./Sidebar.jsx";
 import SpotifyWebApi from "spotify-web-api-node";
 import { useLocation } from "react-router-dom";
@@ -19,8 +19,18 @@ export default function Likes(props) {
   const [list, setList] = useState([]);
   const [likes, setLikes] = useState([]);
 
+  const [uris, setURIs] = useState([]);
+
   //const [temp, setTemp] = useState("");
   //const[trackURIs,setTrackURIs] = useState([]);
+
+  function shuffle() {
+    //props.setUri(uris);
+    let first = uris.shift();
+    console.log(first);
+    props.setPlayingTrack(first);
+    props.setQueue(uris);
+  }
 
   useEffect(() => {
     if (!accessToken) return;
@@ -30,9 +40,16 @@ export default function Likes(props) {
   useEffect(() => {
     if (!accessToken) return; //don't query if no access token
     spotifyApi.getMySavedTracks().then((res) => {
+      //let listx=[]
+      // for (var k in res.body.items) {
+      //   listx.push(res.body.items[k].track);
+      // }
+      // setURIs(listx);
+      
       setLikes(
         res.body.items.map((item) => {
-          const isLiked = spotifyApi.containsMySavedTracks([item.track.uri.split(":")[2]])
+          const isLiked = spotifyApi
+            .containsMySavedTracks([item.track.uri.split(":")[2]])
             .then(
               function (data) {
                 // An array is returned, where the first element corresponds to the first track ID in the query
@@ -59,7 +76,7 @@ export default function Likes(props) {
             },
             item.track.album.images[0] //loop through images, if current.size < smallest -> update smallest
           );
-          
+
           const largestAlbumImage = item.track.album.images.reduce(
             (largest, image) => {
               if (image.height > largest.height) return image;
@@ -67,26 +84,36 @@ export default function Likes(props) {
             },
             item.track.album.images[0] //loop through images, if current.size < smallest -> update smallest
           );
-          
+
           return {
             artist: item.track.artists[0].name,
             title: item.track.name,
             uri: item.track.uri,
             albumUrl: smallestAlbumImage.url,
             isLiked: isLiked,
-            image: largestAlbumImage.url
+            image: largestAlbumImage.url,
           };
         })
       );
     });
-  }, [accessToken,props.addToLikes,props.removeFromLikes]);
+  }, [accessToken, props.addToLikes, props.removeFromLikes]);
 
   useEffect(() => {
+    
+    setURIs(likes)
+    
     setList(
       likes.map((track) => (
-        <TrackDetails track={track} key={track.uri} chooseTrack={props.chooseTrack}
-          handleQueue={props.handleQueue} setShowToast={props.setShowToast} setShowModal={props.setShowModal}
-          addTrackToPlaylist={props.addTrackToPlaylist} queue={props.queue} addToLikes={props.addToLikes}
+        <TrackDetails
+          track={track}
+          key={track.uri}
+          chooseTrack={props.chooseTrack}
+          handleQueue={props.handleQueue}
+          setShowToast={props.setShowToast}
+          setShowModal={props.setShowModal}
+          addTrackToPlaylist={props.addTrackToPlaylist}
+          queue={props.queue}
+          addToLikes={props.addToLikes}
           removeFromLikes={props.removeFromLikes}
         />
       )) //---------------
@@ -106,7 +133,18 @@ export default function Likes(props) {
         className="d-flex flex-column py-2"
         //style={{ height: "100vh" }}
       >
-        <h1 style={{ textAlign: "center", color: "white" }}> LIKED SONGS </h1>
+        <h1 style={{ textAlign: "center", color: "white" }}>
+          LIKED SONGS
+          <Button
+            variant="success"
+            style={{ float: "right", marginRight: "20px" }}
+            onClick={() => {
+              shuffle();
+            }}
+          >
+            Shuffle
+          </Button>
+        </h1>
 
         <div>{list}</div>
         {/* className="centerTracks" */}
