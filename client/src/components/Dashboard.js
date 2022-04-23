@@ -11,7 +11,6 @@ import {
   Toast,
   ToastContainer,
   Modal,
-  Col,
   Accordion,
 } from "react-bootstrap";
 import SpotifyWebApi from "spotify-web-api-node";
@@ -107,6 +106,8 @@ export default function Dashboard({ props, code }) {
   const [message, setMessage] = useState("");
   
   const [newPlaylistName, setNewPlaylistName] = useState("");
+  
+  const [activity, setActivity] = useState("");
 
   useEffect(() => {
     //if(queue.length===0){ //showNext
@@ -669,7 +670,6 @@ export default function Dashboard({ props, code }) {
         setView={setView}
       />
       
-      <MusicBot />
       
       <Container
         className="d-flex flex-column py-2"
@@ -681,7 +681,9 @@ export default function Dashboard({ props, code }) {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-
+        
+      {/* <MusicBot setActivity={setActivity}/> */}
+      
         <br />
         {showModal && (
           <Modal
@@ -868,7 +870,7 @@ export default function Dashboard({ props, code }) {
           )}
 
         {isHappy && searchResults.length === 0 && (
-          <div style={{ overflowY: "scroll", justifyContent: "center" }}>
+          <div style={{ overflowY: "scroll", justifyContent: "center", width: "90%" }}>
             <Container className="d-flex flex-column py-2">
               {/* <h1 style={{ textAlign: "center" }}>HAPPY MIX</h1> */}
               <div>{happyList}</div>
@@ -877,7 +879,7 @@ export default function Dashboard({ props, code }) {
         )}
 
         {isAcoustic && searchResults.length === 0 && (
-          <div style={{ overflowY: "scroll", justifyContent: "center" }}>
+          <div style={{ overflowY: "scroll", justifyContent: "center", width:"90%" }}>
             <Container className="d-flex flex-column py-2">
               {/* <h1 style={{ textAlign: "center" }}>ACOUSTIC</h1> */}
               <div>{acousticList}</div>
@@ -895,7 +897,7 @@ export default function Dashboard({ props, code }) {
         )}
 
         {likes && searchResults.length === 0 && (
-          <div className="scrollbar scrollbar-lady-lips">
+          <div className="scrollbar scrollbar-lady-lips" style={{width:"90%"}}>
             <Likes
               chooseTrack={chooseTrack}
               setTrackURIs={setTrackURIs}
@@ -914,7 +916,7 @@ export default function Dashboard({ props, code }) {
         )}
 
         {rec && searchResults.length === 0 && (
-          <div className="scrollbar scrollbar-lady-lips">
+          <div className="scrollbar scrollbar-lady-lips" style={{width:"90%"}}>
             <Recommendations
               chooseTrack={chooseTrack}
               handleQueue={handleQueue}
@@ -929,7 +931,7 @@ export default function Dashboard({ props, code }) {
         )}
 
         {topSongs && searchResults.length === 0 && (
-          <div className="scrollbar scrollbar-lady-lips">
+          <div className="scrollbar scrollbar-lady-lips" style={{width:"90%"}}>
             <TopSongs
               chooseTrack={chooseTrack}
               handleQueue={handleQueue}
@@ -944,13 +946,13 @@ export default function Dashboard({ props, code }) {
         )}
 
         {topArtists && searchResults.length === 0 && (
-          <div className="scrollbar scrollbar-lady-lips">
+          <div className="scrollbar scrollbar-lady-lips" style={{width:"90%"}}>
             <TopArtists chooseTrack={chooseTrack} />
           </div>
         )}
 
         {playlists && searchResults.length === 0 && (
-          <div className="scrollbar scrollbar-lady-lips">
+          <div className="scrollbar scrollbar-lady-lips" style={{width:"90%"}}>
             <Playlists
               chooseTrack={chooseTrack}
               handleQueue={handleQueue}
@@ -995,7 +997,7 @@ export default function Dashboard({ props, code }) {
                 {/* className="text-center" style={{ whiteSpace: "pre" }}*/}
                 {lyrics}
               </div>
-            )}
+            )}   
         </div>
 
         {/* <div style={{backgroundColor:"red"}}> */}
@@ -1018,7 +1020,7 @@ export default function Dashboard({ props, code }) {
             setQueue={setQueue}
             setPlayingTrack={setPlayingTrack}
           /> */}
-        <div>
+        <div style={{width:"90%"}}>
           {accessToken && (
             <SpotifyPlayer
               token={accessToken}
@@ -1063,7 +1065,6 @@ export default function Dashboard({ props, code }) {
               }}
             />
           )}
-        </div>
 
         <Accordion flush style={{ backgroundColor: "red" }}>
           <Accordion.Item eventKey="0">
@@ -1124,6 +1125,7 @@ export default function Dashboard({ props, code }) {
             </Accordion.Body>
           </Accordion.Item>
         </Accordion>
+        </div>
 
         {/* <PlayerTest accessToken={accessToken} /> */}
 

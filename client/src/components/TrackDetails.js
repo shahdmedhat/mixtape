@@ -46,16 +46,20 @@ export default function TrackDetails(props) {
   }
 
   return (
-    <Container className="d-flex m-2 align-items-center" style={{backgroundColor: 'white', borderRadius: '20px'}}>
+  <div className="songRow">
+    <Container className="d-flex m-2 align-items-center" >
+    {/* style={{backgroundColor: 'white', borderRadius: '20px'}} */}
       <img
         src={track.albumUrl}
-        style={{ height: "64px", width: "64px" }}
+        // style={{ height: "64px", width: "64px" }}
+        className="songRow__album"
         alt="albumUrl"
       />
 
-      <div className="ml-3" style={{ cursor: "pointer", marginLeft: "5px" }} onClick={handlePlay}>
-        <div style={{alignItems: "center"}}>{track.title}</div>
-        <div>{track.artist}</div>
+      <div  className="songRow__info" onClick={handlePlay}>
+      {/* className="ml-3" style={{ cursor: "pointer", marginLeft: "5px" }} */}
+        <h1 style={{alignItems: "center"}}>{track.title}</h1>
+        <h1>{track.artist}</h1>
         {/* className="text-muted" */}
       </div>
 
@@ -94,6 +98,7 @@ export default function TrackDetails(props) {
       </div>
 
     </Container>
+    </div>
     
   //   <div class="songItem">
   //   <span class="songName">{track.title}</span>

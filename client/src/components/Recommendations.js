@@ -119,7 +119,7 @@ export default function Recommendations(props) {
 
   if (!accessToken) return null;
   return (
-    <div style={{ overflowY: 'scroll' }}>
+    <div style={{ overflowY: 'scroll' , overflow:'hidden'}}>
       {/* style={{ maxHeight: "50vh" }} */}
       {/* <Sidebar accessToken={accessToken} /> */}
       <Container

@@ -130,7 +130,7 @@ export default function Likes(props) {
 
   if (!accessToken) return null;
   return (
-    <div style={{ overflowY: "scroll", justifyContent: "center" }}>
+    <div style={{ overflowY: "scroll", justifyContent: "center", overflow:'hidden' }}>
       {/* style={{ maxHeight: "50vh" }} */}
       {/* <Sidebar accessToken={accessToken} /> */}
       <Container
