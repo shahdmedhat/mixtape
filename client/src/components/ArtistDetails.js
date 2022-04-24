@@ -30,7 +30,6 @@ export default class ArtistDetails extends Component {
     
     this.props.setView("artistProfile");
     this.props.setArtist(this.props.artist);
-    
   }
   
   render() {

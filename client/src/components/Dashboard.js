@@ -986,7 +986,7 @@ export default function Dashboard({ props, code }) {
               className="scrollbar scrollbar-lady-lips"
               style={{ width: "90%" }}
             >
-              <ArtistProfile />
+              <ArtistProfile accessToken={props.accessToken} />
             </div>
           )}
 
