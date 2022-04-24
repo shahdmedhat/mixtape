@@ -10,85 +10,36 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-function Sidebar({setPlaylists, setView,showPlayer,showSad, showAcoustic ,showHappy, setTopSongs, setTopArtists, setRec, setLikes, accessToken }) {
-
+function Sidebar({setView,showPlayer, accessToken }) {
 
 function handleLike(){
-  setLikes(true);
-  setRec(false);
-  setTopArtists(false);
-  setTopSongs(false);
-  setPlaylists(false);
-  showHappy(false);
-  showAcoustic(false);
-  showSad(false);
   showPlayer(false);
   setView("likes");
 }
 
 function handleRec(){
-  setRec(true);
-  setLikes(false);
-  setTopArtists(false);
-  setTopSongs(false);
-  setPlaylists(false);
-  showHappy(false);
-  showAcoustic(false);
-  showSad(false);
   showPlayer(false);
   setView("rec");
 }
 
 function handleArtists(){
-  setTopArtists(true);
-  setLikes(false);
-  setRec(false);
-  setTopSongs(false);
-  setPlaylists(false);
-  showHappy(false);
-  showAcoustic(false);
-  showSad(false);
   showPlayer(false);
   setView("artists");
 
 }
 
 function handleTracks(){
-  setTopSongs(true);
-  setTopArtists(false);
-  setPlaylists(false);
-  setLikes(false);
-  setRec(false);
-  showHappy(false);
-  showAcoustic(false);
-  showSad(false);
   showPlayer(false);
-  setView("tracks");
+  setView("topSongs");
 
 }
 
 function handlePlaylists(){
-  setPlaylists(true);
-  setTopSongs(false);
-  setTopArtists(false);
-  setLikes(false);
-  setRec(false);
-  showHappy(false);
-  showAcoustic(false);
-  showSad(false);
   showPlayer(false);
   setView("playlists");
 }
 
 function resetAll(){
-  setLikes(false);
-  setRec(false);
-  setTopArtists(false);
-  setTopSongs(false);
-  setPlaylists(false);
-  showHappy(false);
-  showAcoustic(false);
-  showSad(false);
   showPlayer(false);
   setView("");
 }
@@ -157,7 +108,7 @@ function resetAll(){
 
         >
           {/* <FontAwesomeIcon className="icon" icon={faRecordVinyl} /> */}
-          <span>Top Songs</span>
+          <span>Most Played Songs</span>
         </NavLink>
 
         <NavLink

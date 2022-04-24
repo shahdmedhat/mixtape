@@ -1,4 +1,6 @@
 import React from "react"
+import { Container } from "react-bootstrap";
+import "../css/TrackDetails.css";
 
 export default function TrackSearchResult({ track, chooseTrack }) {
   function handlePlay() {
@@ -6,17 +8,24 @@ export default function TrackSearchResult({ track, chooseTrack }) {
   }
 
   return (
-    <div
-      className="d-flex m-2 align-items-center"
-      style={{ cursor: "pointer" , color: "white" }}
-      onClick={handlePlay}
-    >
-      <img src={track.albumUrl} style={{ height: "64px", width: "64px" }} alt="albumUrl"/>
-      <div className="ml-3" style={{marginLeft: "5px"}}>
-        <div>{track.title}</div>
-        <div>{track.artist}</div> 
+  
+    <div className="songRow" onClick={handlePlay} style={{ cursor: "pointer"}}>
+    <Container className="d-flex m-2 align-items-center" >
+      <img
+        src={track.albumUrl}
+        className="songRow__album"
+        alt="albumUrl"
+      />
+
+      <div  className="songRow__info" >
+      {/* className="ml-3" style={{ cursor: "pointer", marginLeft: "5px" }} */}
+        <h1 style={{alignItems: "center"}}>{track.title}</h1>
+        <h1>{track.artist}</h1>
         {/* className="text-muted" */}
       </div>
+
+    </Container>
     </div>
+  
   )
 }

@@ -2,12 +2,12 @@
 :root {
     --first: #1D2b64;
     --second: #F8CDDA;
-    --x: #5f2c82;
-    --y: #49a09d;
+    --x: #614385;
+    --y: #516395;
 }
   
 .dashboard {
-    background: linear-gradient(to bottom right, var(--first), var(--second));
+    background: linear-gradient(to top right, var(--x), var(--y));
     overflow-y: scroll;
 }
 

@@ -126,7 +126,7 @@ export default function Recommendations(props) {
         className="d-flex flex-column py-2"
         // style={{ height: "100vh" }}
       >
-        <h1 style={{ textAlign: "center" , color: "white" }}> BASED ON YOUR TASTE... </h1>
+        <h1 style={{ textAlign: "center" , color: "white" }}> Based On Your Taste... </h1>
 
         <div>{list}</div>
       </Container>

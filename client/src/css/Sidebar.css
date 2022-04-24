@@ -12,11 +12,13 @@
     color: rgb(255, 255, 255);
     text-decoration: none;
     margin: 20px 0;
+    font: 18px
 }
 
 .sidebar-container .item:hover {
     cursor: pointer;
-    color: rgba(255, 255, 255, 0.6);
+    color: #d3afff;
+    /* rgba(255, 255, 255, 0.6) */
 }
 
 .sidebar-container .item span {

@@ -21,7 +21,8 @@ export default function TrackDetails(props) {
   const track = props.track;
   function handlePlay() {
     //navigate("/dashboard",{ state: {track: track , accessToken: location.state.accessToken} });
-    props.chooseTrack(track);
+    if(!props.showQueue)
+      props.chooseTrack(track);
   }
 
   useEffect(() => {
@@ -92,9 +93,11 @@ export default function TrackDetails(props) {
       {/* , justifyContent:"center", display:"flex", margin: "0px 0px 0px 0px" */}
       <div style={{textAlign:"right", margin:"0px 0px 0px auto"}}>
       
+      {!props.showQueue &&
       <Button variant="success" onClick={() => {addToQueue();}}>
           Add To Queue
       </Button>
+      }
       </div>
 
     </Container>

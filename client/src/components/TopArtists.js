@@ -50,7 +50,7 @@ export default function TopArtists(props) {
 
   useEffect(() => {
     setList(
-      topArtists.map((artist) => <ArtistDetails artist={artist} key={artist.uri} />)
+      topArtists.map((artist) => <ArtistDetails artist={artist} key={artist.uri} accessToken={accessToken} setView={props.setView} setArtist={props.setArtist} />)
     );
   }, [topArtists]);
 
@@ -62,7 +62,7 @@ export default function TopArtists(props) {
         className="d-flex flex-column py-2"
         // style={{ height: "100vh" }}
       >
-        <h1 style={{ textAlign: "center" , color: "white" }}> TOP ARTISTS</h1>
+        <h1 style={{ textAlign: "center" , color: "white" }}> Top Artists</h1>
 
         <div style={{color: "white"}}>{list}</div>
 

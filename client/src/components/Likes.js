@@ -138,10 +138,11 @@ export default function Likes(props) {
         //style={{ height: "100vh" }}
       >
         <h1 style={{ textAlign: "center", color: "white" }}>
-          LIKED SONGS
+          Liked Songs
           <Button
             variant="success"
             style={{ float: "right", marginRight: "20px" }}
+            size="lg"
             onClick={() => {
               shuffle();
             }}

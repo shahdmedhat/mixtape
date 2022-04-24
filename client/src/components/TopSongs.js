@@ -89,7 +89,7 @@ export default function TopSongs(props) {
         className="d-flex flex-column py-2"
         // style={{ height: "100vh" }}
       >
-        <h1 style={{ textAlign: "center" , color: "white" }}> TOP SONGS</h1>
+        <h1 style={{ textAlign: "center" , color: "white" }}> Most Played Songs</h1>
 
         <div>{list}</div>
 
