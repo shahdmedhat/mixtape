@@ -36,6 +36,8 @@ import happyImage from "../images/happy.jpg";
 import calmImage from "../images/calm.jpg";
 import sadImage from "../images/sad.jpg";
 import newImage from "../images/new.png";
+import mixtapeImage from "../images/mixtape.jpg";
+import taste from "../images/taste.jpg";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
@@ -109,9 +111,13 @@ export default function Dashboard({ props, code }) {
 
   const [artist, setArtist] = useState("");
 
+  //NEW RELEASES
   const [newReleases, setNewReleases] = useState([]);
   const [newReleasesList, setNewReleasesList] = useState(""); //([]);
   const [albumTracks, setAlbumTracks] = useState([]);
+
+  const [discoverWeekly, setDiscoverWeekly] = useState([]);
+  const [discoverDaily, setDiscoverDaily] = useState([]);
 
   useEffect(() => {
     //if(queue.length===0){ //showNext
@@ -386,35 +392,6 @@ export default function Dashboard({ props, code }) {
     if (!accessToken) return;
     spotifyApi.setAccessToken(accessToken);
 
-    spotifyApi.getNewReleases({ offset: 0, country: "US" }).then((res) => {
-      console.log(res.body);
-      setNewReleases(
-        res.body.albums.items.map((album) => {
-          const smallestAlbumImage = album.images.reduce(
-            (smallest, image) => {
-              if (image.height < smallest.height) return image;
-              return smallest;
-            },
-            album.images[0] //loop through images, if current.size < smallest -> update smallest
-          );
-
-          const largestAlbumImage = album.images.reduce((largest, image) => {
-            if (image.height > largest.height) return image;
-            return largest;
-          }, album.images[0]);
-
-          return {
-            artist: album.artists[0].name,
-            title: album.name,
-            uri: album.uri,
-            albumUrl: smallestAlbumImage.url,
-            image: largestAlbumImage.url,
-            id: album.id,
-          };
-        })
-      );
-    });
-
     //   spotifyApi.getCategories({
     //     limit : 5,
     //     offset: 0,
@@ -427,116 +404,116 @@ export default function Dashboard({ props, code }) {
     //   console.log("Something went wrong!", err);
     // });
 
-    spotifyApi
-      .getRecommendations({ seed_genres: "happy,dance" })
-      .then((res) => {
-        //console.log(res.body);
-        setHappy(
-          res.body.tracks.map((track) => {
-            // const isLiked = spotifyApi
-            //   .containsMySavedTracks([track.uri.split(":")[2]])
-            //   .then(
-            //     function (data) {
-            //       var trackIsInYourMusic = data.body[0];
-            //       if (trackIsInYourMusic) {
-            //         return true;
-            //       } else {
-            //         return false;
-            //       }
-            //     },
-            //     function (err) {
-            //       console.log("Something went wrong!", err);
-            //     }
-            //   );
+    // spotifyApi
+    //   .getRecommendations({ seed_genres: "happy,dance" })
+    //   .then((res) => {
+    //     //console.log(res.body);
+    //     setHappy(
+    //       res.body.tracks.map((track) => {
+    //         const isLiked = spotifyApi
+    //           .containsMySavedTracks([track.uri.split(":")[2]])
+    //           .then(
+    //             function (data) {
+    //               var trackIsInYourMusic = data.body[0];
+    //               if (trackIsInYourMusic) {
+    //                 return true;
+    //               } else {
+    //                 return false;
+    //               }
+    //             },
+    //             function (err) {
+    //               console.log("Something went wrong!", err);
+    //             }
+    //           );
 
-            const isLiked = new Promise((resolve, reject) => {
-              return "foo";
-            });
+    //         const isLiked = new Promise((resolve, reject) => {
+    //           return "foo";
+    //         });
 
-            const smallestAlbumImage = track.album.images.reduce(
-              (smallest, image) => {
-                if (image.height < smallest.height) return image;
-                return smallest;
-              },
-              track.album.images[0] //loop through images, if current.size < smallest -> update smallest
-            );
+    //         const smallestAlbumImage = track.album.images.reduce(
+    //           (smallest, image) => {
+    //             if (image.height < smallest.height) return image;
+    //             return smallest;
+    //           },
+    //           track.album.images[0] //loop through images, if current.size < smallest -> update smallest
+    //         );
 
-            const largestAlbumImage = track.album.images.reduce(
-              (largest, image) => {
-                if (image.height > largest.height) return image;
-                return largest;
-              },
-              track.album.images[0]
-            );
+    //         const largestAlbumImage = track.album.images.reduce(
+    //           (largest, image) => {
+    //             if (image.height > largest.height) return image;
+    //             return largest;
+    //           },
+    //           track.album.images[0]
+    //         );
 
-            return {
-              artist: track.artists[0].name,
-              title: track.name,
-              uri: track.uri,
-              albumUrl: smallestAlbumImage.url,
-              isLiked: isLiked,
-              image: largestAlbumImage.url,
-            };
-          })
-        );
-      });
+    //         return {
+    //           artist: track.artists[0].name,
+    //           title: track.name,
+    //           uri: track.uri,
+    //           albumUrl: smallestAlbumImage.url,
+    //           isLiked: isLiked,
+    //           image: largestAlbumImage.url,
+    //         };
+    //       })
+    //     );
+    //   });
 
-    spotifyApi
-      .getRecommendations({
-        seed_tracks:
-          "0YRYs1HSkie0eZ02ON4euX,4MzySNjSdv9ZegSD13IVNV,0ElpbbncWT9aS7mgoqEHbQ",
-        seed_genres: "acoustic,chill",
-      })
-      .then((res) => {
-        //console.log(res.body);
-        setAcoustic(
-          res.body.tracks.map((track) => {
-            // const isLiked = spotifyApi
-            //   .containsMySavedTracks([track.uri.split(":")[2]])
-            //   .then(
-            //     function (data) {
-            //       var trackIsInYourMusic = data.body[0];
-            //       if (trackIsInYourMusic) {
-            //         return true;
-            //       } else {
-            //         return false;
-            //       }
-            //     },
-            //     function (err) {
-            //       console.log("Something went wrong!", err);
-            //     }
-            //   );
+    // spotifyApi
+    //   .getRecommendations({
+    //     seed_tracks:
+    //       "0YRYs1HSkie0eZ02ON4euX,4MzySNjSdv9ZegSD13IVNV,0ElpbbncWT9aS7mgoqEHbQ",
+    //     seed_genres: "acoustic,chill",
+    //   })
+    //   .then((res) => {
+    //     //console.log(res.body);
+    //     setAcoustic(
+    //       res.body.tracks.map((track) => {
+    //         const isLiked = spotifyApi
+    //           .containsMySavedTracks([track.uri.split(":")[2]])
+    //           .then(
+    //             function (data) {
+    //               var trackIsInYourMusic = data.body[0];
+    //               if (trackIsInYourMusic) {
+    //                 return true;
+    //               } else {
+    //                 return false;
+    //               }
+    //             },
+    //             function (err) {
+    //               console.log("Something went wrong!", err);
+    //             }
+    //           );
 
-            const isLiked = new Promise((resolve, reject) => {
-              return "foo";
-            });
+    //         const isLiked = new Promise((resolve, reject) => {
+    //           return "foo";
+    //         });
 
-            const smallestAlbumImage = track.album.images.reduce(
-              (smallest, image) => {
-                if (image.height < smallest.height) return image;
-                return smallest;
-              },
-              track.album.images[0] //loop through images, if current.size < smallest -> update smallest
-            );
+    //         const smallestAlbumImage = track.album.images.reduce(
+    //           (smallest, image) => {
+    //             if (image.height < smallest.height) return image;
+    //             return smallest;
+    //           },
+    //           track.album.images[0] //loop through images, if current.size < smallest -> update smallest
+    //         );
 
-            const largestAlbumImage = track.album.images.reduce(
-              (largest, image) => {
-                if (image.height > largest.height) return image;
-                return largest;
-              },
-              track.album.images[0]
-            );
-            return {
-              artist: track.artists[0].name,
-              title: track.name,
-              uri: track.uri,
-              albumUrl: smallestAlbumImage.url,
-              isLiked: isLiked,
-              image: largestAlbumImage.url,
-            };
-          })
-        );
-      });
+    //         const largestAlbumImage = track.album.images.reduce(
+    //           (largest, image) => {
+    //             if (image.height > largest.height) return image;
+    //             return largest;
+    //           },
+    //           track.album.images[0]
+    //         );
+    //         return {
+    //           artist: track.artists[0].name,
+    //           title: track.name,
+    //           uri: track.uri,
+    //           albumUrl: smallestAlbumImage.url,
+    //           isLiked: isLiked,
+    //           image: largestAlbumImage.url,
+    //         };
+    //       })
+    //     );
+    //   });
 
     // spotifyApi
     //   .getRecommendations({
@@ -623,6 +600,145 @@ export default function Dashboard({ props, code }) {
         console.log("Something went wrong!", err);
       }
     );
+
+    spotifyApi.getNewReleases({ offset: 0, country: "US" }).then((res) => {
+      console.log(res.body);
+      setNewReleases(
+        res.body.albums.items.map((album) => {
+          const smallestAlbumImage = album.images.reduce(
+            (smallest, image) => {
+              if (image.height < smallest.height) return image;
+              return smallest;
+            },
+            album.images[0] //loop through images, if current.size < smallest -> update smallest
+          );
+
+          const largestAlbumImage = album.images.reduce((largest, image) => {
+            if (image.height > largest.height) return image;
+            return largest;
+          }, album.images[0]);
+
+          return {
+            artist: album.artists[0].name,
+            title: album.name,
+            uri: album.uri,
+            albumUrl: smallestAlbumImage.url,
+            image: largestAlbumImage.url,
+            id: album.id,
+          };
+        })
+      );
+    });
+
+
+    spotifyApi.searchPlaylists("Discover Weekly").then((p) => {
+      console.log(p.body);
+
+      spotifyApi.getPlaylist(p.body.playlists.items[0].id).then((res) => {
+        setDiscoverWeekly(
+          res.body.tracks.items.map((item) => {
+            // const isLiked = spotifyApi
+            //   .containsMySavedTracks([track.uri.split(":")[2]])
+            //   .then(
+            //     function (data) {
+            //       var trackIsInYourMusic = data.body[0];
+            //       if (trackIsInYourMusic) {
+            //         return true;
+            //       } else {
+            //         return false;
+            //       }
+            //     },
+            //     function (err) {
+            //       console.log("Something went wrong!", err);
+            //     }
+            //   );
+
+            const isLiked = new Promise((resolve, reject) => {
+              return "foo";
+            });
+
+            const smallestAlbumImage = item.track.album.images.reduce(
+              (smallest, image) => {
+                if (image.height < smallest.height) return image;
+                return smallest;
+              },
+              item.track.album.images[0]
+            );
+
+            const largestAlbumImage = item.track.album.images.reduce(
+              (largest, image) => {
+                if (image.height > largest.height) return image;
+                return largest;
+              },
+              item.track.album.images[0]
+            );
+            return {
+              artist: item.track.artists[0].name,
+              title: item.track.name,
+              uri: item.track.uri,
+              albumUrl: smallestAlbumImage.url,
+              isLiked: isLiked,
+              image: largestAlbumImage.url,
+            };
+          })
+        );
+      });
+    });
+    
+    spotifyApi.searchPlaylists("Release Radar").then((p) => {
+      console.log(p.body);
+
+      spotifyApi.getPlaylist(p.body.playlists.items[0].id).then((res) => {
+        setDiscoverDaily(
+          res.body.tracks.items.map((item) => {
+            // const isLiked = spotifyApi
+            //   .containsMySavedTracks([track.uri.split(":")[2]])
+            //   .then(
+            //     function (data) {
+            //       var trackIsInYourMusic = data.body[0];
+            //       if (trackIsInYourMusic) {
+            //         return true;
+            //       } else {
+            //         return false;
+            //       }
+            //     },
+            //     function (err) {
+            //       console.log("Something went wrong!", err);
+            //     }
+            //   );
+
+            const isLiked = new Promise((resolve, reject) => {
+              return "foo";
+            });
+
+            const smallestAlbumImage = item.track.album.images.reduce(
+              (smallest, image) => {
+                if (image.height < smallest.height) return image;
+                return smallest;
+              },
+              item.track.album.images[0]
+            );
+
+            const largestAlbumImage = item.track.album.images.reduce(
+              (largest, image) => {
+                if (image.height > largest.height) return image;
+                return largest;
+              },
+              item.track.album.images[0]
+            );
+            return {
+              artist: item.track.artists[0].name,
+              title: item.track.name,
+              uri: item.track.uri,
+              albumUrl: smallestAlbumImage.url,
+              isLiked: isLiked,
+              image: largestAlbumImage.url,
+            };
+          })
+        );
+      });
+    });
+    
   }, [accessToken]);
 
   useEffect(() => {
@@ -928,11 +1044,12 @@ export default function Dashboard({ props, code }) {
                 <h2>
                   {displayMessage}, {username}
                 </h2>
-
+                <br/> <br/> <br/>
                 {/* <h2>Based on your recent listening</h2> */}
                 {/* <h2>Go beyond with music for moods.</h2> */}
+                <h2>Discover New Music</h2>
                 <Row>
-                  <Card
+                  {/* <Card
                     className="cardItem"
                     style={{
                       width: "18rem",
@@ -945,24 +1062,28 @@ export default function Dashboard({ props, code }) {
                       setView("happy");
                     }}
                   >
-                    <Card.Img variant="top" style={{marginTop: "20px"}} src={happyImage} />
+                    <Card.Img
+                      variant="top"
+                      style={{ marginTop: "20px" }}
+                      src={happyImage}
+                    />
                     <Card.Body>
-                      <Card.Title>Daily Mix</Card.Title>
-                      {/* <Card.Text>
+                      <Card.Title style={{marginTop:"4px"}}>Daily Mix</Card.Title>
+                      <Card.Text>
                       Hits that are guaranteed to boost your mood!
-                    </Card.Text> */}
-                      {/* <Button
+                    </Card.Text>
+                      <Button
                         variant="primary"
                         onClick={() => {
                           setView("happy");
                         }}
                       >
                         CHECK IT OUT
-                      </Button> */}
+                      </Button>
                     </Card.Body>
-                  </Card>
+                  </Card> */}
 
-                  <Card
+                  {/* <Card
                     className="cardItem"
                     style={{
                       width: "18rem",
@@ -978,19 +1099,19 @@ export default function Dashboard({ props, code }) {
                     <Card.Img variant="top" style={{marginTop: "20px"}} src={calmImage} />
                     <Card.Body>
                       <Card.Title>Discover Weekly</Card.Title>
-                      {/* <Card.Text>
+                      <Card.Text>
                       Keep calm with this mix of laidback tracks.
-                    </Card.Text> */}
-                      {/* <Button
+                    </Card.Text>
+                      <Button
                         variant="primary"
                         onClick={() => {
                           setView("acoustic");
                         }}
                       >
                         CHECK IT OUT
-                      </Button> */}
+                      </Button>
                     </Card.Body>
-                  </Card>
+                  </Card> */}
 
                   {/* <Card
                   className="text-center"
@@ -1022,19 +1143,43 @@ export default function Dashboard({ props, code }) {
                       cursor: "pointer",
                       marginTop: "10px",
                       marginRight: "30px",
+                      marginLeft: "10px"
+                    }}
+                    onClick={() => {
+                      setView("discoverDaily");
+                    }}
+                  >
+                    <Card.Img
+                      variant="top"
+                      style={{ marginTop: "90px" }}
+                      src={taste}
+                    />
+                    <Card.Body>
+                      <Card.Title style={{marginTop:"17px"}}>Daily Mix</Card.Title>
+                    </Card.Body>
+                  </Card>
+                  
+                  <Card
+                    className="cardItem"
+                    style={{
+                      width: "18rem",
+                      height: "24rem",
+                      cursor: "pointer",
+                      marginTop: "10px",
+                      marginRight: "30px",
                     }}
                     onClick={() => {
                       setView("newReleases");
                     }}
                   >
                     <Card.Img
-                      style={{ marginTop: "85px" }}
+                      style={{ marginTop: "90px" }}
                       variant="center"
                       src={newImage}
                     />
                     <br />
                     <Card.Body>
-                      <Card.Title>New Releases</Card.Title>
+                      <Card.Title style={{marginTop:"17px"}}>New Releases</Card.Title>
                       {/* <Card.Text>
                       Keep calm with this mix of laidback tracks.
                     </Card.Text> */}
@@ -1046,6 +1191,29 @@ export default function Dashboard({ props, code }) {
                       >
                         CHECK IT OUT
                       </Button> */}
+                    </Card.Body>
+                  </Card>
+
+                  <Card
+                    className="cardItem"
+                    style={{
+                      width: "18rem",
+                      height: "24rem",
+                      cursor: "pointer",
+                      marginTop: "10px",
+                      marginRight: "30px",
+                    }}
+                    onClick={() => {
+                      setView("discoverWeekly");
+                    }}
+                  >
+                    <Card.Img
+                      variant="top"
+                      style={{ marginTop: "20px" }}
+                      src={mixtapeImage}
+                    />
+                    <Card.Body>
+                      <Card.Title>Your Weekly Mixtape</Card.Title>
                     </Card.Body>
                   </Card>
                 </Row>
@@ -1157,6 +1325,72 @@ export default function Dashboard({ props, code }) {
               </div>
 
               {albumTracks.map((track) => (
+                <TrackDetails
+                  track={track}
+                  key={track.uri}
+                  chooseTrack={chooseTrack}
+                  handleQueue={handleQueue}
+                  setShowToast={setShowToast}
+                  setShowModal={setShowModal}
+                  addTrackToPlaylist={addTrackToPlaylist}
+                  queue={queue}
+                  addToLikes={addToLikes}
+                  removeFromLikes={removeFromLikes}
+                />
+              ))}
+            </div>
+          )}
+
+          {view === "discoverWeekly" && searchResults.length === 0 && (
+              <div
+                className="scrollbar scrollbar-lady-lips"
+                style={{ width: "90%" }}
+               >
+              <div
+                style={{ font: "24px bold", color: "white", cursor: "pointer" }}
+              >
+                <FontAwesomeIcon
+                  icon="fa-solid fa-arrow-left fa-inverse"
+                  onClick={() => {
+                    setView("");
+                  }}
+                />
+              </div>
+
+              {discoverWeekly.map((track) => (
+                <TrackDetails
+                  track={track}
+                  key={track.uri}
+                  chooseTrack={chooseTrack}
+                  handleQueue={handleQueue}
+                  setShowToast={setShowToast}
+                  setShowModal={setShowModal}
+                  addTrackToPlaylist={addTrackToPlaylist}
+                  queue={queue}
+                  addToLikes={addToLikes}
+                  removeFromLikes={removeFromLikes}
+                />
+              ))}
+            </div>
+          )}
+          
+          {view === "discoverDaily" && searchResults.length === 0 && (
+              <div
+                className="scrollbar scrollbar-lady-lips"
+                style={{ width: "90%" }}
+               >
+              <div
+                style={{ font: "24px bold", color: "white", cursor: "pointer" }}
+              >
+                <FontAwesomeIcon
+                  icon="fa-solid fa-arrow-left fa-inverse"
+                  onClick={() => {
+                    setView("");
+                  }}
+                />
+              </div>
+
+              {discoverDaily.map((track) => (
                 <TrackDetails
                   track={track}
                   key={track.uri}
