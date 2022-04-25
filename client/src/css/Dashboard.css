@@ -15,6 +15,17 @@
     color: white;
 }
 
+.cardItem {
+  text-align: center;
+}
+
+.cardItem:hover {
+	/* cursor: pointer; */
+	background-color: rgb(60, 62, 77);
+	opacity: 0.9;
+	color: white;
+}
+
 /* .custom-scrollbars__content {
     overflow: auto;
     scrollbar-width: none;

@@ -2,7 +2,18 @@ import { useState, useEffect } from "react";
 import useAuth from "./useAuth";
 import Player from "./Player";
 import TrackSearchResult from "./TrackSearchResult";
-import {Container,Form,Card,Button,Row,Toast,ToastContainer,Modal,Accordion,Col,} from "react-bootstrap";
+import {
+  Container,
+  Form,
+  Card,
+  Button,
+  Row,
+  Toast,
+  ToastContainer,
+  Modal,
+  Accordion,
+  Col,
+} from "react-bootstrap";
 import SpotifyWebApi from "spotify-web-api-node";
 import axios from "axios";
 import Sidebar from "./Sidebar.jsx";
@@ -18,11 +29,13 @@ import TopArtists from "./TopArtists";
 import ArtistProfile from "./ArtistProfile";
 import Playlists from "./Playlists";
 import TrackDetails from "./TrackDetails";
+import AlbumDetails from "./AlbumDetails";
 
 import "../css/Dashboard.css";
 import happyImage from "../images/happy.jpg";
 import calmImage from "../images/calm.jpg";
 import sadImage from "../images/sad.jpg";
+import newImage from "../images/new.png";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
@@ -95,6 +108,10 @@ export default function Dashboard({ props, code }) {
   const [username, setUsername] = useState("");
 
   const [artist, setArtist] = useState("");
+
+  const [newReleases, setNewReleases] = useState([]);
+  const [newReleasesList, setNewReleasesList] = useState(""); //([]);
+  const [albumTracks, setAlbumTracks] = useState([]);
 
   useEffect(() => {
     //if(queue.length===0){ //showNext
@@ -369,13 +386,35 @@ export default function Dashboard({ props, code }) {
     if (!accessToken) return;
     spotifyApi.setAccessToken(accessToken);
 
-    // spotifyApi.getNewReleases({ limit : 5, offset: 0, country: 'US' })
-    // .then(function(data) {
-    //   console.log(data.body);
-    //   }, function(err) {
-    //      console.log("Something went wrong!", err);
-    //   });
-      
+    spotifyApi.getNewReleases({ offset: 0, country: "US" }).then((res) => {
+      console.log(res.body);
+      setNewReleases(
+        res.body.albums.items.map((album) => {
+          const smallestAlbumImage = album.images.reduce(
+            (smallest, image) => {
+              if (image.height < smallest.height) return image;
+              return smallest;
+            },
+            album.images[0] //loop through images, if current.size < smallest -> update smallest
+          );
+
+          const largestAlbumImage = album.images.reduce((largest, image) => {
+            if (image.height > largest.height) return image;
+            return largest;
+          }, album.images[0]);
+
+          return {
+            artist: album.artists[0].name,
+            title: album.name,
+            uri: album.uri,
+            albumUrl: smallestAlbumImage.url,
+            image: largestAlbumImage.url,
+            id: album.id,
+          };
+        })
+      );
+    });
+
     //   spotifyApi.getCategories({
     //     limit : 5,
     //     offset: 0,
@@ -387,7 +426,7 @@ export default function Dashboard({ props, code }) {
     // }, function(err) {
     //   console.log("Something went wrong!", err);
     // });
-    
+
     spotifyApi
       .getRecommendations({ seed_genres: "happy,dance" })
       .then((res) => {
@@ -637,7 +676,27 @@ export default function Dashboard({ props, code }) {
         />
       ))
     );
-  }, [happy, acoustic, sad]);
+
+    setNewReleasesList(
+      newReleases.map((album) => (
+        <AlbumDetails
+          accessToken={accessToken}
+          setView={setView}
+          setAlbumTracks={setAlbumTracks}
+          album={album}
+          key={album.uri}
+          chooseTrack={chooseTrack}
+          handleQueue={handleQueue}
+          setShowToast={setShowToast}
+          setShowModal={setShowModal}
+          addTrackToPlaylist={addTrackToPlaylist}
+          queue={queue}
+          addToLikes={addToLikes}
+          removeFromLikes={removeFromLikes}
+        />
+      ))
+    );
+  }, [happy, acoustic, sad, newReleases]);
 
   useEffect(() => {
     if (!search) return setSearchResults([]); //nth to search for
@@ -733,7 +792,7 @@ export default function Dashboard({ props, code }) {
           }
           </Container>
         </div> */}
-        
+
         <Sidebar
           accessToken={accessToken}
           showPlayer={showPlayer}
@@ -874,46 +933,62 @@ export default function Dashboard({ props, code }) {
                 {/* <h2>Go beyond with music for moods.</h2> */}
                 <Row>
                   <Card
-                    className="text-center"
-                    border="primary"
-                    style={{ width: "18rem" }}
+                    className="cardItem"
+                    style={{
+                      width: "18rem",
+                      height: "24rem",
+                      cursor: "pointer",
+                      marginTop: "10px",
+                      marginRight: "30px",
+                    }}
+                    onClick={() => {
+                      setView("happy");
+                    }}
                   >
-                    <Card.Img variant="top" src={happyImage} />
+                    <Card.Img variant="top" style={{marginTop: "20px"}} src={happyImage} />
                     <Card.Body>
                       <Card.Title>Daily Mix</Card.Title>
                       {/* <Card.Text>
                       Hits that are guaranteed to boost your mood!
                     </Card.Text> */}
-                      <Button
+                      {/* <Button
                         variant="primary"
                         onClick={() => {
                           setView("happy");
                         }}
                       >
                         CHECK IT OUT
-                      </Button>
+                      </Button> */}
                     </Card.Body>
                   </Card>
 
                   <Card
-                    className="text-center"
-                    border="primary"
-                    style={{ width: "18rem" }}
+                    className="cardItem"
+                    style={{
+                      width: "18rem",
+                      height: "24rem",
+                      cursor: "pointer",
+                      marginTop: "10px",
+                      marginRight: "30px",
+                    }}
+                    onClick={() => {
+                      setView("acoustic");
+                    }}
                   >
-                    <Card.Img variant="top" src={calmImage} />
+                    <Card.Img variant="top" style={{marginTop: "20px"}} src={calmImage} />
                     <Card.Body>
                       <Card.Title>Discover Weekly</Card.Title>
                       {/* <Card.Text>
                       Keep calm with this mix of laidback tracks.
                     </Card.Text> */}
-                      <Button
+                      {/* <Button
                         variant="primary"
                         onClick={() => {
                           setView("acoustic");
                         }}
                       >
                         CHECK IT OUT
-                      </Button>
+                      </Button> */}
                     </Card.Body>
                   </Card>
 
@@ -938,6 +1013,41 @@ export default function Dashboard({ props, code }) {
                     </Button>
                   </Card.Body>
                 </Card> */}
+
+                  <Card
+                    className="cardItem"
+                    style={{
+                      width: "18rem",
+                      height: "24rem",
+                      cursor: "pointer",
+                      marginTop: "10px",
+                      marginRight: "30px",
+                    }}
+                    onClick={() => {
+                      setView("newReleases");
+                    }}
+                  >
+                    <Card.Img
+                      style={{ marginTop: "85px" }}
+                      variant="center"
+                      src={newImage}
+                    />
+                    <br />
+                    <Card.Body>
+                      <Card.Title>New Releases</Card.Title>
+                      {/* <Card.Text>
+                      Keep calm with this mix of laidback tracks.
+                    </Card.Text> */}
+                      {/* <Button
+                        variant="primary"
+                        onClick={() => {
+                          setView("newReleases");
+                        }}
+                      >
+                        CHECK IT OUT
+                      </Button> */}
+                    </Card.Body>
+                  </Card>
                 </Row>
               </div>
             )}
@@ -950,6 +1060,16 @@ export default function Dashboard({ props, code }) {
                 width: "90%",
               }}
             >
+              <div
+                style={{ font: "24px bold", color: "white", cursor: "pointer" }}
+              >
+                <FontAwesomeIcon
+                  icon="fa-solid fa-arrow-left fa-inverse"
+                  onClick={() => {
+                    setView("");
+                  }}
+                />
+              </div>
               <Container className="d-flex flex-column py-2">
                 {/* <h1 style={{ textAlign: "center" }}>HAPPY MIX</h1> */}
                 <div>{happyList}</div>
@@ -974,10 +1094,82 @@ export default function Dashboard({ props, code }) {
 
           {view === "sad" && searchResults.length === 0 && (
             <div style={{ overflowY: "scroll", justifyContent: "center" }}>
+              <div
+                style={{ font: "24px bold", color: "white", cursor: "pointer" }}
+              >
+                <FontAwesomeIcon
+                  icon="fa-solid fa-arrow-left fa-inverse"
+                  onClick={() => {
+                    setView("");
+                  }}
+                />
+              </div>
               <Container className="d-flex flex-column py-2">
                 {/* <h1 style={{ textAlign: "center" }}>SAD</h1> */}
                 <div>{sadList}</div>
               </Container>
+            </div>
+          )}
+
+          {view === "newReleases" && searchResults.length === 0 && (
+            <Row
+              className="scrollbar scrollbar-lady-lips"
+              style={{
+                overflowY: "scroll",
+                width: "90%",
+                overflowY: "scroll",
+                justifyContent: "center",
+              }}
+            >
+              <div
+                style={{ font: "24px bold", color: "white", cursor: "pointer" }}
+              >
+                <FontAwesomeIcon
+                  icon="fa-solid fa-arrow-left fa-inverse"
+                  onClick={() => {
+                    setView("");
+                  }}
+                />
+              </div>
+              <h1 style={{ textAlign: "center", color: "white" }}>
+                {" "}
+                New Releases
+              </h1>
+
+              {newReleasesList}
+            </Row>
+          )}
+
+          {view === "newReleasesDetails" && searchResults.length === 0 && (
+            <div
+              className="scrollbar scrollbar-lady-lips"
+              style={{ width: "90%" }}
+            >
+              <div
+                style={{ font: "24px bold", color: "white", cursor: "pointer" }}
+              >
+                <FontAwesomeIcon
+                  icon="fa-solid fa-arrow-left fa-inverse"
+                  onClick={() => {
+                    setView("newReleases");
+                  }}
+                />
+              </div>
+
+              {albumTracks.map((track) => (
+                <TrackDetails
+                  track={track}
+                  key={track.uri}
+                  chooseTrack={chooseTrack}
+                  handleQueue={handleQueue}
+                  setShowToast={setShowToast}
+                  setShowModal={setShowModal}
+                  addTrackToPlaylist={addTrackToPlaylist}
+                  queue={queue}
+                  addToLikes={addToLikes}
+                  removeFromLikes={removeFromLikes}
+                />
+              ))}
             </div>
           )}
 
@@ -1055,17 +1247,19 @@ export default function Dashboard({ props, code }) {
           {view === "artistProfile" && searchResults.length === 0 && (
             <div
               className="scrollbar scrollbar-lady-lips"
-              style={{ width: "90%"}}
+              style={{ width: "90%" }}
             >
-              <ArtistProfile accessToken={accessToken} artist={artist}
-              chooseTrack={chooseTrack}
-              handleQueue={handleQueue}
-              setShowToast={setShowToast}
-              setShowModal={setShowModal}
-              addTrackToPlaylist={addTrackToPlaylist}
-              queue={queue}
-              addToLikes={addToLikes}
-              removeFromLikes={removeFromLikes}
+              <ArtistProfile
+                accessToken={accessToken}
+                artist={artist}
+                chooseTrack={chooseTrack}
+                handleQueue={handleQueue}
+                setShowToast={setShowToast}
+                setShowModal={setShowModal}
+                addTrackToPlaylist={addTrackToPlaylist}
+                queue={queue}
+                addToLikes={addToLikes}
+                removeFromLikes={removeFromLikes}
               />
             </div>
           )}

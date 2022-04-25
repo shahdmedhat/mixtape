@@ -98,7 +98,7 @@ export default function ArtistProfile(props) {
 
   return (
     <Row style={{width:"100%", overflowY: "scroll", justifyContent: "center", overflow:'hidden'}}>
-      <Card className="text-center" style={{ width: "16rem",height: "26rem" , textAlign: "center" }}>
+      <Card className="text-center" style={{ width: "18rem",height: "26rem" , paddingTop: "50px" }}>
         <Card.Img variant="center" src={props.artist.image} />
         <Card.Body>
           <Card.Title>{props.artist.name}</Card.Title>
@@ -121,7 +121,7 @@ export default function ArtistProfile(props) {
         }}
       >
         <Container className="d-flex flex-column py-2">
-          <h1 style={{ textAlign: "center", color: "white" }}> Popular</h1>
+          <h1 style={{ textAlign: "center", color: "white" }}> Popular Songs</h1>
           <div>{list}</div>
         </Container>
       </div>
