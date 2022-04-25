@@ -38,10 +38,22 @@ export default function TopArtists(props) {
             },
             artist.images[0] //loop through images, if current.size < smallest -> update smallest
           );
+          
+          const largestAlbumImage = artist.images.reduce(
+            (largest, image) => {
+              if (image.height > largest.height) return image;
+              return largest;
+            },
+            artist.images[0]
+          );
+          
           return {
             name: artist.name,
             uri: artist.uri,
             artistUrl: smallestAlbumImage.url,
+            image: largestAlbumImage.url,
+            id: artist.id, 
+            followers: artist.followers.total
           };
         })
       );

@@ -2,18 +2,7 @@ import { useState, useEffect } from "react";
 import useAuth from "./useAuth";
 import Player from "./Player";
 import TrackSearchResult from "./TrackSearchResult";
-import {
-  Container,
-  Form,
-  Card,
-  Button,
-  Row,
-  Toast,
-  ToastContainer,
-  Modal,
-  Accordion,
-  Col,
-} from "react-bootstrap";
+import {Container,Form,Card,Button,Row,Toast,ToastContainer,Modal,Accordion,Col,} from "react-bootstrap";
 import SpotifyWebApi from "spotify-web-api-node";
 import axios from "axios";
 import Sidebar from "./Sidebar.jsx";
@@ -1066,9 +1055,18 @@ export default function Dashboard({ props, code }) {
           {view === "artistProfile" && searchResults.length === 0 && (
             <div
               className="scrollbar scrollbar-lady-lips"
-              style={{ width: "90%" }}
+              style={{ width: "90%"}}
             >
-              <ArtistProfile accessToken={accessToken} />
+              <ArtistProfile accessToken={accessToken} artist={artist}
+              chooseTrack={chooseTrack}
+              handleQueue={handleQueue}
+              setShowToast={setShowToast}
+              setShowModal={setShowModal}
+              addTrackToPlaylist={addTrackToPlaylist}
+              queue={queue}
+              addToLikes={addToLikes}
+              removeFromLikes={removeFromLikes}
+              />
             </div>
           )}
 
