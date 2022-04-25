@@ -2,7 +2,18 @@ import { useState, useEffect } from "react";
 import useAuth from "./useAuth";
 import Player from "./Player";
 import TrackSearchResult from "./TrackSearchResult";
-import {Container,Form,Card,Button,Row,Toast,ToastContainer,Modal,Accordion} from "react-bootstrap";
+import {
+  Container,
+  Form,
+  Card,
+  Button,
+  Row,
+  Toast,
+  ToastContainer,
+  Modal,
+  Accordion,
+  Col,
+} from "react-bootstrap";
 import SpotifyWebApi from "spotify-web-api-node";
 import axios from "axios";
 import Sidebar from "./Sidebar.jsx";
@@ -39,7 +50,7 @@ const spotifyApi = new SpotifyWebApi({
 
 export default function Dashboard({ props, code }) {
   let location = useLocation(); //---------------
-  
+
   const accessToken = useAuth(code);
 
   if (accessToken === "undefined") {
@@ -93,7 +104,7 @@ export default function Dashboard({ props, code }) {
 
   const [accordionOpened, setAccordionOpened] = useState(false);
   const [username, setUsername] = useState("");
-  
+
   const [artist, setArtist] = useState("");
 
   useEffect(() => {
@@ -106,9 +117,9 @@ export default function Dashboard({ props, code }) {
     setTimeout(() => {
       setPlay(true);
     }, 1000);
-    
-    playingTrack? console.log(playingTrack): console.log("");
-    
+
+    playingTrack ? console.log(playingTrack) : console.log("");
+
     //setQueue([]); //????????
   }, [playingTrack]);
 
@@ -170,24 +181,24 @@ export default function Dashboard({ props, code }) {
     var today = new Date();
     var time = today.toLocaleTimeString();
     //console.log(time);
-    
-    if (time.split(" ")[1]==="AM"){
-      if(parseInt(time.split(" ")[0].split(":")[0])>=6 && parseInt(time.split(" ")[0].split(":")[0])<12){
+
+    if (time.split(" ")[1] === "AM") {
+      if (
+        parseInt(time.split(" ")[0].split(":")[0]) >= 6 &&
+        parseInt(time.split(" ")[0].split(":")[0]) < 12
+      ) {
         setDisplayMessage("Good Morning");
-      }
-      else{
+      } else {
         setDisplayMessage("Good Evening");
       }
-    }
-    else{ //PM
-      if(parseInt(time.split(" ")[0].split(":")[0])>=6){
+    } else {
+      //PM
+      if (parseInt(time.split(" ")[0].split(":")[0]) >= 6) {
         setDisplayMessage("Good Evening");
-      }
-      else{
+      } else {
         setDisplayMessage("Good Afternoon");
       }
     }
-    
   }
 
   function chooseTrack(track) {
@@ -369,6 +380,25 @@ export default function Dashboard({ props, code }) {
     if (!accessToken) return;
     spotifyApi.setAccessToken(accessToken);
 
+    // spotifyApi.getNewReleases({ limit : 5, offset: 0, country: 'US' })
+    // .then(function(data) {
+    //   console.log(data.body);
+    //   }, function(err) {
+    //      console.log("Something went wrong!", err);
+    //   });
+      
+    //   spotifyApi.getCategories({
+    //     limit : 5,
+    //     offset: 0,
+    //     country: 'US',
+    //     locale: 'sv_US'
+    // })
+    // .then(function(data) {
+    //   console.log(data.body);
+    // }, function(err) {
+    //   console.log("Something went wrong!", err);
+    // });
+    
     spotifyApi
       .getRecommendations({ seed_genres: "happy,dance" })
       .then((res) => {
@@ -535,7 +565,8 @@ export default function Dashboard({ props, code }) {
     // setSecondColor("#FFFFFF");
     // setPlaylists(true);
 
-    spotifyApi.getUserPlaylists().then((res) => { //add to playlist
+    spotifyApi.getUserPlaylists().then((res) => {
+      //add to playlist
       setPlaylistsInfo(
         res.body.items.map((playlist) => {
           const smallestAlbumImage = playlist.images.reduce(
@@ -555,13 +586,15 @@ export default function Dashboard({ props, code }) {
         })
       );
     });
-    
-    spotifyApi.getMe().then(function(data) {
-      setUsername(data.body.display_name)
-    }, function(err) {
-      console.log('Something went wrong!', err);
-    });
-    
+
+    spotifyApi.getMe().then(
+      function(data) {
+        setUsername(data.body.display_name);
+      },
+      function(err) {
+        console.log("Something went wrong!", err);
+      }
+    );
   }, [accessToken]);
 
   useEffect(() => {
@@ -668,6 +701,50 @@ export default function Dashboard({ props, code }) {
       <div className="dashboard">
         {/* <Scrollbar/> */}
 
+        {/* //ADDED DIV */}
+        {/* <div
+          className="scrollbar scrollbar-lady-lips"
+          style={{
+            float: "right",
+            justifyContent: "center",
+            color: "white",
+            width: "430px",
+            height: "35vh",
+            overflowY: "scroll",
+            marginRight: "5px",
+            border: "2px solid white",
+            marginTop: "8px"
+          }}
+        >
+          <Container className="d-flex flex-column py-2">
+            {queue.length === 0 && (
+              <h3 style={{ textAlign: "center", margin: "auto"}}> Queue is empty.</h3>
+            )}
+            
+            {queue.length!==0 &&
+            <div>
+             <h3 style={{ textAlign: "center", margin: "auto"}}> Queue</h3>
+             <br/>
+            {queue.map((track) => (
+              <TrackDetails
+                track={track}
+                key={track.uri}
+                chooseTrack={chooseTrack}
+                handleQueue={handleQueue}
+                setShowToast={setShowToast}
+                setShowModal={setShowModal}
+                addTrackToPlaylist={addTrackToPlaylist}
+                queue={queue}
+                addToLikes={addToLikes}
+                removeFromLikes={removeFromLikes}
+                showQueue={true}
+              />
+            ))}
+            </div>
+          }
+          </Container>
+        </div> */}
+        
         <Sidebar
           accessToken={accessToken}
           showPlayer={showPlayer}
@@ -676,14 +753,14 @@ export default function Dashboard({ props, code }) {
 
         <Container
           className="d-flex flex-column py-2"
-          style={{ height: "100vh" }}
+          style={{ height: "100vh", marginLeft: "275px" }} //ADDED WIDTH 50%?
         >
           <Form.Control
             type="search"
             placeholder="Search Songs/Artists"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            style={{width: "90%"}}
+            style={{ width: "90%" }}
           />
 
           {/* <MusicBot setActivity={setActivity}/> */}
@@ -725,7 +802,6 @@ export default function Dashboard({ props, code }) {
                   </Button>
                 </Form>
                 <br /> <br />
-                
                 <Row>
                   {playlistsInfo.map((playlist) => (
                     <div style={{ borderRadius: "30px" }}>
@@ -795,13 +871,15 @@ export default function Dashboard({ props, code }) {
           {/* <Playlists chooseTrack={chooseTrack} accessToken={accessToken}/> */}
 
           {/* <h2>{displayMessage}</h2> */}
-          { view==="" &&
+          {view === "" &&
             !player &&
             !accordionOpened &&
-            username!=="" &&
+            username !== "" &&
             searchResults.length === 0 && (
               <div>
-                <h2>{displayMessage}, {username}</h2>
+                <h2>
+                  {displayMessage}, {username}
+                </h2>
 
                 {/* <h2>Based on your recent listening</h2> */}
                 {/* <h2>Go beyond with music for moods.</h2> */}
@@ -875,7 +953,7 @@ export default function Dashboard({ props, code }) {
               </div>
             )}
 
-          {view==="happy" && searchResults.length === 0 && (
+          {view === "happy" && searchResults.length === 0 && (
             <div
               style={{
                 overflowY: "scroll",
@@ -890,7 +968,7 @@ export default function Dashboard({ props, code }) {
             </div>
           )}
 
-          {view==="acoustic" && searchResults.length === 0 && (
+          {view === "acoustic" && searchResults.length === 0 && (
             <div
               style={{
                 overflowY: "scroll",
@@ -905,7 +983,7 @@ export default function Dashboard({ props, code }) {
             </div>
           )}
 
-          {view==="sad" && searchResults.length === 0 && (
+          {view === "sad" && searchResults.length === 0 && (
             <div style={{ overflowY: "scroll", justifyContent: "center" }}>
               <Container className="d-flex flex-column py-2">
                 {/* <h1 style={{ textAlign: "center" }}>SAD</h1> */}
@@ -914,7 +992,7 @@ export default function Dashboard({ props, code }) {
             </div>
           )}
 
-          {view==="likes" && searchResults.length === 0 && (
+          {view === "likes" && searchResults.length === 0 && (
             <div
               className="scrollbar scrollbar-lady-lips"
               style={{ width: "90%" }}
@@ -936,7 +1014,7 @@ export default function Dashboard({ props, code }) {
             </div>
           )}
 
-          {view==="rec" && searchResults.length === 0 && (
+          {view === "rec" && searchResults.length === 0 && (
             <div
               className="scrollbar scrollbar-lady-lips"
               style={{ width: "90%" }}
@@ -954,7 +1032,7 @@ export default function Dashboard({ props, code }) {
             </div>
           )}
 
-          {view==="topSongs" && searchResults.length === 0 && (
+          {view === "topSongs" && searchResults.length === 0 && (
             <div
               className="scrollbar scrollbar-lady-lips"
               style={{ width: "90%" }}
@@ -972,25 +1050,29 @@ export default function Dashboard({ props, code }) {
             </div>
           )}
 
-          {view==="artists" && searchResults.length === 0 && (
+          {view === "artists" && searchResults.length === 0 && (
             <div
               className="scrollbar scrollbar-lady-lips"
               style={{ width: "90%" }}
             >
-              <TopArtists chooseTrack={chooseTrack} setView={setView} setArtist={setArtist} />
-            </div>
-          )}
-          
-          {view==="artistProfile" && searchResults.length === 0 && (
-            <div
-              className="scrollbar scrollbar-lady-lips"
-              style={{ width: "90%" }}
-            >
-              <ArtistProfile accessToken={props.accessToken} />
+              <TopArtists
+                chooseTrack={chooseTrack}
+                setView={setView}
+                setArtist={setArtist}
+              />
             </div>
           )}
 
-          {view==="playlists" && searchResults.length === 0 && (
+          {view === "artistProfile" && searchResults.length === 0 && (
+            <div
+              className="scrollbar scrollbar-lady-lips"
+              style={{ width: "90%" }}
+            >
+              <ArtistProfile accessToken={accessToken} />
+            </div>
+          )}
+
+          {view === "playlists" && searchResults.length === 0 && (
             <div
               className="scrollbar scrollbar-lady-lips"
               style={{ width: "90%" }}
@@ -1069,7 +1151,11 @@ export default function Dashboard({ props, code }) {
 
             <Accordion flush>
               <Accordion.Item eventKey="0">
-                <Accordion.Header onClick={() => {setAccordionOpened(!accordionOpened)}}>
+                <Accordion.Header
+                  onClick={() => {
+                    setAccordionOpened(!accordionOpened);
+                  }}
+                >
                   {/* <Col>
               <Button
                 variant="success"
@@ -1084,112 +1170,123 @@ export default function Dashboard({ props, code }) {
                   <h5 style={{ color: "rgb(60, 62, 77)" }}>Lyrics</h5>
                 </Accordion.Header>
                 <Accordion.Body>
-                  <div className="scrollbar scrollbar-lady-lips" style={{backgroundColor: "rgb(60, 62, 77)", height:"660px"}}>
-                  {queue.length!==0 &&
-                  <div style={{float: "right"}}>
-                  <br/>
-                  <Button
-                      variant="success"
-                      size="lg"
-                      style={{ marginRight: "30px" }}
-                      onClick={() => {
-                        showQueue();
-                      }}
-                    >
-                      Queue
-                    </Button>
-                  </div>
-                  }
-                  
-                  <br/>
-                  <div style={{ textAlign: "center" }}>
-                    {playingTrack && queue.length ===0 ? (
-                      <img
-                        src={playingTrack.image}
-                        style={{ height: "230px", width: "230px" }}
-                        alt="albumUrl"
-                      />
-                    ) : (
-                    " "
-                    )}
-                    
-                    {playingTrack && queue.length !==0 ? (
-                      <img
-                        src={playingTrack.image}
-                        style={{ height: "230px", width: "230px", marginLeft: "145px"}}
-                        alt="albumUrl"
-                      />
-                    ) : (
-                    " "
-                    )}
-                    
-                    {queue.length!==0 && 
-                    <FontAwesomeIcon
-                      icon="fa-solid fa-forward"
-                      size="lg"
-                      style={{ cursor: "pointer", marginLeft: "30px" }}
-                      inverse
-                      onClick={() => {
-                        if (queue.length === 0) {
-                          console.log("Nothing to play...");
-                        } else {
-                          let next = queue.shift();
-                          setPlayingTrack(next);
-                        }
-                      }}
-                    />
-                  }
-                  
-                  </div>
-
-                  <br />
-                  
                   <div
+                    className="scrollbar scrollbar-lady-lips"
                     style={{
-                      whiteSpace: "pre",
-                      color: "white",
-                      textAlign: "center",
-                      fontSize: "20px",
-                      overflowY: "hidden",
-                      // backgroundColor: "rgb(60, 62, 77)",
-                      
+                      backgroundColor: "rgb(60, 62, 77)",
+                      height: "660px",
                     }}
                   >
-                    {lyrics ? lyrics : "Nothing is being played yet."}
-                
-                    {queueModal && (
-                      <Modal
-                        show={queueModal}
-                        size="lg"
-                        onHide={() => showQueueModal(false)}
-                      >
-                        <Modal.Header closeButton>
-                          <Modal.Title>Queue</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>
-                          {queue.length===0 && 
-                            <h3 style={{ textAlign: "center"}}> Queue is empty.</h3>
-                          }
-                          
-                          {queue.map((track) => (
-                            <TrackDetails
-                              track={track}
-                              key={track.uri}
-                              chooseTrack={chooseTrack}
-                              handleQueue={handleQueue}
-                              setShowToast={setShowToast}
-                              setShowModal={setShowModal}
-                              addTrackToPlaylist={addTrackToPlaylist}
-                              queue={queue}
-                              addToLikes={addToLikes}
-                              removeFromLikes={removeFromLikes}
-                              showQueue={true}
-                            />
-                          ))}
-                        </Modal.Body>
-                      </Modal>
+                    {queue.length !== 0 && (
+                      <div style={{ float: "right" }}>
+                        <br />
+                        <Button
+                          variant="success"
+                          size="lg"
+                          style={{ marginRight: "30px" }}
+                          onClick={() => {
+                            showQueue();
+                          }}
+                        >
+                          Queue
+                        </Button>
+                      </div>
                     )}
-                  </div>
+
+                    <br />
+                    <div style={{ textAlign: "center" }}>
+                      {playingTrack && queue.length === 0 ? (
+                        <img
+                          src={playingTrack.image}
+                          style={{ height: "230px", width: "230px" }}
+                          alt="albumUrl"
+                        />
+                      ) : (
+                        " "
+                      )}
+
+                      {playingTrack && queue.length !== 0 ? (
+                        <img
+                          src={playingTrack.image}
+                          style={{
+                            height: "230px",
+                            width: "230px",
+                            marginLeft: "145px",
+                          }}
+                          alt="albumUrl"
+                        />
+                      ) : (
+                        " "
+                      )}
+
+                      {queue.length !== 0 && (
+                        <FontAwesomeIcon
+                          icon="fa-solid fa-forward"
+                          size="lg"
+                          style={{ cursor: "pointer", marginLeft: "30px" }}
+                          inverse
+                          onClick={() => {
+                            if (queue.length === 0) {
+                              console.log("Nothing to play...");
+                            } else {
+                              let next = queue.shift();
+                              setPlayingTrack(next);
+                            }
+                          }}
+                        />
+                      )}
+                    </div>
+
+                    <br />
+
+                    <div
+                      style={{
+                        whiteSpace: "pre",
+                        color: "white",
+                        textAlign: "center",
+                        fontSize: "20px",
+                        overflowY: "hidden",
+                        // backgroundColor: "rgb(60, 62, 77)",
+                      }}
+                    >
+                      {lyrics ? lyrics : "Nothing is being played yet."}
+
+                      {queueModal && (
+                        <Modal
+                          show={queueModal}
+                          size="lg"
+                          onHide={() => showQueueModal(false)}
+                        >
+                          <Modal.Header closeButton>
+                            <Modal.Title>Queue</Modal.Title>
+                          </Modal.Header>
+                          <Modal.Body>
+                            {queue.length === 0 && (
+                              <h3 style={{ textAlign: "center" }}>
+                                {" "}
+                                Queue is empty.
+                              </h3>
+                            )}
+
+                            {queue.map((track) => (
+                              <TrackDetails
+                                track={track}
+                                key={track.uri}
+                                chooseTrack={chooseTrack}
+                                handleQueue={handleQueue}
+                                setShowToast={setShowToast}
+                                setShowModal={setShowModal}
+                                addTrackToPlaylist={addTrackToPlaylist}
+                                queue={queue}
+                                addToLikes={addToLikes}
+                                removeFromLikes={removeFromLikes}
+                                showQueue={true}
+                              />
+                            ))}
+                          </Modal.Body>
+                        </Modal>
+                      )}
+                    </div>
                   </div>
                 </Accordion.Body>
               </Accordion.Item>
