@@ -9,6 +9,8 @@
 .dashboard {
     background: linear-gradient(to top right, var(--x), var(--y));
     overflow-y: scroll;
+    /* display: flex;
+    width: 100% */
 }
 
 .dashboard h2{

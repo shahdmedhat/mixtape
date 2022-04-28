@@ -15,6 +15,7 @@ import {
 } from "react-router-dom";
 
 const code = new URLSearchParams(window.location.search).get("code");
+// var view = "";
 
 function App() {
   return (

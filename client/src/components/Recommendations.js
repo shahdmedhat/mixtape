@@ -105,9 +105,9 @@ export default function Recommendations(props) {
         );
     });
   }
-    // spotifyApi.getAvailableGenreSeeds().then((res) => {
-    //   console.log(res.body);
-    // });
+    spotifyApi.getAvailableGenreSeeds().then((res) => {
+      console.log(res.body);
+    });
     
    }, [accessToken,topFive]);
 

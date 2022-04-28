@@ -50,7 +50,7 @@ function resetAll(){
         <NavLink
           // key={"myRoute"}
           to="/"
-          state={{ accessToken: accessToken }}
+          state={{ accessToken: accessToken}} // view: `${""}` 
           className="item"
           activeClassName="active"
           onClick={resetAll} 
@@ -69,7 +69,7 @@ function resetAll(){
         <NavLink
           // key={"myRoute"}
           to="/" // "/likes"
-          state={{ accessToken: accessToken }}
+          state={{ accessToken: accessToken }} //view: `${"likes"}`
           className="item"
           activeClassName="active"
           onClick={handleLike} 
@@ -142,30 +142,48 @@ function resetAll(){
 
       {/* Footer on mobile */}
       <section className="sidebar-mobile">
-        <NavLink exact to="/" className="item" activeClassName="active">
+        <NavLink      
+          to="/"
+          state={{ accessToken: accessToken }}
+          className="item"
+          activeClassName="active"
+          onClick={resetAll} >
           <FontAwesomeIcon className="icon" icon={faHome} />
           <span>Home</span>
         </NavLink>
-
-        <NavLink exact to="/discover" className="item" activeClassName="active">
+        
+        <NavLink
+          to="/" 
+          state={{ accessToken: accessToken }}
+          className="item"
+          activeClassName="active"
+          onClick={handleLike} 
+        >
+          <FontAwesomeIcon className="icon" icon={faHeart} />
+          <span>Likes</span>
+        </NavLink>
+        
+        <NavLink           
+          to="/"
+          state={{ accessToken: accessToken}}
+          className="item"
+          activeClassName="active"
+          onClick={handlePlaylists} >
+          <FontAwesomeIcon className="icon" icon={faBroadcastTower} />
+          <span>Playlists</span>
+        </NavLink>
+        
+        <NavLink           
+          exact
+          to="/"
+          state={{ accessToken: accessToken }}
+          className="item"
+          activeClassName="active"
+          onClick={handleRec} >
           <FontAwesomeIcon className="icon" icon={faSearch} />
           <span>Discover</span>
         </NavLink>
 
-        <NavLink
-          exact
-          to="/favorites"
-          className="item"
-          activeClassName="active"
-        >
-          <FontAwesomeIcon className="icon" icon={faHeart} />
-          <span>Favorites</span>
-        </NavLink>
-
-        <NavLink exact to="/radio" className="item" activeClassName="active">
-          <FontAwesomeIcon className="icon" icon={faBroadcastTower} />
-          <span>Radio</span>
-        </NavLink>
       </section>
     </div>
   );

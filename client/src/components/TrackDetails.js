@@ -109,7 +109,7 @@ export default function TrackDetails(props) {
                 }}
               />
 
-              
+            {/* <div class="d-grid gap-2 d-md-block"> */}
                 <Button
                   variant="success"
                   onClick={() => {
@@ -118,7 +118,7 @@ export default function TrackDetails(props) {
                 >
                   Add To Queue
                 </Button>
-
+            {/* </div> */}
             </Container>
            )}
           </div>

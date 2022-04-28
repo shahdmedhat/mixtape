@@ -98,7 +98,7 @@ export default function ArtistProfile(props) {
 
   return (
     <Row style={{width:"100%", overflowY: "scroll", justifyContent: "center", overflow:'hidden'}}>
-      <Card className="text-center" style={{ width: "18rem",height: "26rem" , paddingTop: "50px" }}>
+      <Card className="text-center" style={{ width: "18rem",height: "26rem" , paddingTop: "50px",position:"relative", marginTop:"70px" }}>
         <Card.Img variant="center" src={props.artist.image} />
         <Card.Body>
           <Card.Title>{props.artist.name}</Card.Title>

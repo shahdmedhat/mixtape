@@ -74,7 +74,6 @@ export default function AlbumDetails(props) {
   return (
     <Card
     className="cardItem"
-    border="primary"
     style={{ width: "14rem", height:"21rem", marginRight: "50px", marginBottom: "20px", textAlign: "center", cursor: "pointer" }}
     onClick={() => {openAlbum()}}
   >

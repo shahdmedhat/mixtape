@@ -31,6 +31,9 @@ import Playlists from "./Playlists";
 import TrackDetails from "./TrackDetails";
 import AlbumDetails from "./AlbumDetails";
 
+import useWindowSize from "./useWindowSize";
+import Token from "./Token";
+
 import "../css/Dashboard.css";
 import happyImage from "../images/happy.jpg";
 import calmImage from "../images/calm.jpg";
@@ -38,6 +41,7 @@ import sadImage from "../images/sad.jpg";
 import newImage from "../images/new.png";
 import mixtapeImage from "../images/mixtape.jpg";
 import taste from "../images/taste.jpg";
+import jazz from "../images/jazz.gif";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
@@ -46,16 +50,21 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useLocation } from "react-router-dom"; //---------------
 import SpotifyPlayer from "react-spotify-web-playback";
 
+import { memo } from "react";
+
 library.add(fas);
 
 const spotifyApi = new SpotifyWebApi({
   clientId: "f6f8e70042bb47cd9c82ef26e1cb83a7",
 });
 
-export default function Dashboard({ props, code }) {
+// export default 
+function Dashboard({ props, code }) {
   let location = useLocation(); //---------------
+  //console.log(location.state);
 
   const accessToken = useAuth(code);
+  //const accessToken = props.accessToken;
 
   if (accessToken === "undefined") {
     //---------------
@@ -84,7 +93,7 @@ export default function Dashboard({ props, code }) {
   const [displayMessage, setDisplayMessage] = useState("");
 
   const [player, showPlayer] = useState(false);
-  const [view, setView] = useState("");
+  const [view, setView] = useState(""); //location.state!==null?location.state.view:
 
   const [firstColor, setFirstColor] = useState("#41295a");
   const [secondColor, setSecondColor] = useState("#2F0743");
@@ -118,6 +127,8 @@ export default function Dashboard({ props, code }) {
 
   const [discoverWeekly, setDiscoverWeekly] = useState([]);
   const [discoverDaily, setDiscoverDaily] = useState([]);
+
+  const { width } = useWindowSize();
 
   useEffect(() => {
     //if(queue.length===0){ //showNext
@@ -192,7 +203,7 @@ export default function Dashboard({ props, code }) {
   function currentTime() {
     var today = new Date();
     var time = today.toLocaleTimeString();
-    //console.log(time);
+    //console.log(width);
 
     if (time.split(" ")[1] === "AM") {
       if (
@@ -205,7 +216,10 @@ export default function Dashboard({ props, code }) {
       }
     } else {
       //PM
-      if (parseInt(time.split(" ")[0].split(":")[0]) >= 6) {
+      if (
+        parseInt(time.split(" ")[0].split(":")[0]) >= 6 &&
+        parseInt(time.split(" ")[0].split(":")[0]) < 12
+      ) {
         setDisplayMessage("Good Evening");
       } else {
         setDisplayMessage("Good Afternoon");
@@ -458,62 +472,62 @@ export default function Dashboard({ props, code }) {
     //     );
     //   });
 
-    // spotifyApi
-    //   .getRecommendations({
-    //     seed_tracks:
-    //       "0YRYs1HSkie0eZ02ON4euX,4MzySNjSdv9ZegSD13IVNV,0ElpbbncWT9aS7mgoqEHbQ",
-    //     seed_genres: "acoustic,chill",
-    //   })
-    //   .then((res) => {
-    //     //console.log(res.body);
-    //     setAcoustic(
-    //       res.body.tracks.map((track) => {
-    //         const isLiked = spotifyApi
-    //           .containsMySavedTracks([track.uri.split(":")[2]])
-    //           .then(
-    //             function (data) {
-    //               var trackIsInYourMusic = data.body[0];
-    //               if (trackIsInYourMusic) {
-    //                 return true;
-    //               } else {
-    //                 return false;
-    //               }
-    //             },
-    //             function (err) {
-    //               console.log("Something went wrong!", err);
-    //             }
-    //           );
+    spotifyApi
+      .getRecommendations({
+        seed_tracks:
+          "0YRYs1HSkie0eZ02ON4euX,4MzySNjSdv9ZegSD13IVNV,0ElpbbncWT9aS7mgoqEHbQ",
+        seed_genres: "acoustic,chill",
+      })
+      .then((res) => {
+        //console.log(res.body);
+        setAcoustic(
+          res.body.tracks.map((track) => {
+            // const isLiked = spotifyApi
+            //   .containsMySavedTracks([track.uri.split(":")[2]])
+            //   .then(
+            //     function (data) {
+            //       var trackIsInYourMusic = data.body[0];
+            //       if (trackIsInYourMusic) {
+            //         return true;
+            //       } else {
+            //         return false;
+            //       }
+            //     },
+            //     function (err) {
+            //       console.log("Something went wrong!", err);
+            //     }
+            //   );
 
-    //         const isLiked = new Promise((resolve, reject) => {
-    //           return "foo";
-    //         });
+            const isLiked = new Promise((resolve, reject) => {
+              return "foo";
+            });
 
-    //         const smallestAlbumImage = track.album.images.reduce(
-    //           (smallest, image) => {
-    //             if (image.height < smallest.height) return image;
-    //             return smallest;
-    //           },
-    //           track.album.images[0] //loop through images, if current.size < smallest -> update smallest
-    //         );
+            const smallestAlbumImage = track.album.images.reduce(
+              (smallest, image) => {
+                if (image.height < smallest.height) return image;
+                return smallest;
+              },
+              track.album.images[0] //loop through images, if current.size < smallest -> update smallest
+            );
 
-    //         const largestAlbumImage = track.album.images.reduce(
-    //           (largest, image) => {
-    //             if (image.height > largest.height) return image;
-    //             return largest;
-    //           },
-    //           track.album.images[0]
-    //         );
-    //         return {
-    //           artist: track.artists[0].name,
-    //           title: track.name,
-    //           uri: track.uri,
-    //           albumUrl: smallestAlbumImage.url,
-    //           isLiked: isLiked,
-    //           image: largestAlbumImage.url,
-    //         };
-    //       })
-    //     );
-    //   });
+            const largestAlbumImage = track.album.images.reduce(
+              (largest, image) => {
+                if (image.height > largest.height) return image;
+                return largest;
+              },
+              track.album.images[0]
+            );
+            return {
+              artist: track.artists[0].name,
+              title: track.name,
+              uri: track.uri,
+              albumUrl: smallestAlbumImage.url,
+              isLiked: isLiked,
+              image: largestAlbumImage.url,
+            };
+          })
+        );
+      });
 
     // spotifyApi
     //   .getRecommendations({
@@ -581,12 +595,19 @@ export default function Dashboard({ props, code }) {
             },
             playlist.images[0] //loop through images, if current.size < smallest -> update smallest
           );
+
+          const largestAlbumImage = playlist.images.reduce((largest, image) => {
+            if (image.height > largest.height) return image;
+            return largest;
+          }, playlist.images[0]);
+
           return {
             title: playlist.name,
             uri: playlist.uri,
             albumUrl: smallestAlbumImage.url,
             id: playlist.id.toString(),
             href: playlist.tracks.href,
+            image: largestAlbumImage.url,
           };
         })
       );
@@ -629,7 +650,6 @@ export default function Dashboard({ props, code }) {
         })
       );
     });
-
 
     spotifyApi.searchPlaylists("Discover Weekly").then((p) => {
       console.log(p.body);
@@ -684,7 +704,7 @@ export default function Dashboard({ props, code }) {
         );
       });
     });
-    
+
     spotifyApi.searchPlaylists("Release Radar").then((p) => {
       console.log(p.body);
 
@@ -738,7 +758,6 @@ export default function Dashboard({ props, code }) {
         );
       });
     });
-    
   }, [accessToken]);
 
   useEffect(() => {
@@ -917,7 +936,7 @@ export default function Dashboard({ props, code }) {
 
         <Container
           className="d-flex flex-column py-2"
-          style={{ height: "100vh", marginLeft: "275px" }} //ADDED WIDTH 50%?
+          style={{ height: "100vh", marginLeft: "275px" }} //ADDED WIDTH 50%? if mobile remove marginLeft
         >
           <Form.Control
             type="search"
@@ -1044,11 +1063,18 @@ export default function Dashboard({ props, code }) {
                 <h2>
                   {displayMessage}, {username}
                 </h2>
-                <br/> <br/> <br/>
+                <br />
+
+                {/* <br /> <br /> */}
                 {/* <h2>Based on your recent listening</h2> */}
                 {/* <h2>Go beyond with music for moods.</h2> */}
+
                 <h2>Discover New Music</h2>
+
+                {/* <h2>My Playlists</h2> */}
+
                 <Row>
+                  {/* <Row className="scrollbar scrollbar-lady-lips" style={{width: "79%", overflowX: "scroll", flexWrap: "nowrap",overflowY:"hidden"}}> */}
                   {/* <Card
                     className="cardItem"
                     style={{
@@ -1143,7 +1169,7 @@ export default function Dashboard({ props, code }) {
                       cursor: "pointer",
                       marginTop: "10px",
                       marginRight: "30px",
-                      marginLeft: "10px"
+                      marginLeft: "10px",
                     }}
                     onClick={() => {
                       setView("discoverDaily");
@@ -1155,10 +1181,12 @@ export default function Dashboard({ props, code }) {
                       src={taste}
                     />
                     <Card.Body>
-                      <Card.Title style={{marginTop:"17px"}}>Daily Mix</Card.Title>
+                      <Card.Title style={{ marginTop: "17px" }}>
+                        Daily Mix
+                      </Card.Title>
                     </Card.Body>
                   </Card>
-                  
+
                   <Card
                     className="cardItem"
                     style={{
@@ -1167,6 +1195,7 @@ export default function Dashboard({ props, code }) {
                       cursor: "pointer",
                       marginTop: "10px",
                       marginRight: "30px",
+                      marginLeft: "10px",
                     }}
                     onClick={() => {
                       setView("newReleases");
@@ -1179,10 +1208,9 @@ export default function Dashboard({ props, code }) {
                     />
                     <br />
                     <Card.Body>
-                      <Card.Title style={{marginTop:"17px"}}>New Releases</Card.Title>
-                      {/* <Card.Text>
-                      Keep calm with this mix of laidback tracks.
-                    </Card.Text> */}
+                      <Card.Title style={{ marginTop: "17px" }}>
+                        New Releases
+                      </Card.Title>
                       {/* <Button
                         variant="primary"
                         onClick={() => {
@@ -1202,6 +1230,7 @@ export default function Dashboard({ props, code }) {
                       cursor: "pointer",
                       marginTop: "10px",
                       marginRight: "30px",
+                      marginLeft: "10px",
                     }}
                     onClick={() => {
                       setView("discoverWeekly");
@@ -1216,7 +1245,80 @@ export default function Dashboard({ props, code }) {
                       <Card.Title>Your Weekly Mixtape</Card.Title>
                     </Card.Body>
                   </Card>
+
+                  {/* {playlistsInfo.map((playlist) =>(
+                <Card
+                className="cardItem"
+                style={{
+                  width: "14rem",
+                  height: "13rem",
+                  cursor: "pointer",
+                  marginTop: "10px",
+                  marginRight: "30px",
+                  marginLeft: "10px",
+                }}
+                onClick={() => {
+                  setView("");
+                }}
+              >
+                <Card.Img variant="top" style={{width:"125px",height:"125px", marginTop: "5px", marginLeft: "auto", marginRight: "auto"}} src={playlist.image} />
+
+                <Card.Body>
+                  <Card.Title style={{ fontSize: "17px"}}>
+                    {playlist.title}
+                  </Card.Title>
+                </Card.Body>
+              </Card>
+              ))} */}
                 </Row>
+
+                {/* <br/> <br/> <br/>
+              <h2>Genre Playlists</h2>
+
+              <Row className="scrollbar scrollbar-lady-lips" style={{width: "79%", flexWrap: "nowrap",overflowY:"hidden"}}>
+              <Card
+                    className="cardItem"
+                    style={{
+                      width: "14rem",
+                      height: "13rem",
+                      cursor: "pointer",
+                      marginTop: "10px",
+                      marginRight: "30px",
+                      marginLeft: "10px",
+                    }}
+                    onClick={() => {
+                      setView("acoustic");
+                    }}
+                  >
+                    <Card.Img variant="top" style={{width:"125px",height:"125px", marginTop: "10px", marginLeft: "auto", marginRight: "auto"}} src={calmImage} />
+                    <Card.Body>
+                      <Card.Title style={{ fontSize: "17px"}}>Acoustic</Card.Title>
+                    </Card.Body>
+                  </Card>
+                  
+                  <Card
+                    className="cardItem"
+                    style={{
+                      width: "14rem",
+                      height: "13rem",
+                      cursor: "pointer",
+                      marginTop: "10px",
+                      marginRight: "30px",
+                      marginLeft: "10px",
+                    }}
+                    onClick={() => {
+                      setView("");
+                    }}
+                  >
+                    <Card.Img variant="top" style={{width:"125px",height:"125px", marginTop: "10px", marginLeft: "auto", marginRight: "auto"}} src={jazz} />
+                    <Card.Body>
+                      <Card.Title style={{ fontSize: "17px"}}>Jazz</Card.Title>
+
+                    </Card.Body>
+                  </Card>
+                  
+              
+              </Row> */}
               </div>
             )}
 
@@ -1342,10 +1444,10 @@ export default function Dashboard({ props, code }) {
           )}
 
           {view === "discoverWeekly" && searchResults.length === 0 && (
-              <div
-                className="scrollbar scrollbar-lady-lips"
-                style={{ width: "90%" }}
-               >
+            <div
+              className="scrollbar scrollbar-lady-lips"
+              style={{ width: "90%" }}
+            >
               <div
                 style={{ font: "24px bold", color: "white", cursor: "pointer" }}
               >
@@ -1356,7 +1458,12 @@ export default function Dashboard({ props, code }) {
                   }}
                 />
               </div>
-
+              
+              <h1 style={{ textAlign: "center", color: "white" }}>
+                {" "}
+                Your Weekly Mixtape
+              </h1>
+              
               {discoverWeekly.map((track) => (
                 <TrackDetails
                   track={track}
@@ -1373,12 +1480,12 @@ export default function Dashboard({ props, code }) {
               ))}
             </div>
           )}
-          
+
           {view === "discoverDaily" && searchResults.length === 0 && (
-              <div
-                className="scrollbar scrollbar-lady-lips"
-                style={{ width: "90%" }}
-               >
+            <div
+              className="scrollbar scrollbar-lady-lips"
+              style={{ width: "90%" }}
+            >
               <div
                 style={{ font: "24px bold", color: "white", cursor: "pointer" }}
               >
@@ -1389,7 +1496,12 @@ export default function Dashboard({ props, code }) {
                   }}
                 />
               </div>
-
+              
+              <h1 style={{ textAlign: "center", color: "white" }}>
+                {" "}
+                Daily Mix
+              </h1>
+              
               {discoverDaily.map((track) => (
                 <TrackDetails
                   track={track}
@@ -1412,6 +1524,16 @@ export default function Dashboard({ props, code }) {
               className="scrollbar scrollbar-lady-lips"
               style={{ width: "90%" }}
             >
+              <div
+                style={{ font: "24px bold", color: "white", cursor: "pointer" }}
+              >
+                <FontAwesomeIcon
+                  icon="fa-solid fa-arrow-left fa-inverse"
+                  onClick={() => {
+                    setView("");
+                  }}
+                />
+              </div>
               <Likes
                 chooseTrack={chooseTrack}
                 setTrackURIs={setTrackURIs}
@@ -1434,6 +1556,16 @@ export default function Dashboard({ props, code }) {
               className="scrollbar scrollbar-lady-lips"
               style={{ width: "90%" }}
             >
+              <div
+                style={{ font: "24px bold", color: "white", cursor: "pointer" }}
+              >
+                <FontAwesomeIcon
+                  icon="fa-solid fa-arrow-left fa-inverse"
+                  onClick={() => {
+                    setView("");
+                  }}
+                />
+              </div>
               <Recommendations
                 chooseTrack={chooseTrack}
                 handleQueue={handleQueue}
@@ -1452,6 +1584,16 @@ export default function Dashboard({ props, code }) {
               className="scrollbar scrollbar-lady-lips"
               style={{ width: "90%" }}
             >
+              <div
+                style={{ font: "24px bold", color: "white", cursor: "pointer" }}
+              >
+                <FontAwesomeIcon
+                  icon="fa-solid fa-arrow-left fa-inverse"
+                  onClick={() => {
+                    setView("");
+                  }}
+                />
+              </div>
               <TopSongs
                 chooseTrack={chooseTrack}
                 handleQueue={handleQueue}
@@ -1470,6 +1612,16 @@ export default function Dashboard({ props, code }) {
               className="scrollbar scrollbar-lady-lips"
               style={{ width: "90%" }}
             >
+              <div
+                style={{ font: "24px bold", color: "white", cursor: "pointer" }}
+              >
+                <FontAwesomeIcon
+                  icon="fa-solid fa-arrow-left fa-inverse"
+                  onClick={() => {
+                    setView("");
+                  }}
+                />
+              </div>
               <TopArtists
                 chooseTrack={chooseTrack}
                 setView={setView}
@@ -1483,6 +1635,16 @@ export default function Dashboard({ props, code }) {
               className="scrollbar scrollbar-lady-lips"
               style={{ width: "90%" }}
             >
+              <div
+                style={{ font: "24px bold", color: "white", cursor: "pointer" }}
+              >
+                <FontAwesomeIcon
+                  icon="fa-solid fa-arrow-left fa-inverse"
+                  onClick={() => {
+                    setView("artists");
+                  }}
+                />
+              </div>
               <ArtistProfile
                 accessToken={accessToken}
                 artist={artist}
@@ -1503,6 +1665,7 @@ export default function Dashboard({ props, code }) {
               className="scrollbar scrollbar-lady-lips"
               style={{ width: "90%" }}
             >
+
               <Playlists
                 chooseTrack={chooseTrack}
                 handleQueue={handleQueue}
@@ -1512,6 +1675,7 @@ export default function Dashboard({ props, code }) {
                 queue={queue}
                 addToLikes={addToLikes}
                 removeFromLikes={removeFromLikes}
+                setView={setView}
               />
             </div>
           )}
@@ -1574,15 +1738,7 @@ export default function Dashboard({ props, code }) {
                 }}
               />
             )}
-
-            <Accordion flush>
-              <Accordion.Item eventKey="0">
-                <Accordion.Header
-                  onClick={() => {
-                    setAccordionOpened(!accordionOpened);
-                  }}
-                >
-                  {/* <Col>
+            {/* <Col style={{float: "right"}}>
               <Button
                 variant="success"
                 size="lg"
@@ -1593,6 +1749,14 @@ export default function Dashboard({ props, code }) {
                 Show Lyrics
               </Button>
             </Col> */}
+
+            <Accordion flush>
+              <Accordion.Item eventKey="0">
+                <Accordion.Header
+                  onClick={() => {
+                    setAccordionOpened(!accordionOpened);
+                  }}
+                >
                   <h5 style={{ color: "rgb(60, 62, 77)" }}>Lyrics</h5>
                 </Accordion.Header>
                 <Accordion.Body>
@@ -1750,3 +1914,10 @@ export default function Dashboard({ props, code }) {
     </div>
   );
 }
+
+function areEqual(prevProps, nextProps) {
+  return prevProps.view===nextProps.view
+}
+
+export default memo(Dashboard, areEqual);
+

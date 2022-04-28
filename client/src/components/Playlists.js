@@ -148,6 +148,15 @@ export default function Playlists(props) {
           className="d-flex flex-column py-2"
           // style={{ height: "100vh" }}
         >
+          <div style={{ font: "24px bold", color: "white", cursor: "pointer" }}>
+            <FontAwesomeIcon
+              icon="fa-solid fa-arrow-left fa-inverse"
+              onClick={() => {
+                props.setView("");
+              }}
+            />
+          </div>
+
           <h1 style={{ textAlign: "center", color: "white" }}> Playlists </h1>
           <br />
 
@@ -211,25 +220,25 @@ export default function Playlists(props) {
       )}
 
       {list.length !== 0 && (
-          <Container className="d-flex flex-column py-2">
-            <Row>
-              <div
-                style={{ font: "24px bold", color: "white", cursor: "pointer" }}
-              >
-                <FontAwesomeIcon
-                  icon="fa-solid fa-arrow-left fa-inverse"
-                  onClick={() => {
-                    setList([]);
-                  }}
-                />
-              </div>
-              <h1 style={{ textAlign: "center", color: "white" }}>
-                {" "}
-                {playlistName}{" "}
-              </h1>
-            </Row>
-            <div>{list}</div>
-          </Container>
+        <Container className="d-flex flex-column py-2">
+          <Row>
+            <div
+              style={{ font: "24px bold", color: "white", cursor: "pointer" }}
+            >
+              <FontAwesomeIcon
+                icon="fa-solid fa-arrow-left fa-inverse"
+                onClick={() => {
+                  setList([]);
+                }}
+              />
+            </div>
+            <h1 style={{ textAlign: "center", color: "white" }}>
+              {" "}
+              {playlistName}{" "}
+            </h1>
+          </Row>
+          <div>{list}</div>
+        </Container>
       )}
     </div>
   );

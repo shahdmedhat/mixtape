@@ -2,12 +2,14 @@ import React, { useState, useEffect } from "react";
 import Login from "./Login";
 import Dashboard from "./Dashboard";
 import { useLocation } from "react-router-dom";
+import Token from "./Token";
 
 const code = new URLSearchParams(window.location.search).get("code");
 
 export default function Khaled(props) {
   let location = useLocation();
   const [flag, setFlag] = useState(false);
+  // var view = props.view;
 
   useEffect(() => {
     //console.log(location.state);
@@ -16,6 +18,7 @@ export default function Khaled(props) {
     }
   }, [location.state]);
   
+  //console.log(props.view)
   //const accessToken = location.state.accessToken;
   return code ? <Dashboard code={code} /> : <Login />;
 }
