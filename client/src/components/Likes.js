@@ -124,6 +124,7 @@ export default function Likes(props) {
           removeFromLikes={props.removeFromLikes}
           setPlayingTrack={props.setPlayingTrack}
           setQueue={props.setQueue}
+          listener={props.listener}
         />
       )) //---------------
     );

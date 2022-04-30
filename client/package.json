@@ -19,6 +19,7 @@
     "react-dom": "^18.0.0",
     "react-router-dom": "^6.2.2",
     "react-scripts": "5.0.0",
+    "react-select": "^5.3.1",
     "react-simple-chatbot": "^0.6.1",
     "react-spotify-web-playback": "^0.9.1",
     "spotify-web-api-node": "^5.0.2",

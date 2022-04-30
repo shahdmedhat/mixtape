@@ -2,6 +2,7 @@ import React, { Component, useState, useEffect } from "react";
 import { Container, Button, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import Select from 'react-select'
 
 import "../css/TrackDetails.css";
 
@@ -17,8 +18,14 @@ export default function TrackDetails(props) {
   let navigate = useNavigate();
 
   const [likeIcon, changeLikeIcon] = useState("fa-regular fa-heart fa-10x");
-
   const track = props.track;
+  
+  const options = [
+    { value: 'chocolate', label: 'Chocolate' },
+    { value: 'strawberry', label: 'Strawberry' },
+    { value: 'vanilla', label: 'Vanilla' }
+  ]
+  
   function handlePlay() {
     //navigate("/dashboard",{ state: {track: track , accessToken: location.state.accessToken} });
     if (!props.showQueue) 
@@ -99,7 +106,7 @@ export default function TrackDetails(props) {
                 icon="fa-solid fa-circle-plus fa-10x"
                 style={{
                   cursor: "pointer",
-                  marginLeft: "9px",
+                  marginLeft: "15px",
                   marginRight: "9px",
                 }}
                 // ,margin:"0px 0px auto auto"
@@ -108,8 +115,20 @@ export default function TrackDetails(props) {
                   props.addTrackToPlaylist(track);
                 }}
               />
-
+            
+            {props.listener==="passive" && 
+            <FontAwesomeIcon icon="fa-solid fa-ellipsis-vertical fa-10x" 
+              style={{
+              cursor: "pointer",
+              marginLeft: "15px",
+              }} 
+            />
+            // <Select options={options} />
+           }
+           
             {/* <div class="d-grid gap-2 d-md-block"> */}
+            
+              {props.listener==="active" &&
                 <Button
                   variant="success"
                   onClick={() => {
@@ -118,9 +137,12 @@ export default function TrackDetails(props) {
                 >
                   Add To Queue
                 </Button>
+              }
+              
             {/* </div> */}
             </Container>
            )}
+           
           </div>
         </div>
       </Container>

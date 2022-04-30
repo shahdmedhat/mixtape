@@ -103,6 +103,7 @@ export default function Playlists(props) {
           queue={props.queue}
           addToLikes={props.addToLikes}
           removeFromLikes={props.removeFromLikes}
+          listener={props.listener}
         />
       ))
     );

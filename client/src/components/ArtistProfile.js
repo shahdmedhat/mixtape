@@ -91,6 +91,7 @@ export default function ArtistProfile(props) {
           queue={props.queue}
           addToLikes={props.addToLikes}
           removeFromLikes={props.removeFromLikes}
+          listener={props.listener}
         />
       ))
     );

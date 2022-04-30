@@ -23,7 +23,7 @@ export default function Login(props) {
         {/* <h1> Music for every mood.</h1> */}
 
         <a className="btn btn-success btn-lg" href={AUTH_URL}>
-              GET STARTED
+            Get Started
         </a>
         
         

@@ -10,7 +10,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-function Sidebar({setSearch, setSearchResults, setView,showPlayer, accessToken }) {
+function Sidebar({listener, setSearch, setSearchResults, setView,showPlayer, accessToken }) {
 
 function handleLike(){
   showPlayer(false);
@@ -123,7 +123,9 @@ function resetAll(){
           {/* <FontAwesomeIcon className="icon" icon={faMusic} /> */}
           <span>Playlists</span>
         </NavLink>
-
+        
+        {listener==="passive" &&
+        <div>
         <NavLink
           exact
           to="/"
@@ -134,12 +136,14 @@ function resetAll(){
         >         
         <span>Discover</span>
         </NavLink>
-
-        {/* <NavLink exact to="/search" className="item" activeClassName="active">
-          <FontAwesomeIcon className="icon" icon={faSearch} />
-          <span>Search</span>
-        </NavLink> */}
         
+        <NavLink exact to="/" className="item" activeClassName="active" onClick={()=> setView("search")} >
+          {/* <FontAwesomeIcon className="icon" icon={faSearch} /> */}
+          <span>Search</span>
+        </NavLink>
+        </div>
+      }
+      
       </section>
 
       {/* Footer on mobile */}
