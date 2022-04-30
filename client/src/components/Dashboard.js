@@ -21,6 +21,7 @@ import Sidebar from "./Sidebar.jsx";
 import "../css/Scrollbar.css";
 
 import MusicBot from "./MusicBot";
+import WebPlayback from "./WebPlayback";
 
 import Likes from "./Likes";
 import Recommendations from "./Recommendations";
@@ -41,7 +42,7 @@ import sadImage from "../images/sad.jpg";
 import newImage from "../images/new.png";
 import mixtapeImage from "../images/mixtape.jpg";
 import taste from "../images/taste.jpg";
-import jazz from "../images/jazz.gif";
+import jazzImage from "../images/jazz.gif";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
@@ -60,6 +61,8 @@ const spotifyApi = new SpotifyWebApi({
 
 // export default 
 function Dashboard({ props, code }) {
+  // console.log(listener);
+  
   let location = useLocation(); //---------------
   //console.log(location.state);
 
@@ -68,7 +71,7 @@ function Dashboard({ props, code }) {
 
   if (accessToken === "undefined") {
     //---------------
-    accessToken = props.accessToken;
+    // accessToken = props.accessToken;
   }
 
   const [search, setSearch] = useState("");
@@ -83,6 +86,9 @@ function Dashboard({ props, code }) {
 
   const [acoustic, setAcoustic] = useState([]);
   const [acousticList, setAcousticList] = useState([]);
+  
+  const [jazz, setJazz] = useState([]);
+  const [jazzList, setJazzList] = useState([]);
 
   const [sad, setSad] = useState([]);
   const [sadList, setSadList] = useState([]);
@@ -110,7 +116,7 @@ function Dashboard({ props, code }) {
   const [playerModal, showPlayerModal] = useState(false);
   const [message, setMessage] = useState("");
 
-  const [newPlaylistName, setNewPlaylistName] = useState("");
+  const [newPlaylistName, setNewPlaylistName] = useState(""); //create playlist
 
   const [activity, setActivity] = useState("");
   const [queueModal, showQueueModal] = useState(false);
@@ -128,7 +134,13 @@ function Dashboard({ props, code }) {
   const [discoverWeekly, setDiscoverWeekly] = useState([]);
   const [discoverDaily, setDiscoverDaily] = useState([]);
 
+  const [playlistTracks, setPlaylistTracks] = useState([]); //for passive UI
+  const [playlistName, setPlaylistName] = useState(""); //for passive UI
+
   const { width } = useWindowSize();
+
+  const [listener, setListener] = useState("");
+  const [startModal, showStartModal] = useState(true);
 
   useEffect(() => {
     //if(queue.length===0){ //showNext
@@ -355,7 +367,104 @@ function Dashboard({ props, code }) {
     setShowToast(true);
     setMessage("REMOVED FROM LIKES");
   }
+  
+  function getPlaylistTracks(playlist) {
+    console.log(playlist)
+    spotifyApi.getPlaylistTracks(playlist.id).then((res) => {
+      setPlaylistTracks(
+        res.body.items.map((item) => {
+          const isLiked = spotifyApi
+            .containsMySavedTracks([item.track.uri.split(":")[2]])
+            .then(
+              function(data) {
+                var trackIsInYourMusic = data.body[0];
+                if (trackIsInYourMusic) {
+                  return true;
+                } else {
+                  return false;
+                }
+              },
+              function(err) {
+                console.log("Something went wrong!", err);
+              }
+            );
 
+          const smallestAlbumImage = item.track.album.images.reduce(
+            (smallest, image) => {
+              if (image.height < smallest.height) return image;
+              return smallest;
+            },
+            item.track.album.images[0]
+          );
+
+          const largestAlbumImage = item.track.album.images.reduce(
+            (largest, image) => {
+              if (image.height > largest.height) return image;
+              return largest;
+            },
+            item.track.album.images[0]
+          );
+
+          return {
+            title: item.track.name,
+            artist: item.track.artists[0].name,
+            uri: item.track.uri,
+            albumUrl: smallestAlbumImage.url,
+            isLiked: isLiked,
+            image: largestAlbumImage.url,
+          };
+        })
+      );
+    });
+    setPlaylistName(playlist.title);
+    setView("playlistTracks");
+
+  }
+  
+  function getJazzPlaylist() {
+    
+    spotifyApi.getRecommendations({
+      seed_genres: "jazz,blues"
+    })
+    .then((res) => {
+      //console.log(res.body);
+      setJazz(
+        res.body.tracks.map((track) => {
+
+          const isLiked = new Promise((resolve, reject) => {
+            return "foo";
+          });
+
+          const smallestAlbumImage = track.album.images.reduce(
+            (smallest, image) => {
+              if (image.height < smallest.height) return image;
+              return smallest;
+            },
+            track.album.images[0] 
+          );
+
+          const largestAlbumImage = track.album.images.reduce(
+            (largest, image) => {
+              if (image.height > largest.height) return image;
+              return largest;
+            },
+            track.album.images[0]
+          );
+          return {
+            artist: track.artists[0].name,
+            title: track.name,
+            uri: track.uri,
+            albumUrl: smallestAlbumImage.url,
+            isLiked: isLiked,
+            image: largestAlbumImage.url,
+          };
+        })
+      );
+    });
+    
+    setView("jazz");
+  }
+  
   useEffect(() => {
     if (!playingTrack) return;
 
@@ -472,8 +581,7 @@ function Dashboard({ props, code }) {
     //     );
     //   });
 
-    spotifyApi
-      .getRecommendations({
+    spotifyApi.getRecommendations({
         seed_tracks:
           "0YRYs1HSkie0eZ02ON4euX,4MzySNjSdv9ZegSD13IVNV,0ElpbbncWT9aS7mgoqEHbQ",
         seed_genres: "acoustic,chill",
@@ -832,16 +940,55 @@ function Dashboard({ props, code }) {
       ))
     );
   }, [happy, acoustic, sad, newReleases]);
-
+  
+  useEffect(() =>{
+    setJazzList(
+      jazz.map((track) => (
+        <TrackDetails
+          track={track}
+          key={track.uri}
+          chooseTrack={chooseTrack}
+          handleQueue={handleQueue}
+          setShowToast={setShowToast}
+          setShowModal={setShowModal}
+          addTrackToPlaylist={addTrackToPlaylist}
+          queue={queue}
+          addToLikes={addToLikes}
+          removeFromLikes={removeFromLikes}
+        />
+      ))
+    );
+  }, [jazz])
+  
   useEffect(() => {
     if (!search) return setSearchResults([]); //nth to search for
     if (!accessToken) return; //don't query if no access token
 
     let cancel = false;
     spotifyApi.searchTracks(search).then((res) => {
-      if (cancel) return;
+      if (cancel){
+        //setView("");
+        return;
+      } 
+
       setSearchResults(
         res.body.tracks.items.map((track) => {
+          const isLiked = spotifyApi
+          .containsMySavedTracks([track.uri.split(":")[2]])
+          .then(
+            function(data) {
+              var trackIsInYourMusic = data.body[0];
+              if (trackIsInYourMusic) {
+                return true;
+              } else {
+                return false;
+              }
+            },
+            function(err) {
+              console.log("Something went wrong!", err);
+            }
+          );
+        
           const smallestAlbumImage = track.album.images.reduce(
             //reduce to one value
             (smallest, image) => {
@@ -865,10 +1012,13 @@ function Dashboard({ props, code }) {
             uri: track.uri,
             albumUrl: smallestAlbumImage.url,
             image: largestAlbumImage.url,
+            isLiked: isLiked
           };
         })
       );
     });
+    
+    //setView("search");
 
     return () => (cancel = true);
   }, [search, accessToken]);
@@ -881,6 +1031,59 @@ function Dashboard({ props, code }) {
     //   }}
     // >
     <div>
+    
+      {listener==="" && 
+        <div>
+        {/* {!startModal &&
+          <Button
+            backdrop="static"
+            size="lg"
+            variant="success"
+            onClick={() => {
+              showStartModal(true);
+            }}
+          >
+            GET STARTED
+          </Button>
+          } */}
+          
+          {startModal &&
+          <Modal
+            show={startModal}
+            size="lg"
+            onHide={() => showStartModal(false)}
+            
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
+            // className="special_modal"
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>Welcome to Spotify 2.0</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              Be honest, are you here because you're procrastinating doing something?
+            </Modal.Body>
+            
+            <Modal.Footer>
+            <Button variant="primary" onClick={()=> {
+                setListener("active");
+                }}>
+                No, just here to listen
+            </Button>
+            <Button variant="danger" onClick={()=> {
+              setListener("passive");}}>
+              Guilty
+            </Button>
+          </Modal.Footer>
+            
+          </Modal>
+        }
+      
+      </div>
+      }
+    
+    
+      {listener !== "" &&
       <div className="dashboard">
         {/* <Scrollbar/> */}
 
@@ -932,11 +1135,13 @@ function Dashboard({ props, code }) {
           accessToken={accessToken}
           showPlayer={showPlayer}
           setView={setView}
+          setSearchResults={setSearchResults}
+          setSearch={setSearch}
         />
 
         <Container
           className="d-flex flex-column py-2"
-          style={{ height: "100vh", marginLeft: "275px" }} //ADDED WIDTH 50%? if mobile remove marginLeft
+          style={{ height: "100vh", marginLeft: "275px" }} //ADDED WIDTH 50%? if mobile remove marginLeft, marginLeft: 275px
         >
           <Form.Control
             type="search"
@@ -951,7 +1156,7 @@ function Dashboard({ props, code }) {
           <br />
           {showModal && (
             <Modal
-              {...props}
+              // {...props}
               show={showModal}
               onHide={() => setShowModal(false)}
               size="lg"
@@ -1211,14 +1416,6 @@ function Dashboard({ props, code }) {
                       <Card.Title style={{ marginTop: "17px" }}>
                         New Releases
                       </Card.Title>
-                      {/* <Button
-                        variant="primary"
-                        onClick={() => {
-                          setView("newReleases");
-                        }}
-                      >
-                        CHECK IT OUT
-                      </Button> */}
                     </Card.Body>
                   </Card>
 
@@ -1246,7 +1443,7 @@ function Dashboard({ props, code }) {
                     </Card.Body>
                   </Card>
 
-                  {/* {playlistsInfo.map((playlist) =>(
+              {/* {playlistsInfo.map((playlist) =>(
                 <Card
                 className="cardItem"
                 style={{
@@ -1258,7 +1455,7 @@ function Dashboard({ props, code }) {
                   marginLeft: "10px",
                 }}
                 onClick={() => {
-                  setView("");
+                  getPlaylistTracks(playlist)
                 }}
               >
                 <Card.Img variant="top" style={{width:"125px",height:"125px", marginTop: "5px", marginLeft: "auto", marginRight: "auto"}} src={playlist.image} />
@@ -1269,10 +1466,10 @@ function Dashboard({ props, code }) {
                   </Card.Title>
                 </Card.Body>
               </Card>
-              ))} */}
+              ))}
                 </Row>
 
-                {/* <br/> <br/> <br/>
+                <br/> <br/> <br/>
               <h2>Genre Playlists</h2>
 
               <Row className="scrollbar scrollbar-lady-lips" style={{width: "79%", flexWrap: "nowrap",overflowY:"hidden"}}>
@@ -1307,18 +1504,18 @@ function Dashboard({ props, code }) {
                       marginLeft: "10px",
                     }}
                     onClick={() => {
-                      setView("");
+                      getJazzPlaylist();
                     }}
                   >
-                    <Card.Img variant="top" style={{width:"125px",height:"125px", marginTop: "10px", marginLeft: "auto", marginRight: "auto"}} src={jazz} />
+                    <Card.Img variant="top" style={{width:"125px",height:"125px", marginTop: "10px", marginLeft: "auto", marginRight: "auto"}} src={jazzImage} />
                     <Card.Body>
                       <Card.Title style={{ fontSize: "17px"}}>Jazz</Card.Title>
 
                     </Card.Body>
-                  </Card>
+                  </Card> */}
                   
               
-              </Row> */}
+              </Row>
               </div>
             )}
 
@@ -1354,10 +1551,21 @@ function Dashboard({ props, code }) {
                 justifyContent: "center",
                 width: "90%",
               }}
+              className="scrollbar scrollbar-lady-lips"
             >
+              <div
+                style={{ font: "24px bold", color: "white", cursor: "pointer" }}
+              >
+                <FontAwesomeIcon
+                  icon="fa-solid fa-arrow-left fa-inverse"
+                  onClick={() => {
+                    setView("");
+                  }}
+                />
+              </div>
               <Container className="d-flex flex-column py-2">
-                {/* <h1 style={{ textAlign: "center" }}>ACOUSTIC</h1> */}
-                <div>{acousticList}</div>
+                <h1 style={{ textAlign: "center", color: "white" }}>Acoustic</h1>
+                <div> {acousticList}</div>
               </Container>
             </div>
           )}
@@ -1377,6 +1585,32 @@ function Dashboard({ props, code }) {
               <Container className="d-flex flex-column py-2">
                 {/* <h1 style={{ textAlign: "center" }}>SAD</h1> */}
                 <div>{sadList}</div>
+              </Container>
+            </div>
+          )}
+          
+          {view === "jazz" && searchResults.length === 0 && (
+            <div
+              style={{
+                overflowY: "scroll",
+                justifyContent: "center",
+                width: "90%",
+              }}
+              className="scrollbar scrollbar-lady-lips"
+            >
+              <div
+                style={{ font: "24px bold", color: "white", cursor: "pointer" }}
+              >
+                <FontAwesomeIcon
+                  icon="fa-solid fa-arrow-left fa-inverse"
+                  onClick={() => {
+                    setView("");
+                  }}
+                />
+              </div>
+              <Container className="d-flex flex-column py-2">
+                <h1 style={{ textAlign: "center" , color: "white" }}>Jazz</h1>
+                <div> {jazzList} </div>
               </Container>
             </div>
           )}
@@ -1503,6 +1737,44 @@ function Dashboard({ props, code }) {
               </h1>
               
               {discoverDaily.map((track) => (
+                <TrackDetails
+                  track={track}
+                  key={track.uri}
+                  chooseTrack={chooseTrack}
+                  handleQueue={handleQueue}
+                  setShowToast={setShowToast}
+                  setShowModal={setShowModal}
+                  addTrackToPlaylist={addTrackToPlaylist}
+                  queue={queue}
+                  addToLikes={addToLikes}
+                  removeFromLikes={removeFromLikes}
+                />
+              ))}
+            </div>
+          )}
+
+          {view === "playlistTracks" && searchResults.length === 0 && (
+            <div
+              className="scrollbar scrollbar-lady-lips"
+              style={{ width: "90%" }}
+            >
+              <div
+                style={{ font: "24px bold", color: "white", cursor: "pointer" }}
+              >
+                <FontAwesomeIcon
+                  icon="fa-solid fa-arrow-left fa-inverse"
+                  onClick={() => {
+                    setView("");
+                  }}
+                />
+              </div>
+              
+              <h1 style={{ textAlign: "center", color: "white" }}>
+              {" "}
+              {playlistName}{" "}
+              </h1>
+            
+              {playlistTracks.map((track) => (
                 <TrackDetails
                   track={track}
                   key={track.uri}
@@ -1679,20 +1951,27 @@ function Dashboard({ props, code }) {
               />
             </div>
           )}
-
+          
           <div
             className="flex-grow-1 my-2 scrollbar scrollbar-lady-lips"
             style={{ overflowY: "auto", width: "90%" }} //scrollable
           >
             {searchResults.map((track) => (
-              <TrackSearchResult
-                track={track}
-                key={track.uri}
-                chooseTrack={chooseTrack}
+              <TrackDetails
+              track={track}
+              key={track.uri}
+              chooseTrack={chooseTrack}
+              handleQueue={handleQueue}
+              setShowToast={setShowToast}
+              setShowModal={setShowModal}
+              addTrackToPlaylist={addTrackToPlaylist}
+              queue={queue}
+              addToLikes={addToLikes}
+              removeFromLikes={removeFromLikes}
               />
             ))}
           </div>
-
+          
           <div style={{ width: "90%" }}>
             {accessToken && (
               <SpotifyPlayer
@@ -1737,6 +2016,8 @@ function Dashboard({ props, code }) {
                   height: "60px",
                 }}
               />
+              
+              // <WebPlayback token={accessToken}/>
             )}
             {/* <Col style={{float: "right"}}>
               <Button
@@ -1911,6 +2192,7 @@ function Dashboard({ props, code }) {
           )}
         </Container>
       </div>
+    }
     </div>
   );
 }

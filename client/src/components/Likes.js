@@ -8,6 +8,8 @@ import { useLocation } from "react-router-dom";
 import "../css/SongList.css";
 //import Player from "./Player";
 import SpotifyPlayer from "react-spotify-web-playback";
+import WebPlayback from "./WebPlayback.jsx";
+
 
 const spotifyApi = new SpotifyWebApi({
   clientId: "f6f8e70042bb47cd9c82ef26e1cb83a7",
@@ -157,45 +159,7 @@ export default function Likes(props) {
         <div>{list}</div>
         {/* className="centerTracks" */}
         
-        
-        {/* <SpotifyPlayer
-                token={accessToken}
-                showSaveIcon
-                callback={(state) => {
-                  console.log(props)
-                  if (!state.isPlaying && props.queue.length === 0) {
-                    props.setPlay(false);
-                  }
-
-                  if (
-                    !state.isPlaying &&
-                    props.queue.length > 0 &&
-                    state.progressMs === 0
-                  ) {
-                    var uris = [];
-                    for (var k in props.queue) {
-                      uris.push(props.queue[k].uri);
-                    }
-
-                    props.setUri(uris);
-                    let first = props.queue.shift();
-                    props.setPlayingTrack(first);
-
-                  }
-                }}
-                play={props.play}
-                uris={props.uri}
-                styles={{
-                  activeColor: "#0f0",
-                  bgColor: "#3C3E4D",
-                  color: "#fff",
-                  loaderColor: "#fff",
-                  sliderColor: "#fff",
-                  trackArtistColor: "#ccc",
-                  trackNameColor: "#fff",
-                  height: "60px",
-                }}
-              /> */}
+        {/* <WebPlayback token={accessToken}/> */}
         
       </Container>
     </div>

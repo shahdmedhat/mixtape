@@ -10,7 +10,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-function Sidebar({setView,showPlayer, accessToken }) {
+function Sidebar({setSearch, setSearchResults, setView,showPlayer, accessToken }) {
 
 function handleLike(){
   showPlayer(false);
@@ -42,6 +42,8 @@ function handlePlaylists(){
 function resetAll(){
   showPlayer(false);
   setView("");
+  setSearchResults([]);
+  setSearch("");
 }
 
   return (
