@@ -1,8 +1,8 @@
 import React, { Component, useState, useEffect } from "react";
-import { Container, Button, Row } from "react-bootstrap";
+import { Container, Button, Row, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import Select from 'react-select'
+
 
 import "../css/TrackDetails.css";
 
@@ -20,15 +20,11 @@ export default function TrackDetails(props) {
   const [likeIcon, changeLikeIcon] = useState("fa-regular fa-heart fa-10x");
   const track = props.track;
   
-  const options = [
-    { value: 'chocolate', label: 'Chocolate' },
-    { value: 'strawberry', label: 'Strawberry' },
-    { value: 'vanilla', label: 'Vanilla' }
-  ]
+  const [options, showOptions] = useState(false);
   
   function handlePlay() {
     //navigate("/dashboard",{ state: {track: track , accessToken: location.state.accessToken} });
-    if (!props.showQueue) 
+    // if (!props.showQueue) 
       props.chooseTrack(track);
     
   //     if(props.showQueue){
@@ -121,9 +117,18 @@ export default function TrackDetails(props) {
               style={{
               cursor: "pointer",
               marginLeft: "15px",
-              }} 
+              }}
+              onClick={()=> {
+                showOptions(true);
+              }}
             />
             // <Select options={options} />
+           }
+           
+           {options &&
+             <Form.Select size="lg">
+                <option>Large select</option>
+             </Form.Select>
            }
            
             {/* <div class="d-grid gap-2 d-md-block"> */}

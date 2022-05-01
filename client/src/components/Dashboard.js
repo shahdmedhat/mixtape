@@ -247,6 +247,26 @@ function Dashboard({ props, code }) {
     setPlayingTrack(track);
     setSearch("");
     setLyrics("");
+    
+    console.log(queue)
+    
+    let list = [];
+    let index=-1;
+    for (var k in queue) {
+      if (queue[k].uri===track.uri){
+        console.log("found at ", k);
+        index=k;
+        break;
+      }
+    }
+        
+    for (var k in queue) {
+      if (k>index){
+        list.push(queue[k]);
+      }
+    }  
+    
+    setQueue(list);
   }
 
   function handleQueue(track, q) {
@@ -1083,7 +1103,7 @@ function Dashboard({ props, code }) {
                     setListener("active");
                   }}
                 >
-                  No, just here to listen
+                  Nope
                 </Button>
                 <Button
                   variant="warning"
@@ -1104,6 +1124,7 @@ function Dashboard({ props, code }) {
           {/* <Scrollbar/> */}
 
           {/* //ADDED DIV */}
+          {queue.length!==0 &&
           <div
           className="scrollbar scrollbar-lady-lips"
           style={{
@@ -1111,7 +1132,8 @@ function Dashboard({ props, code }) {
             justifyContent: "center",
             color: "white",
             width: "430px",
-            height: "35vh",
+            height: "55vh",
+            //35vh
             overflowY: "scroll",
             marginRight: "5px",
             border: "3px solid white",
@@ -1119,12 +1141,12 @@ function Dashboard({ props, code }) {
             // backgroundColor: "rgb(60, 62, 77)"
           }}
         >
+        
           <Container className="d-flex flex-column py-2">
-            {queue.length === 0 && (
+            {/* {queue.length === 0 && (
               <h3 style={{ textAlign: "center", margin: "auto"}}> Queue is empty.</h3>
-            )}
+            )} */}
             
-            {queue.length!==0 &&
             <div>
              <h3 style={{ textAlign: "center", margin: "auto"}}> Queue</h3>
              <br/>
@@ -1144,9 +1166,9 @@ function Dashboard({ props, code }) {
               />
             ))}
             </div>
-          }
           </Container>
         </div>
+        }
 
           <Sidebar
             accessToken={accessToken}
@@ -2164,6 +2186,11 @@ function Dashboard({ props, code }) {
 
                       console.log(state.nextTracks);
                     }
+                    
+                    // else{ //newwwww
+                    //   setUri(uris);
+                    // }
+                    
                   }}
                   play={play}
                   uris={uri}
@@ -2192,7 +2219,7 @@ function Dashboard({ props, code }) {
                 Show Lyrics
               </Button>
             </Col> */}
-              {listener==="active" &&
+            
               <Accordion flush>
                 <Accordion.Item eventKey="0">
                   <Accordion.Header
@@ -2210,7 +2237,7 @@ function Dashboard({ props, code }) {
                         height: "660px",
                       }}
                     >
-                      {queue.length !== 0 && (
+                      {/* {queue.length !== 0 && (
                         <div style={{ float: "right" }}>
                           <br />
                           <Button
@@ -2224,11 +2251,27 @@ function Dashboard({ props, code }) {
                             Queue
                           </Button>
                         </div>
-                      )}
-
+                      )} */}
+                      
+                        {listener==="passive" && lyrics !== "" && 
+                          <div style={{float: "right"}}>
+                            <br/>
+                            <Button
+                                variant="success"
+                                size="lg"
+                                onClick={() => {
+                                  handlePlayer();
+                                }}
+                                style={{marginRight: "30px"}}
+                            >
+                                  Show Lyrics
+                            </Button>
+                          </div>
+                        }
+                        
                       <br />
                       <div style={{ textAlign: "center" }}>
-                        {playingTrack && queue.length === 0 ? (
+                        {playingTrack && queue.length === 0 && listener==="active" ? (
                           <img
                             src={playingTrack.image}
                             style={{ height: "230px", width: "230px" }}
@@ -2237,14 +2280,47 @@ function Dashboard({ props, code }) {
                         ) : (
                           " "
                         )}
+                        
+                        <div style={{ textAlign: "center" }}>
+                        {playingTrack && queue.length === 0 && listener==="passive" ? (
+                          <img
+                            src={playingTrack.image}
+                            style={{ height: "275px", width: "275px", marginLeft: "150px" }}
+                            alt="albumUrl"
+                          />
+                        ) : (
+                          " "
+                        )}
+                        </div>
 
-                        {playingTrack && queue.length !== 0 ? (
+                        {playingTrack && queue.length !== 0 && listener==="active" ? (
                           <img
                             src={playingTrack.image}
                             style={{
                               height: "230px",
                               width: "230px",
-                              marginLeft: "145px",
+                              marginLeft: "55px",
+                              //145
+                            }}
+                            alt="albumUrl"
+                          />
+                        ) : (
+                          " "
+                        )}
+                        
+                        {playingTrack && queue.length !== 0 && listener==="passive" ? (
+                          
+                          <img
+                            src={playingTrack.image}
+                            style={{
+                              height: "275px",
+                              width: "275px",
+                              marginLeft: "240px",
+                              // marginTop: "125px"
+                              //145
+                              // display: "block",
+                              // marginLeft: "auto",
+                              // marginRight: "auto"
                             }}
                             alt="albumUrl"
                           />
@@ -2256,7 +2332,7 @@ function Dashboard({ props, code }) {
                           <FontAwesomeIcon
                             icon="fa-solid fa-forward"
                             size="lg"
-                            style={{ cursor: "pointer", marginLeft: "30px" }}
+                            style={{ cursor: "pointer", marginLeft: "40px" }}
                             inverse
                             onClick={() => {
                               if (queue.length === 0) {
@@ -2282,8 +2358,12 @@ function Dashboard({ props, code }) {
                           // backgroundColor: "rgb(60, 62, 77)",
                         }}
                       >
-                        {lyrics ? lyrics : "Nothing is being played yet."}
+                        {/* {lyrics ? lyrics : "Nothing is being played yet."} */}
+                        
+                        {lyrics && listener==="active" ? lyrics : ""}
 
+                        
+                        
                         {queueModal && (
                           <Modal
                             show={queueModal}
@@ -2325,7 +2405,7 @@ function Dashboard({ props, code }) {
                   </Accordion.Body>
                 </Accordion.Item>
               </Accordion>
-            }
+            
             </div>
 
             {playerModal && (
@@ -2336,7 +2416,7 @@ function Dashboard({ props, code }) {
                 className="special_modal"
               >
                 <Modal.Header closeButton closeVariant="white">
-                  <Modal.Title>LYRICS</Modal.Title>
+                  <Modal.Title>Lyrics</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                   <div
