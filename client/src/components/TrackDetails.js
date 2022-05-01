@@ -1,8 +1,15 @@
 import React, { Component, useState, useEffect } from "react";
-import { Container, Button, Row, Form } from "react-bootstrap";
+import {
+  Container,
+  Button,
+  Row,
+  Form,
+  Dropdown,
+  DropdownButton,
+  NavDropdown,
+} from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-
 
 import "../css/TrackDetails.css";
 
@@ -19,24 +26,23 @@ export default function TrackDetails(props) {
 
   const [likeIcon, changeLikeIcon] = useState("fa-regular fa-heart fa-10x");
   const track = props.track;
-  
+
   const [options, showOptions] = useState(false);
-  
+
   function handlePlay() {
     //navigate("/dashboard",{ state: {track: track , accessToken: location.state.accessToken} });
-    // if (!props.showQueue) 
-      props.chooseTrack(track);
-    
-  //     if(props.showQueue){
-  //     for (var k in props.queue) {
-  //       if (props.queue[k].uri===track.uri){
-  //         let list=props.queue;
-  //         props.setQueue(list.slice(k+1));
-  //         props.queue.slice(k+1);
-  //       }
-  //   }
-  //  }
-  
+    // if (!props.showQueue)
+    props.chooseTrack(track);
+
+    //     if(props.showQueue){
+    //     for (var k in props.queue) {
+    //       if (props.queue[k].uri===track.uri){
+    //         let list=props.queue;
+    //         props.setQueue(list.slice(k+1));
+    //         props.queue.slice(k+1);
+    //       }
+    //   }
+    //  }
   }
 
   useEffect(() => {
@@ -72,7 +78,7 @@ export default function TrackDetails(props) {
           alt="albumUrl"
         />
 
-        <div className="songRow__info" onClick={handlePlay}>
+        <div className="songRow__info" onClick={handlePlay} >
           {/* className="ml-3" style={{ cursor: "pointer", marginLeft: "5px" }} */}
           <h1 style={{ alignItems: "center" }}>{track.title}</h1>
           <h1>{track.artist}</h1>
@@ -82,58 +88,35 @@ export default function TrackDetails(props) {
         {/* , justifyContent:"center", display:"flex", margin: "0px 0px 0px 0px" */}
         <div style={{ textAlign: "right", margin: "0px 0px 0px auto" }}>
           <div style={{ fontSize: "24px" }}>
-          {!props.showQueue && (
-            <Container>
-              <FontAwesomeIcon
-                icon={likeIcon}
-                style={{ cursor: "pointer" }}
-                onClick={() => {
-                  if (likeIcon === "fa-regular fa-heart fa-10x") {
-                    props.addToLikes(track.uri.split(":")[2]);
-                    changeLikeIcon("fa-solid fa-heart fa-10x");
-                  } else {
-                    props.removeFromLikes(track.uri.split(":")[2]);
-                    changeLikeIcon("fa-regular fa-heart fa-10x");
-                  }
-                  //likeIcon==="fa-regular fa-heart fa-10x"? changeLikeIcon("fa-solid fa-heart fa-10x"): changeLikeIcon("fa-regular fa-heart fa-10x")
-                }}
-              />
-              <FontAwesomeIcon
-                icon="fa-solid fa-circle-plus fa-10x"
-                style={{
-                  cursor: "pointer",
-                  marginLeft: "15px",
-                  marginRight: "9px",
-                }}
-                // ,margin:"0px 0px auto auto"
-                onClick={() => {
-                  props.setShowModal(true);
-                  props.addTrackToPlaylist(track);
-                }}
-              />
-            
-            {props.listener==="passive" && 
-            <FontAwesomeIcon icon="fa-solid fa-ellipsis-vertical fa-10x" 
-              style={{
-              cursor: "pointer",
-              marginLeft: "15px",
-              }}
-              onClick={()=> {
-                showOptions(true);
-              }}
-            />
-            // <Select options={options} />
-           }
-           
-           {options &&
-             <Form.Select size="lg">
-                <option>Large select</option>
-             </Form.Select>
-           }
-           
-            {/* <div class="d-grid gap-2 d-md-block"> */}
-            
-              {props.listener==="active" &&
+            {!props.showQueue && props.listener === "active" && (
+              <Container>
+                <FontAwesomeIcon
+                  icon={likeIcon}
+                  style={{ cursor: "pointer" }}
+                  onClick={() => {
+                    if (likeIcon === "fa-regular fa-heart fa-10x") {
+                      props.addToLikes(track.uri.split(":")[2]);
+                      changeLikeIcon("fa-solid fa-heart fa-10x");
+                    } else {
+                      props.removeFromLikes(track.uri.split(":")[2]);
+                      changeLikeIcon("fa-regular fa-heart fa-10x");
+                    }
+                    //likeIcon==="fa-regular fa-heart fa-10x"? changeLikeIcon("fa-solid fa-heart fa-10x"): changeLikeIcon("fa-regular fa-heart fa-10x")
+                  }}
+                />
+                <FontAwesomeIcon
+                  icon="fa-solid fa-circle-plus fa-10x"
+                  style={{
+                    cursor: "pointer",
+                    marginLeft: "15px",
+                    marginRight: "9px",
+                  }}
+                  // ,margin:"0px 0px auto auto"
+                  onClick={() => {
+                    props.setShowModal(true);
+                    props.addTrackToPlaylist(track);
+                  }}
+                />
                 <Button
                   variant="success"
                   onClick={() => {
@@ -142,12 +125,103 @@ export default function TrackDetails(props) {
                 >
                   Add To Queue
                 </Button>
-              }
-              
+              </Container>
+            )}
+
+            {props.listener === "passive" && (
+              <div style={{ float: "left", marginRight: "9px" }}>
+                <NavDropdown
+                  title={
+                    <span>
+                      <FontAwesomeIcon
+                        icon="fa-solid fa-ellipsis-vertical fa-10x"
+                        style={{
+                          cursor: "pointer",
+                          marginLeft: "15px",
+                          color: "white",
+                        }}
+                      />{" "}
+                    </span>
+                  }
+                  id="collasible-nav-dropdown"
+                >
+                  <NavDropdown.Item>
+                    {likeIcon === "fa-regular fa-heart fa-10x" ? (
+                      <div
+                        onClick={() => {
+                          if (likeIcon === "fa-regular fa-heart fa-10x") {
+                            props.addToLikes(track.uri.split(":")[2]);
+                            changeLikeIcon("fa-solid fa-heart fa-10x");
+                          } else {
+                            props.removeFromLikes(track.uri.split(":")[2]);
+                            changeLikeIcon("fa-regular fa-heart fa-10x");
+                          }
+                        }}
+                      >
+                        Like
+                        <FontAwesomeIcon
+                          icon={likeIcon}
+                          style={{ cursor: "pointer", marginLeft: "8px" }}
+                        />
+                      </div>
+                    ) : (
+                      <div
+                        onClick={() => {
+                          if (likeIcon === "fa-regular fa-heart fa-10x") {
+                            props.addToLikes(track.uri.split(":")[2]);
+                            changeLikeIcon("fa-solid fa-heart fa-10x");
+                          } else {
+                            props.removeFromLikes(track.uri.split(":")[2]);
+                            changeLikeIcon("fa-regular fa-heart fa-10x");
+                          }
+                        }}
+                      >
+                        Liked
+                        <FontAwesomeIcon
+                          icon={likeIcon}
+                          style={{ cursor: "pointer", marginLeft: "8px" }}
+                        />
+                      </div>
+                    )}
+                  </NavDropdown.Item>
+
+                  <NavDropdown.Item>
+                    {" "}
+                    <div
+                      onClick={() => {
+                        addToQueue();
+                      }}
+                      // style={{ marginLeft: "22px" }}
+                    >
+                      Add To Queue
+                      {/* <FontAwesomeIcon icon="fa-solid fa-list-music" /> */}
+                    </div>
+                  </NavDropdown.Item>
+
+                  <NavDropdown.Item>
+                    <div
+                      onClick={() => {
+                        props.setShowModal(true);
+                        props.addTrackToPlaylist(track);
+                      }}
+                    >
+                      Add To Playlist
+                      <FontAwesomeIcon
+                        icon="fa-solid fa-circle-plus fa-10x"
+                        style={{
+                          cursor: "pointer",
+                          marginLeft: "8px",
+                        }}
+                      />
+                    </div>
+                  </NavDropdown.Item>
+                </NavDropdown>
+              </div>
+            )}
+
+            {/* <div class="d-grid gap-2 d-md-block"> */}
+
             {/* </div> */}
-            </Container>
-           )}
-           
           </div>
         </div>
       </Container>

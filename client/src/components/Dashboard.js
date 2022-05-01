@@ -291,7 +291,7 @@ function Dashboard({ props, code }) {
     console.log("SONG ADDED TO QUEUE");
 
     //console.log(queue);
-    setMessage("ADDED TO QUEUE");
+    setMessage("Added To Queue.");
   }
 
   useEffect(() => {
@@ -316,7 +316,7 @@ function Dashboard({ props, code }) {
 
     setShowModal(false);
     setShowToast(true);
-    setMessage("ADDED TO PLAYLIST");
+    setMessage("Added To Playlist.");
   }
 
   function createPlaylist(name) {
@@ -356,7 +356,7 @@ function Dashboard({ props, code }) {
 
     setShowModal(false);
     setShowToast(true);
-    setMessage("PLAYLIST CREATED");
+    setMessage("Playlist Created.");
   }
 
   function addTrackToPlaylist(track) {
@@ -375,7 +375,7 @@ function Dashboard({ props, code }) {
     );
 
     setShowToast(true);
-    setMessage("ADDED TO LIKES");
+    setMessage("Added To Liked Songs.");
   }
 
   function removeFromLikes(id) {
@@ -389,7 +389,7 @@ function Dashboard({ props, code }) {
     );
 
     setShowToast(true);
-    setMessage("REMOVED FROM LIKES");
+    setMessage("Removed From Liked Songs.");
   }
 
   function getPlaylistTracks(playlist) {
@@ -1124,7 +1124,7 @@ function Dashboard({ props, code }) {
           {/* <Scrollbar/> */}
 
           {/* //ADDED DIV */}
-          {queue.length!==0 &&
+          {queue.length!==0 && listener==="passive" &&
           <div
           className="scrollbar scrollbar-lady-lips"
           style={{
@@ -1291,7 +1291,7 @@ function Dashboard({ props, code }) {
                     <strong className="me-auto">Notification</strong>
                     <small>just now</small>
                   </Toast.Header>
-                  <Toast.Body style={{ color: "white" }}>{message}</Toast.Body>
+                  <Toast.Body style={{ color: "white", fontSize: "22px" }}>{message}</Toast.Body>
                 </Toast>
               </ToastContainer>
             )}
@@ -1488,7 +1488,7 @@ function Dashboard({ props, code }) {
 
                   {listener === "passive" && (
                     <div>
-                      <h2>My Playlists</h2>
+                      <h2>Playlists</h2>
                       <Row
                         className="scrollbar scrollbar-lady-lips"
                         style={{
@@ -1534,7 +1534,7 @@ function Dashboard({ props, code }) {
                         ))}
                       </Row>
                       <br /> <br /> <br />
-                      <h2>Genre Playlists</h2>
+                      <h2>Your Genre Mixes</h2>
                       <Row
                         className="scrollbar scrollbar-lady-lips"
                         style={{
@@ -2131,7 +2131,7 @@ function Dashboard({ props, code }) {
                     }}
                   />
                 </div> */}
-                <Search search={search} setSearch={setSearch} setView={setView} length={searchResults.length} />
+                <Search search={search} setSearch={setSearch} setView={setView} searchResults={searchResults} accordionOpened={accordionOpened} />
               </div>
             )}
 
@@ -2227,7 +2227,9 @@ function Dashboard({ props, code }) {
                       setAccordionOpened(!accordionOpened);
                     }}
                   >
-                    <h5 style={{ color: "rgb(60, 62, 77)" }}>Lyrics</h5>
+                {listener==="active" && <h5 style={{ color: "rgb(60, 62, 77)" }}>Lyrics</h5>}
+                {listener==="passive" && <h5 style={{ color: "rgb(60, 62, 77)" }}>Details</h5>}
+                
                   </Accordion.Header>
                   <Accordion.Body>
                     <div
@@ -2237,7 +2239,7 @@ function Dashboard({ props, code }) {
                         height: "660px",
                       }}
                     >
-                      {/* {queue.length !== 0 && (
+                      {queue.length !== 0 && listener==="active" && (
                         <div style={{ float: "right" }}>
                           <br />
                           <Button
@@ -2251,7 +2253,7 @@ function Dashboard({ props, code }) {
                             Queue
                           </Button>
                         </div>
-                      )} */}
+                      )}
                       
                         {listener==="passive" && lyrics !== "" && 
                           <div style={{float: "right"}}>
@@ -2299,7 +2301,7 @@ function Dashboard({ props, code }) {
                             style={{
                               height: "230px",
                               width: "230px",
-                              marginLeft: "55px",
+                              marginLeft: "175px",
                               //145
                             }}
                             alt="albumUrl"
@@ -2362,8 +2364,6 @@ function Dashboard({ props, code }) {
                         
                         {lyrics && listener==="active" ? lyrics : ""}
 
-                        
-                        
                         {queueModal && (
                           <Modal
                             show={queueModal}
@@ -2416,7 +2416,7 @@ function Dashboard({ props, code }) {
                 className="special_modal"
               >
                 <Modal.Header closeButton closeVariant="white">
-                  <Modal.Title>Lyrics</Modal.Title>
+                <Modal.Title> Lyrics</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                   <div

@@ -56,3 +56,8 @@
 	height: 64px;
 	width: 64px;
 }
+
+.dropdown-toggle::after {
+    display:none !important;
+}
+

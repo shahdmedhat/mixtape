@@ -11,13 +11,14 @@ export default function Search(props) {
         placeholder="Search Songs/Artists"
         value={props.search}
         onChange={(e) => props.setSearch(e.target.value)}
-        style={{ width: "90%" }}
+        style={{ width: "90%"}}
       />
       <br /> <br />
       
-      {props.length ===0 &&
+      {props.searchResults.length ===0 &&
+       !props.accordionOpened &&
       <div>
-      <h2>Mood Playlists</h2>
+      <h2>Your Mood Mixes</h2>
       <Row
         className="scrollbar scrollbar-lady-lips"
         style={{
@@ -45,7 +46,7 @@ export default function Search(props) {
             src={happyImage}
           />
           <Card.Body>
-            <Card.Title style={{ marginTop: "4px" }}>Daily Mix</Card.Title>
+            <Card.Title style={{ marginTop: "4px" }}>Happy Mix</Card.Title>
             <Card.Text>Hits that are guaranteed to boost your mood!</Card.Text>
           </Card.Body>
         </Card>
@@ -67,7 +68,7 @@ export default function Search(props) {
           <Card.Body>
             {/* <br />  */}
             <br />
-            <Card.Title>Sad</Card.Title>
+            <Card.Title>Sad Mix</Card.Title>
             <Card.Text>Some tracks to let it all out...</Card.Text>
             
           </Card.Body>
