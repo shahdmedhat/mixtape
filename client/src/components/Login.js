@@ -22,9 +22,9 @@ export default function Login(props) {
       >
         {/* <h1> Music for every mood.</h1> */}
 
-        <a className="btn btn-success btn-lg" href={AUTH_URL}>
+        <Button className="btn btn-success btn-lg" href={AUTH_URL}>
             Get Started
-        </a>
+        </Button>
         
         
         {/* {!showModal &&
