@@ -147,13 +147,13 @@ export default function Likes(props) {
           Liked Songs
           <Button
             variant="success"
-            style={{ float: "right", marginRight: "40px" }}
+            style={{ float: "right", marginRight: "25px" }}
             size="lg"
             onClick={() => {
               shuffle();
             }}
           >
-            Shuffle
+            Shuffle Play
           </Button>
         </h1>
 

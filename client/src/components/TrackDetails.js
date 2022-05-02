@@ -4,8 +4,6 @@ import {
   Button,
   Row,
   Form,
-  Dropdown,
-  DropdownButton,
   NavDropdown,
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
@@ -137,8 +135,9 @@ export default function TrackDetails(props) {
                         icon="fa-solid fa-ellipsis-vertical fa-10x"
                         style={{
                           cursor: "pointer",
-                          marginLeft: "15px",
+                          // marginLeft: "15px",
                           color: "white",
+                          // marginRight: "10px"
                         }}
                       />{" "}
                     </span>

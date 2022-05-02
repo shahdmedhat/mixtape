@@ -34,7 +34,16 @@ export default function Playlists(props) {
 
   const [playlistName, setPlaylistName] = useState("");
   const [playlistTracks, setPlaylistTracks] = useState([]);
+  
+  const [uris, setURIs] = useState([]);
 
+  function shuffle(){
+    let first = uris.shift();
+    console.log(first);
+    props.setPlayingTrack(first);
+    props.setQueue(uris);
+  }
+  
   function getPlaylistTracks(id, title) {
     if (!accessToken) return;
 
@@ -90,6 +99,14 @@ export default function Playlists(props) {
   }
 
   useEffect(() => {
+  
+    let shuffled = playlistTracks
+    .map(value => ({ value, sort: Math.random() }))
+    .sort((a, b) => a.sort - b.sort)
+    .map(({ value }) => value)
+  
+    setURIs(shuffled)
+    
     setList(
       playlistTracks.map((track) => (
         <TrackDetails
@@ -236,6 +253,16 @@ export default function Playlists(props) {
             <h1 style={{ textAlign: "center", color: "white" }}>
               {" "}
               {playlistName}{" "}
+              <Button
+            variant="success"
+            style={{ float: "right", marginRight: "25px" }}
+            size="lg"
+            onClick={() => {
+              shuffle();
+            }}
+          >
+            Shuffle Play
+          </Button>
             </h1>
           </Row>
           <div>{list}</div>
