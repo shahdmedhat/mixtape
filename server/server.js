@@ -4,6 +4,7 @@ const cors = require("cors")
 const bodyParser = require("body-parser")
 const lyricsFinder = require("lyrics-finder")
 const SpotifyWebApi = require("spotify-web-api-node")
+const path = require('path') //newwww
 
 const app = express()
 
@@ -12,6 +13,8 @@ app.use(cors())
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
+
+app.use(express.static(path.join(__dirname, 'build'))) //newwww
 
 // app.get('/products/:id', cors(), function (req, res, next) {
 //   res.json({msg: 'This is CORS-enabled for a Single Route'});
@@ -91,6 +94,9 @@ app.get("/lyrics", async (req, res) => {
 //     })
 // })
 
+app.get('/*', (req, res) => { //newww
+  res.sendFile(path.join(__dirname, 'build', 'index.html'))
+})
 
 //app.listen(3001) //run backend on localhost/3001
 app.listen(3001, () => {
