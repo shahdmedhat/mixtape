@@ -36,3 +36,9 @@
     transform: rotate(360deg);
   }
 }
+
+@font-face {
+  font-family: "Lilo";   /*Can be any text*/
+  src: local("GothamBoldItalic"),
+    url("./fonts/GothamBoldItalic.ttf") format("truetype");
+}

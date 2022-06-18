@@ -56,12 +56,15 @@ import SpotifyPlayer from "react-spotify-web-playback";
 import { memo } from "react";
 
 import background from "../images/background.jpeg";
+import PacmanLoader from "react-spinners/PacmanLoader";
+import {isMobile} from 'react-device-detect';
 
 library.add(fas);
 
 const spotifyApi = new SpotifyWebApi({
   clientId: "f6f8e70042bb47cd9c82ef26e1cb83a7",
 });
+
 
 // export default
 function Dashboard({ props, code }) {
@@ -71,7 +74,7 @@ function Dashboard({ props, code }) {
   //console.log(location.state);
 
   const accessToken = useAuth(code);
-  //const accessToken = props.accessToken;
+  //const accessToken = location.state.accessToken;
 
   if (accessToken === "undefined") {
     //---------------
@@ -105,8 +108,8 @@ function Dashboard({ props, code }) {
   const [player, showPlayer] = useState(false);
   const [view, setView] = useState(""); //location.state!==null?location.state.view:
 
-  const [firstColor, setFirstColor] = useState("#41295a");
-  const [secondColor, setSecondColor] = useState("#2F0743");
+  const [firstColor, setFirstColor] = useState("#614385");
+  const [secondColor, setSecondColor] = useState("#516395");
 
   const [showToast, setShowToast] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -141,22 +144,88 @@ function Dashboard({ props, code }) {
   const [playlistTracks, setPlaylistTracks] = useState([]); //for passive UI
   const [playlistName, setPlaylistName] = useState(""); //for passive UI
 
-  const { width } = useWindowSize();
+  // const { width } = useWindowSize();
 
   const [listener, setListener] = useState("");
   const [startModal, showStartModal] = useState(true);
 
   const [tempQ, setTempQ] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   
+  const [windowDimensions, setWindowDimensions] = useState("");
+  const [imageDimensions, setImageDimensions] = useState("64px");
+
+  const [done, setDone] = useState(false);
+
+  function getWindowDimensions() {
+    const { innerWidth: width, innerHeight: height } = window;
+    if (isMobile){
+      setImageDimensions("64px");
+      setWindowDimensions("64px");
+      return 175;
+    }
+   else{
+    setImageDimensions("230px");
+    setWindowDimensions("275px");
+
+    return 275;
+   }
+  }
   
   useEffect(() => {
-    if (loading) {
-      setTimeout(() => {
+    const interval= setInterval(() => {
+      console.log("runningggg");
+      showStartModal(true);
+      setDone(false);
+      console.log("start modal ", startModal);
+
+    }, 10000)
+    
+    return () => clearInterval(interval);
+    
+  }, []);
+  
+  // useEffect(() => {
+  //   console.log("timerrrr");
+    //   setTimeout(() => {
+    //     if (startModal){
+    //       console.log("start modal ", startModal);
+    //       setListener("passive");
+    //       showStartModal(false);
+    //     }
+    // }, 3000);
+    
+  // }, [startModal]);
+  
+  useEffect(() => {
+    setLoading(true);
+    setTimeout(() => {
       setLoading(false);
-    }, 3000);
+    }, 4000);
+    
+    if(playingTrack){
+    spotifyApi.getAudioFeaturesForTracks([playingTrack.uri.split(":")[2]])
+    .then(function(data) {
+      console.log(data.body);
+      if(data.body.audio_features[0].energy>0.5){
+        setFirstColor("#ED213A");
+        //#8E0E00
+        setSecondColor("#93291E");
+        //#1F1C18 
+      }
+      else{
+        setFirstColor("#005C97");
+        setSecondColor("#363795");
+      }
+  }, function(err) {
+      console.log(err)
+  });
     }
-  }, [loading]);
+  else{
+    setFirstColor("#614385");
+    setSecondColor("#516395");
+  }
+  }, [playingTrack]);
   
   useEffect(() => {
     //if(queue.length===0){ //showNext
@@ -557,7 +626,8 @@ function Dashboard({ props, code }) {
 
   useEffect(() => {
     currentTime();
-
+    getWindowDimensions();
+    
     //console.log(accessToken);
     if (!accessToken) return;
     spotifyApi.setAccessToken(accessToken);
@@ -879,7 +949,9 @@ function Dashboard({ props, code }) {
           queue={queue}
           addToLikes={addToLikes}
           removeFromLikes={removeFromLikes}
+          listener={"passive"}
         />
+        
       ))
     );
 
@@ -1026,20 +1098,20 @@ function Dashboard({ props, code }) {
 
 
   return (
-    // <div
-    //   style={{
-    //     overflowY: "scroll",
-    //     background: "linear-gradient(" + firstColor + "," + secondColor + ")",
-    //   }}
-    // >
+    <div
+      style={{
+        overflowY: "scroll",
+        background: "linear-gradient(" + firstColor + "," + secondColor + ")",
+      }}
+    >
     
-    <div>
-       {/* {loading && (
-          <div style={{width: "600px"}}>
-          <Spinner animation='border'/>
-          </div>
-       )} */}
-      {listener === "" && (
+    <div>     
+    {/* -------------------------------------- */}
+
+    {/* -------------------------------------- */}
+       
+       
+      {/* {listener === "" && ( */}
         <div>
           {/* {!startModal &&
           <Button
@@ -1061,7 +1133,18 @@ function Dashboard({ props, code }) {
               onHide={() => {
                 showStartModal(false);
                 setListener("passive");
+                setDone(true);
               }}
+              
+              // onShow={() => {
+              //   setTimeout(() => {
+                    
+              //         setListener("passive");
+              //         showStartModal(false);
+              //         //setDone(false);
+                    
+              // }, 7000);
+              // }}
               aria-labelledby="contained-modal-title-vcenter"
               centered
               // className="special_modal"
@@ -1071,8 +1154,7 @@ function Dashboard({ props, code }) {
                 {/* <Modal.Title>Welcome to Spotify 2.0</Modal.Title> */}
               </Modal.Header>
               <Modal.Body>
-                Be honest, are you here because you're procrastinating doing
-                something?
+              Does Mixtape have your full attention right now or are you doing something else?
               </Modal.Body>
 
               <Modal.Footer>
@@ -1080,23 +1162,29 @@ function Dashboard({ props, code }) {
                   variant="secondary"
                   onClick={() => {
                     setListener("active");
+                    showStartModal(false);
+                    setDone(true);
                   }}
                 >
-                  No
+                  Just here for the music
+
                 </Button>
                 <Button
                   variant="warning"
                   onClick={() => {
                     setListener("passive");
+                    showStartModal(false);
+                    setDone(true);
                   }}
                 >
-                  Guilty
+                  I'm doing something else
+
                 </Button>
               </Modal.Footer>
             </Modal>
           )}
         </div>
-      )}
+      {/* // )} */}
 
       {listener !== "" && (
         <div className="dashboard">
@@ -1110,8 +1198,8 @@ function Dashboard({ props, code }) {
                 float: "right",
                 justifyContent: "center",
                 color: "white",
-                width: "430px",
-                height: "55vh",
+                width: "17%",
+                height: "48vh",
                 //35vh
                 overflowY: "scroll",
                 marginRight: "5px",
@@ -1158,12 +1246,17 @@ function Dashboard({ props, code }) {
             setSearchResults={setSearchResults}
             setSearch={setSearch}
             listener={listener}
+            setAccordionOpened={setAccordionOpened}
+            view={view}
           />
+
 
           <Container
             className="d-flex flex-column py-2"
-            style={{ height: "100vh", marginLeft: "275px" }} //ADDED WIDTH 50%? if mobile remove marginLeft, marginLeft: 275px
+            style={{ height: "100vh", marginLeft: {windowDimensions}}} //ADDED WIDTH 50%? if mobile remove marginLeft, marginLeft: 275px
           >
+            
+       
             {listener === "active" && (
               <Form.Control
                 type="search"
@@ -1290,15 +1383,17 @@ function Dashboard({ props, code }) {
               username !== "" &&
               searchResults.length === 0 && (
                 <div>
-                  <h2>
-                    {displayMessage}, {username}
-                  </h2>
+                  <h1>
+                    {displayMessage}
+                    {/* , {username} */}
+                  </h1>
                   <br />
 
                   {/* <br /> <br /> */}
                   {/* <h2>Based on your recent listening</h2> */}
                   {/* <h2>Go beyond with music for moods.</h2> */}
                   {listener === "active" && (
+
                     <div>
                       <h2>Discover New Music</h2>
                       <Row>
@@ -1471,7 +1566,7 @@ function Dashboard({ props, code }) {
 
                   {listener === "passive" && (
                     <div>
-                      <h2>Playlists</h2>
+                      <h2>Your Playlists</h2>
                       <Row
                         className="scrollbar scrollbar-lady-lips"
                         style={{
@@ -1660,8 +1755,15 @@ function Dashboard({ props, code }) {
             )}
 
             {view === "sad" && searchResults.length === 0 && (
-              <div style={{ overflowY: "scroll", justifyContent: "center" }}>
-                <div
+              <div
+              style={{
+                overflowY: "scroll",
+                justifyContent: "center",
+                width: "90%",
+              }}
+              className="scrollbar scrollbar-lady-lips"
+            >
+            <div
                   style={{
                     font: "24px bold",
                     color: "white",
@@ -1925,7 +2027,7 @@ function Dashboard({ props, code }) {
             {view === "likes" && searchResults.length === 0 && (
               <div
                 className="scrollbar scrollbar-lady-lips"
-                style={{ width: "90%" }}
+                style={{ width: "90%"}}
               >
                 <div
                   style={{
@@ -1956,6 +2058,7 @@ function Dashboard({ props, code }) {
                   setQueue={setQueue}
                   listener={listener}
                 />
+
               </div>
             )}
 
@@ -2160,6 +2263,11 @@ function Dashboard({ props, code }) {
             </div>
 
             <div style={{ width: "90%" }}>
+            {loading && (
+            <div style={{paddingRight: "44px",textAlign: "center"}}>
+              <PacmanLoader color={'#ffffff'} loading={loading} size={27} />
+            </div>  
+           )}
               {accessToken && (
                 <SpotifyPlayer
                   token={accessToken}
@@ -2169,6 +2277,13 @@ function Dashboard({ props, code }) {
                     if (!state.isPlaying && queue.length === 0) {
                       setPlay(false);
                       //console.log("DONE");
+                    }
+                    
+                    if (!state.isPlaying && queue.length === 0 && state.progressMs === 0
+                      ) {
+                      setPlay(false);
+                      setFirstColor("#614385");
+                      setSecondColor("#516395");
                     }
 
                     if (
@@ -2186,7 +2301,7 @@ function Dashboard({ props, code }) {
                       console.log(uris);
                       let first = queue.shift();
                       setPlayingTrack(first);
-
+                      // setPlay(true);
                       console.log(state.nextTracks);
                     }
 
@@ -2221,7 +2336,7 @@ function Dashboard({ props, code }) {
                 Show Lyrics
               </Button>
             </Col> */}
-
+            
               <Accordion flush>
                 <Accordion.Item eventKey="0">
                   <Accordion.Header
@@ -2230,12 +2345,13 @@ function Dashboard({ props, code }) {
                     }}
                   >
                     {listener === "active" && (
-                      <h5 style={{ color: "rgb(60, 62, 77)" }}>Lyrics</h5>
+                      <h5 style={{ color: "rgb(60, 62, 77)" }}>Details</h5>
                     )}
                     {listener === "passive" && (
                       <h5 style={{ color: "rgb(60, 62, 77)" }}>Details</h5>
                     )}
                   </Accordion.Header>
+                  
                   <Accordion.Body>
                     <div
                       className="scrollbar scrollbar-lady-lips"
@@ -2244,7 +2360,8 @@ function Dashboard({ props, code }) {
                         height: "660px",
                       }}
                     >
-                      {queue.length !== 0 && listener === "active" && (
+                      {queue.length !== 0 && (
+                      // listener === "active" && 
                         <div style={{ float: "right" }}>
                           <br />
                           <Button
@@ -2283,7 +2400,7 @@ function Dashboard({ props, code }) {
                         listener === "active" ? (
                           <img
                             src={playingTrack.image}
-                            style={{ height: "230px", width: "230px" }}
+                            style={{ height: "230px", width: "230px"}}
                             alt="albumUrl"
                           />
                         ) : (
@@ -2293,12 +2410,11 @@ function Dashboard({ props, code }) {
                         <div style={{ textAlign: "center" }}>
                           {playingTrack &&
                           queue.length === 0 &&
-                          listener === "passive" ? (
+                          listener === "passive"  ? (
                             <img
                               src={playingTrack.image}
                               style={{
-                                height: "275px",
-                                width: "275px",
+                                height: "230px", width: "230px",
                                 marginLeft: "150px",
                               }}
                               alt="albumUrl"
@@ -2314,8 +2430,7 @@ function Dashboard({ props, code }) {
                           <img
                             src={playingTrack.image}
                             style={{
-                              height: "230px",
-                              width: "230px",
+                              height: "230px", width: "230px",
                               marginLeft: "175px",
                               //145
                             }}
@@ -2331,9 +2446,8 @@ function Dashboard({ props, code }) {
                           <img
                             src={playingTrack.image}
                             style={{
-                              height: "275px",
-                              width: "275px",
-                              marginLeft: "240px",
+                              height: "230px", width: "230px",
+                              marginLeft: "340px",
                               // marginTop: "125px"
                               //145
                               // display: "block",
@@ -2358,6 +2472,7 @@ function Dashboard({ props, code }) {
                               } else {
                                 let next = queue.shift();
                                 setPlayingTrack(next);
+                                setUri(queue);
                               }
                             }}
                           />
@@ -2419,6 +2534,7 @@ function Dashboard({ props, code }) {
                       </div>
                     </div>
                   </Accordion.Body>
+                
                 </Accordion.Item>
               </Accordion>
             </div>
@@ -2449,9 +2565,12 @@ function Dashboard({ props, code }) {
                 </Modal.Body>
               </Modal>
             )}
+            
           </Container>
+          
         </div>
       )}
+    </div>
     </div>
   );
 }

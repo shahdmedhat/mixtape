@@ -8,6 +8,8 @@ import Playlists from "./Playlists";
 import TopArtists from "./TopArtists";
 import Recommendations from "./Recommendations";
 
+import '../fonts/GothamBoldItalic.ttf';
+
 import {
   BrowserRouter as Router,
   Route,

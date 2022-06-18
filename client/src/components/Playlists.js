@@ -261,7 +261,7 @@ export default function Playlists(props) {
               shuffle();
             }}
           >
-            Shuffle Play
+            Shuffle
           </Button>
             </h1>
           </Row>

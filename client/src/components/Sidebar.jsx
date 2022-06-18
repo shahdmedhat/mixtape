@@ -10,7 +10,18 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-function Sidebar({listener, setSearch, setSearchResults, setView,showPlayer, accessToken }) {
+function Sidebar({view,setAccordionOpened,listener, setSearch, setSearchResults, setView,showPlayer, accessToken }) {
+
+// const navLinkStyles =({isActive}) => {
+//   return{
+//     fontWeight: isActive ? 'bold' : 'normal',
+//     display: "block",
+//     color: "rgb(255, 255, 255)",
+//     textDecoration: "none",
+//     margin: "20px 0",
+//     font: "18px"
+//   }
+// }
 
 function handleLike(){
   showPlayer(false);
@@ -25,7 +36,6 @@ function handleRec(){
 function handleArtists(){
   showPlayer(false);
   setView("artists");
-
 }
 
 function handleTracks(){
@@ -37,6 +47,7 @@ function handleTracks(){
 function handlePlaylists(){
   showPlayer(false);
   setView("playlists");
+
 }
 
 function resetAll(){
@@ -44,6 +55,7 @@ function resetAll(){
   setView("");
   setSearchResults([]);
   setSearch("");
+
 }
 
   return (
@@ -74,8 +86,9 @@ function resetAll(){
           state={{ accessToken: accessToken }} //view: `${"likes"}`
           className="item"
           activeClassName="active"
-          onClick={handleLike} 
-        >          
+          onClick={handleLike}
+          //style={navLinkStyles}
+          >          
           {" "}
           {/* <FontAwesomeIcon className="icon" icon={faRecordVinyl} /> */}
           <span>Liked Songs</span>
@@ -96,6 +109,8 @@ function resetAll(){
           className="item"
           activeClassName="active"
           onClick={handleArtists} 
+          //style={navLinkStyles}
+
         >         
         <span>Top Artists</span>
         </NavLink>
@@ -112,7 +127,7 @@ function resetAll(){
           {/* <FontAwesomeIcon className="icon" icon={faRecordVinyl} /> */}
           <span>Most Played Songs</span>
         </NavLink>
-
+        
         <NavLink
           to="/"
           state={{ accessToken: accessToken}}
@@ -120,12 +135,14 @@ function resetAll(){
           activeClassName="active"
           onClick={handlePlaylists} 
         >
-          {/* <FontAwesomeIcon className="icon" icon={faMusic} /> */}
           <span>Playlists</span>
         </NavLink>
         
         {listener==="passive" &&
         <div>
+        
+
+        
         <NavLink
           exact
           to="/"
@@ -146,6 +163,18 @@ function resetAll(){
       
       </section>
 
+      <section className="sidebar-library">
+        <NavLink
+          to="/"
+          className="item"
+          activeClassName="active"
+          onClick={resetAll} 
+        >
+          <span>Log out</span>
+        </NavLink>
+
+      </section>
+      
       {/* Footer on mobile */}
       <section className="sidebar-mobile">
         <NavLink      

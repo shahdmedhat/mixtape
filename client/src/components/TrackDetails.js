@@ -26,7 +26,7 @@ export default function TrackDetails(props) {
   const track = props.track;
 
   const [options, showOptions] = useState(false);
-
+  // console.log(props.listener);
   function handlePlay() {
     //navigate("/dashboard",{ state: {track: track , accessToken: location.state.accessToken} });
     // if (!props.showQueue)
@@ -79,7 +79,7 @@ export default function TrackDetails(props) {
         <div className="songRow__info" onClick={handlePlay} >
           {/* className="ml-3" style={{ cursor: "pointer", marginLeft: "5px" }} */}
           <h1 style={{ alignItems: "center" }}>{track.title}</h1>
-          <h1>{track.artist}</h1>
+          <h2>{track.artist}</h2>
           {/* className="text-muted" */}
         </div>
 
@@ -116,6 +116,7 @@ export default function TrackDetails(props) {
                   }}
                 />
                 <Button
+                  class="queue-btn"
                   variant="success"
                   onClick={() => {
                     addToQueue();

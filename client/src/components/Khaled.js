@@ -29,7 +29,8 @@ export default function Khaled(props) {
   //const accessToken = location.state.accessToken;
   
   return code ? <Dashboard code={code} listener={listener} /> : <Login setListener={setListener} />;
-  
+  // return <Login code={code} setListener={setListener} />;
+
   // if (code && dash){
   //   return <Dashboard code={code} listener={listener} />;
   // }

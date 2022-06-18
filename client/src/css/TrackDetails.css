@@ -39,11 +39,14 @@
 }
 
 .songRow__info > h1 {
-	font-size: 17px;
+	font-size: 19px;
+	font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+	font-weight: bold
 }
 
 .songRow__info > h2 {
 	font-size: 16px;
+	font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
 .songRow__info > p {

@@ -78,3 +78,75 @@ export default function Login(props) {
     </div>
   );
 }
+
+// import React, { useState,useEffect } from "react";
+// import { useNavigate } from "react-router-dom";
+// export const authEndpoint = 'https://accounts.spotify.com/authorize';
+// const clientId = "f6f8e70042bb47cd9c82ef26e1cb83a7";
+// const redirectUri = "http://localhost:3000/";
+// const scopes = [
+//   "user-read-currently-playing",
+//   "user-read-playback-state",
+//   "streaming",
+//   "user-read-email",
+//   "user-read-private",
+//   "user-library-read",
+//   "user-library-modify",
+//   "user-modify-playback-state",
+//   "user-top-read",
+//   "playlist-read-private",
+//   "playlist-read-collaborative",
+//   "user-read-email",
+//   "playlist-modify-private",
+//   "playlist-modify-public"
+// ];
+
+// const hash = window.location.hash
+//   .substring(1)
+//   .split("&")
+//   .reduce(function(initial, item) {
+//     if (item) {
+//       var parts = item.split("=");
+//       initial[parts[0]] = decodeURIComponent(parts[1]);
+//     }
+//     return initial;
+//   }, {});
+  
+// window.location.hash = "";
+
+// export default function Login(props) {
+//   let navigate = useNavigate();
+
+//   const[token,setToken]=useState("");
+
+//   useEffect(() => {
+//     let _token = hash.access_token;
+//     console.log(_token);
+//     if (_token) {
+//       console.log("tokennnn");
+//       setToken(_token);
+//       navigate("/dashboard", {
+//         state : {
+//         accessToken: _token
+//         }
+//       });
+//     }
+//   }, [token]);
+  
+//   return (
+//     <div className="App">
+//       <header className="App-header">
+//       {token==="" && (
+//         <a
+//           className="btn btn--loginApp-link"
+//           href={"https://accounts.spotify.com/authorize?client_id=f6f8e70042bb47cd9c82ef26e1cb83a7&response_type=token&redirect_uri=http://localhost:3000&scope=streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state%20user-top-read%20playlist-read-private%20playlist-read-collaborative%20streaming%20user-read-email%20playlist-modify-private%20playlist-modify-public"
+//         }
+//         >
+//           Login to Spotify
+//         </a>
+//       )}
+//       </header>
+//     </div>
+//   );
+  
+// }
